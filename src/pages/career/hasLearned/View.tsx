@@ -1,7 +1,8 @@
 import React from "react";
+import Layout from "../../common/Layout.tsx";
 
-const ResumeView = () => {
-  return <div>这是简历页</div>;
+const HasLearnedView = () => {
+  return <Layout>haslearned</Layout>;
 };
 
-export default ResumeView;
+export default HasLearnedView;
