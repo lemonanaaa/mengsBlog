@@ -30,14 +30,8 @@ const LeftMarks = () => {
         {(location.pathname.startsWith('/career') || location.pathname === '/') && (
           <>
             <div onClick={() => { window.location.href = '/career/resume' }}>简历页面</div>
-            <div onClick={() => {
-              window.location.href = '/career/haslearned'
-              setBlogCommonStore({ 'showComponent': 'blogs' })
-            }}>前端知识树</div>
-            <div onClick={() => {
-              window.location.href = '/career/haslearned'
-              setBlogCommonStore({ 'showComponent': 'blogsWithTimeline' })
-            }}>Blogs with timeLine</div>
+            <div onClick={() => { window.location.href = '/career/blogstree' }}>前端知识树</div>
+            <div onClick={() => { window.location.href = '/career/blogswithtimeline' }}>Blogs with timeLine</div>
           </>
         )}
         {/* 算法工作介绍 */}
