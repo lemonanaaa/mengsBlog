@@ -7,6 +7,7 @@ import BlogsWithTimeline from "../pages/career/blogsWithTimeline/View.tsx";
 import PhotographyView from "../pages/photography/View.tsx";
 import PhotographyForGusetView from "../pages/photographyForGuset/View.tsx"
 import WritingView from "../pages/writings/View.tsx";
+import EditBlogsView from "../pages/editBlogs/View.tsx";
 
 const routes = [
   {
@@ -22,11 +23,11 @@ const routes = [
     Component: <ResumeView />,
   },
   {
-    path: "/career/blogstree",
+    path: "/career/blogsTree",
     Component: <BlogsTreeView />,
   },
   {
-    path: "/career/blogswithtimeline",
+    path: "/career/blogsWithTimeline",
     Component: <BlogsWithTimeline />,
   },
   {
@@ -34,12 +35,16 @@ const routes = [
     Component: <PhotographyView />,
   },
   {
-    path: "/photosforu",
+    path: "/photosForU",
     Component: <PhotographyForGusetView />,
   },
   {
     path: "/writing",
     Component: <WritingView />,
+  },
+  {
+    path: "/editblogs",
+    Component: <EditBlogsView />,
   },
 ];
 
