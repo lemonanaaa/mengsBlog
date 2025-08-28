@@ -1,12 +1,15 @@
 .layout {
   display: flex;
+  box-sizing: border-box;
 }
 .layout-left {
   width: 24%;
   height: 100vh;
   background-color: #ffeae8;
+  position: sticky;
+  top: 0;
 }
 .layout-right {
-  flex: 1;
+  width: 76%;
   background-color: #e5e5ff;
 }
