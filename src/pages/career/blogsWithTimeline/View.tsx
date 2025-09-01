@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "../../common/Layout.tsx";
+import Layout from "../../common/Layout";
 
 
 const BlogsWithTimeline = () => {

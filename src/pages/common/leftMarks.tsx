@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useContext } from "react";
 import { Image } from 'antd';
 import { useLocation } from 'react-router-dom';
-import { mengsBlogContext } from "../common/Layout.tsx";
+import { mengsBlogContext } from "../common/Layout";
 
 import mengsPhoto from "../../assets/mengsPhoto.jpg";
 
@@ -11,8 +11,7 @@ import "../../css/common/leftMark.css";
 const LeftMarks = () => {
 
   const location = useLocation();
-  const { blogCommonStore, setBlogCommonStore } = useContext(mengsBlogContext);
-  console.log('leftMarks中的blogCommonStore====>', blogCommonStore)
+  const { blogCommonStore, setBlogCommonStore } = useContext(mengsBlogContext) as any;
 
   return (
     <div className="left-marks">

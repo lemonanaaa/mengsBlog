@@ -1,8 +1,8 @@
 import React, { createContext, useState } from "react";
 import "../../css/common/layout.css";
 
-import LeftMarks from "./leftMarks.tsx";
-import LeftMarksForGuest from "./LeftMarksForGuest.tsx"
+import LeftMarks from "./leftMarks";
+import LeftMarksForGuest from "./LeftMarksForGuest"
 
 export const mengsBlogContext = createContext({});
 

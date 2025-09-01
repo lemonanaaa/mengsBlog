@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import Layout from "../common/Layout.tsx";
-import { mengsBlogContext } from "../common/Layout.tsx";
-import Introduction from "./component/Introduction.tsx";
-import Pictures from "./component/Pictures.tsx";
-import Timeline from "./component/Timeline.tsx";
+import Layout from "../common/Layout";
+import { mengsBlogContext } from "../common/Layout";
+import Introduction from "./component/Introduction";
+import Pictures from "./component/Pictures";
+import Timeline from "./component/Timeline";
 
 
 const Photography = () => {
@@ -25,7 +25,7 @@ const TitleLine = () => {
 }
 
 const Components = () => {
-  const { blogCommonStore, setBlogCommonStore } = useContext(mengsBlogContext);
+  const { blogCommonStore, setBlogCommonStore } = useContext(mengsBlogContext) as any;
 
 
   const { showComponent } = blogCommonStore;

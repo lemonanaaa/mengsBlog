@@ -1,13 +1,13 @@
 import React from "react";
-import FrontPage from "../pages/frontPage/View.tsx";
-import CareerView from "../pages/career/index.tsx";
-import ResumeView from "../pages/career/resume/View.tsx";
-import BlogsTreeView from "../pages/career/blogsTree/View.tsx";
-import BlogsWithTimeline from "../pages/career/blogsWithTimeline/View.tsx";
-import PhotographyView from "../pages/photography/View.tsx";
-import PhotographyForGusetView from "../pages/photographyForGuset/View.tsx"
-import WritingView from "../pages/writings/View.tsx";
-import EditBlogsView from "../pages/editBlogs/View.tsx";
+import FrontPage from "../pages/frontPage/View";
+import CareerView from "../pages/career/index";
+import ResumeView from "../pages/career/resume/View";
+import BlogsTreeView from "../pages/career/blogsTree/View";
+import BlogsWithTimeline from "../pages/career/blogsWithTimeline/View";
+import PhotographyView from "../pages/photography/View";
+import PhotographyForGusetView from "../pages/photographyForGuset/View"
+import WritingView from "../pages/writings/View";
+import EditBlogsView from "../pages/editBlogs/View";
 
 const routes = [
   {

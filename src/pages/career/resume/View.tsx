@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import Layout from "../../common/Layout.tsx";
+import Layout from "../../common/Layout";
 
 import '../../../css/career/resume.css';
 
@@ -24,7 +24,7 @@ const ResumeView = () => {
       这是简历页
       <ReactMarkdown
         components={{
-          code({ node, inline, className, children, ...props }) {
+          code({ node, inline, className, children, ...props }:any) {
             const match = /language-(\w+)/.exec(className || '');
 
             if (!inline && match) {
