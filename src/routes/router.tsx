@@ -8,6 +8,7 @@ import PhotographyView from "../pages/photography/View";
 import PhotographyForGusetView from "../pages/photographyForGuset/View"
 import WritingView from "../pages/writings/View";
 import EditBlogsView from "../pages/editBlogs/View";
+import BlogView from "../pages/career/blogView/View";
 
 const routes = [
   {
@@ -29,6 +30,10 @@ const routes = [
   {
     path: "/career/blogsWithTimeline",
     Component: <BlogsWithTimeline />,
+  },
+  {
+    path: "/career/blogView/:id",
+    Component: <BlogView />,
   },
   {
     path: "/photography",
