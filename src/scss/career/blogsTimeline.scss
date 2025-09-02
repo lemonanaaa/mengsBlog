@@ -186,45 +186,25 @@
   
   // 特殊阴影
   box-shadow: 
-    0 8px 25px rgba(255, 107, 53, 0.15),
-    0 4px 10px rgba(255, 107, 53, 0.1) !important;
+    0 8px 25px rgba(213, 142, 191, 0.2),
+    0 4px 10px rgba(213, 142, 191, 0.15) !important;
   
   // 渐变背景
-  background: linear-gradient(135deg, #fff 0%, #fff8f5 100%) !important;
+  background: linear-gradient(135deg, #F6FFEE 0%, #F1DFD3 100%) !important;
   
   // 悬停效果
   &:hover {
     transform: translateY(-2px);
     box-shadow: 
-      0 12px 35px rgba(255, 107, 53, 0.2),
-      0 6px 15px rgba(255, 107, 53, 0.15) !important;
+      0 12px 35px rgba(213, 142, 191, 0.3),
+      0 6px 15px rgba(213, 142, 191, 0.25) !important;
     transition: all 0.3s ease;
-  }
-  
-  // 精选标识样式
-  .featured-blog-indicator {
-    position: absolute;
-    top: -8px;
-    right: 20px;
-    background: linear-gradient(45deg, #ff6b35, #ff8c42);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
-    z-index: 10;
   }
   
   // 标题特殊样式
   .blog-card-title {
-    color: #ff6b35 !important;
+    color: #D58EBF !important;
     font-weight: 600 !important;
-  }
-  
-  // 内容区域特殊样式
-  .blog-card-summary {
-    // 移除橙色装饰条和背景色，避免与蓝色按钮冲突
   }
 }
 
@@ -237,12 +217,12 @@
 
 .featured-blog-star {
   font-size: 20px;
-  color: #ff6b35;
-  filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.3));
+  color: #D58EBF;
+  filter: drop-shadow(0 0 4px rgba(213, 142, 191, 0.3));
 }
 
 .featured-blog-text {
-  color: #ff6b35;
+  color: #D58EBF;
 }
 
 // 展开/收起按钮样式

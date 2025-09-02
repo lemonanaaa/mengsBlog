@@ -126,11 +126,8 @@ const LeftMarks = () => {
       notifyWidthChange(initialState.width);
     }
     
-    // 初始化完成后，通知 Layout 组件当前宽度
-    // 这确保刷新页面后 Layout 组件的背景宽度与内容宽度一致
-    setTimeout(() => {
-      notifyWidthChange(width);
-    }, 0);
+    // 确保Layout组件知道当前宽度
+    notifyWidthChange(width);
   }, []);
 
   // 通知 Layout 组件宽度变化
@@ -188,7 +185,7 @@ const LeftMarks = () => {
     const handleMouseUp = () => {
       setIsResizing(false);
       // 拖拽结束时保存最终宽度到存储
-      LeftMarksStorage.saveState({ width: currentWidth });
+      LeftMarksStorage.saveState({ width: currentWidth, isCollapsed: false });
       
       // 移除全局事件监听
       document.removeEventListener('mousemove', handleMouseMove);
@@ -257,11 +254,13 @@ const LeftMarks = () => {
             }
           };
           
-          const handleMouseUp = () => {
+          const handleMouseUp = (mouseUpEvent: MouseEvent) => {
             if (isDragging) {
               // 如果是拖拽，保存宽度
               setIsResizing(false);
-              LeftMarksStorage.saveState({ width: width });
+              // 使用当前计算出的宽度，而不是可能未更新的state
+              const finalWidth = Math.max(config.minWidth, Math.min(config.maxWidth, startWidth + (mouseUpEvent.clientX - startX)));
+              LeftMarksStorage.saveState({ width: finalWidth, isCollapsed: false });
             } else {
               // 如果是点击，收起侧边栏
               toggleCollapse();
