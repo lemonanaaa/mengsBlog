@@ -289,7 +289,7 @@ const LeftMarks = () => {
         <a href="/">Meng's home</a>
         {/* 前端工作介绍 */}
         <a href="/career">前端Meng</a>
-        {(location.pathname.startsWith('/career') || location.pathname === '/') && (
+        {location.pathname.startsWith('/career') && (
           <>
             <div onClick={() => { window.location.href = '/career/resume' }}>简历页面</div>
             <div onClick={() => { window.location.href = '/career/blogstree' }}>前端知识树</div>
