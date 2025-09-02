@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input, message, Select, Card, Space, Tag, Checkbox } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, SaveOutlined, CrownOutlined } from "@ant-design/icons";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Layout from "../common/Layout";
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
@@ -221,7 +221,7 @@ const EditBlogs = () => {
             <h2>{isNewBlog ? '新建博客' : '编辑博客'}</h2>
             {isMeng && (
               <div className="meng-tag-container">
-                <Tag color="blue">Meng 模式</Tag>
+                <Tag color="purple" icon={<CrownOutlined />}>meng模式</Tag>
               </div>
             )}
           </div>

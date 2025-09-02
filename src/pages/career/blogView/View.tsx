@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, Typography, Tag, Button, Space, Spin, Empty, Divider } from "antd";
-import { ArrowLeftOutlined, CalendarOutlined, EyeOutlined, EditOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, CalendarOutlined, EyeOutlined, EditOutlined, CrownOutlined } from "@ant-design/icons";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Layout from "../../common/Layout";
+import { ClockCircleOutlined, SyncOutlined, UserOutlined, FieldTimeOutlined } from "@ant-design/icons";import "../../../css/career/blogView.css";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -33,15 +34,22 @@ interface Blog {
 const BlogView = () => {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(false);
+  const hasFetchedRef = useRef(false);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  
+
   // 检查是否为 Meng 模式
   const isMeng = searchParams.get('meng') === 'true';
 
   // 获取博客详情
   const fetchBlog = async (blogId: string) => {
+    // 防止重复调用
+    if (hasFetchedRef.current) {
+      return;
+    }
+    
+    hasFetchedRef.current = true;
     setLoading(true);
     try {
       const response = await fetch(`http://localhost:3001/blogs/${blogId}`);
@@ -95,7 +103,7 @@ const BlogView = () => {
   if (loading) {
     return (
       <Layout>
-        <div style={{ padding: "24px", textAlign: "center" }}>
+        <div className="loading-container">
           <Spin size="large" />
         </div>
       </Layout>
@@ -105,7 +113,7 @@ const BlogView = () => {
   if (!blog) {
     return (
       <Layout>
-        <div style={{ padding: "24px" }}>
+        <div className="empty-container">
           <Empty description="博客不存在或已被删除" />
         </div>
       </Layout>
@@ -114,9 +122,9 @@ const BlogView = () => {
 
   return (
     <Layout>
-      <div style={{ padding: "24px", maxWidth: "88%", margin: "0 auto" }}>
+      <div className="blog-view-page">
         {/* 返回按钮 */}
-        <div style={{ marginBottom: "24px" }}>
+        <div className="back-button-container">
           <Button
             icon={<ArrowLeftOutlined />}
             onClick={() => navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`)}
@@ -128,15 +136,18 @@ const BlogView = () => {
         {/* 博客详情卡片 */}
         <Card>
           {/* 标题和状态 */}
-          <div style={{ marginBottom: "24px" }}>
-            <Title level={1} style={{ marginBottom: "16px" }}>
+          <div className="title-status-section">
+            <Title level={1} className="blog-title">
               {blog.title}
             </Title>
-            
+
             <Space wrap>
-              <Tag color={getStatusColor(blog.status)}>
-                {getStatusText(blog.status)}
-              </Tag>
+              {/* 只在meng模式下显示状态标签 */}
+              {isMeng && (
+                <Tag color={getStatusColor(blog.status)}>
+                  {getStatusText(blog.status)}
+                </Tag>
+              )}
               {blog.category && (
                 <Tag color="purple">
                   {blog.category.name}
@@ -148,87 +159,88 @@ const BlogView = () => {
                 </Tag>
               )}
               {isMeng && (
-                <Tag color="blue">Meng 模式</Tag>
+                <Tag color="purple" icon={<CrownOutlined />}>meng模式</Tag>
               )}
             </Space>
           </div>
 
           {/* 摘要 */}
           {blog.summary && (
-            <div style={{ marginBottom: "24px" }}>
-              <Paragraph style={{ 
-                fontSize: "16px", 
-                color: "#666", 
-                fontStyle: "italic",
-                borderLeft: "4px solid #1890ff",
-                paddingLeft: "16px",
-                backgroundColor: "#f5f5f5",
-                padding: "16px",
-                borderRadius: "4px"
-              }}>
+            <div className="summary-section">
+              <Paragraph className="summary-paragraph">
                 {blog.summary}
               </Paragraph>
             </div>
           )}
 
-          <Divider />
-
-          {/* 博客信息 */}
-          <div style={{ marginBottom: "24px" }}>
-            <Space wrap>
-              <Text type="secondary">
-                <CalendarOutlined /> 创建时间: {formatDate(blog.createdAt)}
-              </Text>
-              {blog.publishedAt && (
-                <Text type="secondary">
-                  发布时间: {formatDate(blog.publishedAt)}
-                </Text>
-              )}
-              <Text type="secondary">
-                更新时间: {formatDate(blog.updatedAt)}
-              </Text>
-              <Text type="secondary">
-                作者: {blog.author}
-              </Text>
-              <Text type="secondary">
-                <EyeOutlined /> 浏览: {blog.viewCount} 次
-              </Text>
-              <Text type="secondary">
-                阅读时间: {blog.readingTime} 分钟
-              </Text>
-            </Space>
-          </div>
-
-          <Divider />
-
-          {/* 博客内容 */}
-          <div style={{ marginBottom: "24px" }}>
-            <div 
-              dangerouslySetInnerHTML={{ __html: blog.content }}
-              style={{
-                lineHeight: "1.8",
-                fontSize: "16px",
-                color: "#333"
-              }}
-            />
-          </div>
 
           {/* 标签 */}
           {blog.tags && blog.tags.length > 0 && (
-            <div style={{ marginBottom: "24px" }}>
-              <Text strong style={{ marginRight: "8px" }}>标签:</Text>
+            <div className="tags-section">
+              <Text strong className="tags-label">标签:</Text>
               {blog.tags.map((tag, index) => (
-                <Tag key={index} color="blue" style={{ marginBottom: "8px" }}>
+                <Tag key={index} color="blue" className="tag-item">
                   {tag}
                 </Tag>
               ))}
             </div>
           )}
+          <Divider />
+
+          {/* 博客信息 */}
+          <div className="blog-info-section">
+            <div className="blog-info-container">
+              {/* 博客信息：作者、创建时间、更新时间、浏览次数、阅读时间 */}
+              <div className="blog-info-row">
+                <div className="info-item">
+                  <UserOutlined className="info-icon" />
+                  <Text type="secondary" className="info-text">
+                    作者: {blog.author}
+                  </Text>
+                </div>
+                <div className="info-item">
+                  <CalendarOutlined className="info-icon" />
+                  <Text type="secondary" className="info-text">
+                    创建时间: {formatDate(blog.createdAt)}
+                  </Text>
+                </div>
+                <div className="info-item">
+                  <SyncOutlined className="info-icon" />
+                  <Text type="secondary" className="info-text">
+                    更新时间: {formatDate(blog.updatedAt)}
+                  </Text>
+                </div>
+                <div className="info-item">
+                  <EyeOutlined className="info-icon" />
+                  <Text type="secondary" className="info-text">
+                    浏览: {blog.viewCount} 次
+                  </Text>
+                </div>
+                <div className="info-item">
+                  <FieldTimeOutlined className="info-icon" />
+                  <Text type="secondary" className="info-text">
+                    阅读时间: {blog.readingTime} 分钟
+                  </Text>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Divider />
+
+          {/* 博客内容 */}
+          <div className="blog-content-section">
+            <div
+              dangerouslySetInnerHTML={{ __html: blog.content }}
+              className="blog-content"
+            />
+          </div>
+
 
           <Divider />
 
           {/* 操作按钮 */}
-          <div style={{ textAlign: "center" }}>
+          <div className="action-buttons-section">
             <Space>
               {isMeng && (
                 <Button

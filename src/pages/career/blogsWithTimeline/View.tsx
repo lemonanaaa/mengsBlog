@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Timeline, Card, Typography, Tag, Button, Space, Spin, Empty, Modal, message } from "antd";
-import { CalendarOutlined, EyeOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { CalendarOutlined, EyeOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, CrownOutlined } from "@ant-design/icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../common/Layout";
 import "../../../css/career/blogsTimeline.css";
@@ -44,7 +44,12 @@ const BlogsWithTimeline = () => {
   const fetchBlogs = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/blogs");
+      // 根据isMeng模式决定请求参数
+      const url = isMeng 
+        ? "http://localhost:3001/blogs?isMeng=true"
+        : "http://localhost:3001/blogs?isMeng=false";
+        
+      const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
         // 直接使用后端返回的数据，不进行前端排序
@@ -75,7 +80,7 @@ const BlogsWithTimeline = () => {
           });
           if (response.ok) {
             message.success('博客删除成功！');
-            fetchBlogs(); // 重新获取列表
+            fetchBlogs(); // 重新获取列表，会使用当前的isMeng参数
           } else {
             message.error('删除失败，请稍后重试');
           }
@@ -138,7 +143,7 @@ const BlogsWithTimeline = () => {
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [isMeng]); // 当isMeng参数变化时重新获取博客列表
 
   if (loading) {
     return (
@@ -171,7 +176,7 @@ const BlogsWithTimeline = () => {
               <Text type="secondary" className="blogs-timeline-subtitle">按时间顺序展示所有博客文章</Text>
               {isMeng && (
                 <div className="blogs-timeline-meng-tag">
-                  <Tag color="blue">Meng 模式</Tag>
+                  <Tag color="purple" icon={<CrownOutlined />}>meng模式</Tag>
                 </div>
               )}
             </div>
@@ -204,23 +209,23 @@ const BlogsWithTimeline = () => {
                   </div>
                 </div>
 
-                {/* 中间时间轴区域 */}
-                <div className="timeline-axis-section">
-                  {/* 时间轴节点 */}
-                  <div 
-                    className={`timeline-dot timeline-dot--${blog.status}`}
-                  />
-                  
-                  {/* 连接线 - 只在非最后一行显示 */}
-                  {index < blogs.length - 1 && (
-                    <div className="timeline-connector" />
-                  )}
-                </div>
+                                  {/* 中间时间轴区域 */}
+                  <div className="timeline-axis-section">
+                    {/* 时间轴节点 */}
+                    <div 
+                      className={`timeline-dot timeline-dot--${blog.status} ${blog.isFeatured ? 'timeline-dot--featured' : ''}`}
+                    />
+                    
+                    {/* 连接线 - 只在非最后一行显示 */}
+                    {index < blogs.length - 1 && (
+                      <div className="timeline-connector" />
+                    )}
+                  </div>
 
                 {/* 右侧内容区域 */}
                 <div className="timeline-content-section">
                   <Card
-                    className="timeline-card"
+                    className={`timeline-card ${blog.isFeatured ? 'featured-blog-card' : ''}`}
                     hoverable
                     actions={[
                       <Button
@@ -253,13 +258,22 @@ const BlogsWithTimeline = () => {
                   >
                     <div className="blog-card-tags">
                       <Space wrap>
-                        <Tag color={getStatusColor(blog.status)}>
-                          {getStatusText(blog.status)}
-                        </Tag>
-                        {blog.isFeatured && (
-                          <Tag color="gold">
-                            精选
+                        {/* 只在meng模式下显示状态标签 */}
+                        {isMeng && (
+                          <Tag color={getStatusColor(blog.status)}>
+                            {getStatusText(blog.status)}
                           </Tag>
+                        )}
+                        {/* 精选博客标识 */}
+                        {blog.isFeatured && (
+                          <span className="featured-blog-identifier">
+                            <span className="featured-blog-star">
+                              ⭐
+                            </span>
+                            <Text strong className="featured-blog-text">
+                              精选博客
+                            </Text>
+                          </span>
                         )}
                         <Text type="secondary">
                           <CalendarOutlined /> {date} {time}
@@ -293,12 +307,8 @@ const BlogsWithTimeline = () => {
                       <Button 
                         type="primary"
                         size="small"
+                        className="expand-button"
                         onClick={() => toggleBlogExpansion(blog._id)}
-                        style={{ 
-                          padding: '4px 16px',
-                          height: 'auto',
-                          borderRadius: '4px'
-                        }}
                       >
                         {expandedBlogs.has(blog._id) ? '收起' : '在此页阅读全文'}
                       </Button>
@@ -307,21 +317,18 @@ const BlogsWithTimeline = () => {
                     {/* 博客原文内容 */}
                     {expandedBlogs.has(blog._id) && (
                       <div className="blog-card-content">
-                        <Paragraph className="blog-card-full-content">
-                          {blog.content.replace(/<[^>]*>/g, '')}
-                        </Paragraph>
-                        {/* 全文后的收起按钮 */}
+                        <div 
+                          className="blog-card-full-content"
+                          dangerouslySetInnerHTML={{ __html: blog.content }}
+                        />
+                        
+                        {/* 收起按钮 - 放在全文下方，使用鲜艳颜色 */}
                         <div className="blog-card-collapse-button">
                           <Button 
-                            type="default"
-                            size="small"
+                            type="primary"
+                            size="middle"
+                            className="collapse-button-primary"
                             onClick={() => toggleBlogExpansion(blog._id)}
-                            style={{ 
-                              padding: '4px 16px',
-                              height: 'auto',
-                              borderRadius: '4px',
-                              marginTop: '16px'
-                            }}
                           >
                             收起全文
                           </Button>
@@ -331,7 +338,7 @@ const BlogsWithTimeline = () => {
 
                     <div className="blog-card-meta">
                       <Text type="secondary" className="blog-card-meta-text">
-                        作者: {blog.author} | 发布时间: {blog.publishedAt ? formatDate(blog.publishedAt).date : '未发布'}
+                        作者: {blog.author} | 创建时间: {formatDate(blog.createdAt).date}
                       </Text>
                     </div>
 
