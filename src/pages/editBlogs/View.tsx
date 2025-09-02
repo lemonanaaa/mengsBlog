@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input, message, Select, Card, Space, Tag } from "antd";
+import { Button, Input, message, Select, Card, Space, Tag, Checkbox } from "antd";
 import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Layout from "../common/Layout";
@@ -7,6 +7,7 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-react'
 import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
 
 import '@wangeditor/editor/dist/css/style.css'
+import '../../css/career/editBlogs.css'
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -17,9 +18,18 @@ const EditBlogs = () => {
   const [content, setContent] = useState('<p>开始编写你的博客...</p>')
   const [summary, setSummary] = useState('')
   const [status, setStatus] = useState('draft')
+  const [isFeatured, setIsFeatured] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [originalData, setOriginalData] = useState({
+    title: '',
+    content: '',
+    summary: '',
+    status: 'draft',
+    isFeatured: false,
+    tags: [] as string[]
+  })
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -49,7 +59,16 @@ const EditBlogs = () => {
         setContent(blog.content || '<p>开始编写你的博客...</p>')
         setSummary(blog.summary || '')
         setStatus(blog.status || 'draft')
+        setIsFeatured(blog.isFeatured || false)
         setTags(blog.tags || [])
+        setOriginalData({
+          title: blog.title || '',
+          content: blog.content || '<p>开始编写你的博客...</p>',
+          summary: blog.summary || '',
+          status: blog.status || 'draft',
+          isFeatured: blog.isFeatured || false,
+          tags: blog.tags || []
+        })
       } else {
         message.error('获取博客详情失败')
       }
@@ -80,6 +99,8 @@ const EditBlogs = () => {
     }
   }
 
+
+
   // 及时销毁 editor
   useEffect(() => {
     return () => {
@@ -98,6 +119,23 @@ const EditBlogs = () => {
 
   // 提交博客
   const handleSubmit = async () => {
+    // 直接比较当前数据和原始数据
+    if (!isNewBlog) {
+      const currentData = {
+        title: title,
+        content: content,
+        summary: summary,
+        status: status,
+        isFeatured: isFeatured,
+        tags: tags
+      }
+      
+      if (JSON.stringify(currentData) === JSON.stringify(originalData)) {
+        message.info('没有检测到任何改动，无需保存');
+        return;
+      }
+    }
+
     if (!title.trim()) {
       message.error('请输入文章标题');
       return;
@@ -126,6 +164,7 @@ const EditBlogs = () => {
           content: content,
           summary: summary.trim(),
           status: status,
+          isFeatured: isFeatured,
           tags: tags
         })
       });
@@ -166,9 +205,9 @@ const EditBlogs = () => {
 
   return (
     <Layout>
-      <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="edit-blogs-page">
         {/* 返回按钮 */}
-        <div style={{ marginBottom: '20px' }}>
+        <div className="back-button-container">
           <Button
             icon={<ArrowLeftOutlined />}
             onClick={() => navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`)}
@@ -178,42 +217,30 @@ const EditBlogs = () => {
         </div>
 
         <Card>
-          <div style={{ marginBottom: '20px' }}>
+          <div className="card-header">
             <h2>{isNewBlog ? '新建博客' : '编辑博客'}</h2>
             {isMeng && (
-              <div style={{ marginTop: '8px' }}>
+              <div className="meng-tag-container">
                 <Tag color="blue">Meng 模式</Tag>
               </div>
             )}
           </div>
 
           {/* 标题输入 */}
-          <div style={{ marginBottom: '20px' }}>
+          <div className="title-input-container">
+            <div className="title-label">标题：</div>
             <Input
               placeholder="请输入文章标题"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               size="large"
-              style={{ fontSize: '18px' }}
+              className="title-input"
             />
           </div>
 
-          {/* 状态选择 */}
-          <div style={{ marginBottom: '20px' }}>
-            <Select
-              value={status}
-              onChange={setStatus}
-              style={{ width: 200 }}
-            >
-              <Option value="draft">草稿</Option>
-              <Option value="published">已发布</Option>
-              <Option value="archived">已归档</Option>
-            </Select>
-          </div>
-
           {/* 摘要输入 */}
-          <div style={{ marginBottom: '20px' }}>
-            <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>摘要：</div>
+          <div className="summary-input-container">
+            <div className="summary-label">摘要：</div>
             <TextArea
               placeholder="请输入博客摘要（可选）"
               value={summary}
@@ -221,47 +248,68 @@ const EditBlogs = () => {
               rows={3}
               maxLength={200}
               showCount
+              className="summary-textarea"
             />
           </div>
-
-          {/* 标签输入 */}
-          <div style={{ marginBottom: '20px' }}>
-            <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>标签：</div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+          {/* 标签输入、发布状态和精选选项 - 放在同一行 */}
+          <div className="tags-status-featured-container">
+            {/* 标签输入 */}
+            <div className="tags-label">标签：</div>
+            <div className="tag-input-container">
               <Input
                 placeholder="输入标签后按回车或点击添加"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={handleTagInputKeyPress}
-                style={{ flex: 1 }}
+                className="tag-input"
               />
               <Button onClick={addTag} disabled={!tagInput.trim()}>
                 添加
               </Button>
             </div>
-            {tags.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {tags.map((tag, index) => (
-                  <Tag
-                    key={index}
-                    color="blue"
-                    closable
-                    onClose={() => removeTag(tag)}
-                  >
-                    {tag}
-                  </Tag>
-                ))}
-              </div>
-            )}
+
+            {/* 发布状态选择 */}
+            <div className="status-label">发布状态：</div>
+            <Select
+              value={status}
+              onChange={setStatus}
+              style={{ width: '200px' }}
+            >
+              <Option value="draft">草稿</Option>
+              <Option value="published">已发布</Option>
+              <Option value="archived">已归档</Option>
+            </Select>
+
+            {/* 精选选项 */}
+            <div className="featured-label">精选：</div>
+            <Checkbox
+              checked={isFeatured}
+              onChange={(e) => setIsFeatured(e.target.checked)}
+            />
           </div>
 
+          {tags.length > 0 && (
+            <div className="tags-display-container">
+              {tags.map((tag, index) => (
+                <Tag
+                  key={index}
+                  color="blue"
+                  closable
+                  onClose={() => removeTag(tag)}
+                >
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+          )}
+
           {/* 富文本编辑器 */}
-          <div style={{ border: '1px solid #ccc', borderRadius: '6px', marginBottom: '20px' }}>
+          <div className="editor-container">
             <Toolbar
               editor={editor}
               defaultConfig={toolbarConfig}
               mode="default"
-              style={{ borderBottom: '1px solid #ccc' }}
+              className="editor-toolbar"
             />
             <Editor
               defaultConfig={editorConfig}
@@ -269,12 +317,12 @@ const EditBlogs = () => {
               onCreated={setEditor}
               onChange={(editor) => setContent(editor.getHtml())}
               mode="default"
-              style={{ height: '400px', overflowY: 'hidden' }}
+              className="editor-content"
             />
           </div>
 
           {/* 按钮区域 */}
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="button-container">
             <Button
               type="primary"
               size="large"
@@ -294,16 +342,10 @@ const EditBlogs = () => {
         </Card>
 
         {/* 预览区域 */}
-        <div style={{ marginTop: '30px' }}>
+        <div className="preview-container">
           <h3>内容预览</h3>
           <div
-            style={{
-              border: '1px solid #eee',
-              padding: '20px',
-              borderRadius: '6px',
-              minHeight: '200px',
-              backgroundColor: '#fafafa'
-            }}
+            className="preview-content"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </div>

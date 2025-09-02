@@ -20,3 +20,83 @@
     align-items: center;
   }
 }
+
+// 收起状态样式
+.left-marks-collapsed {
+  width: 20px;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  padding-top: 20px;
+
+  .collapse-arrow {
+    width: 40px;
+    height: 80px;
+    background: #52c41a;
+    border-radius: 0 40px 40px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(82, 196, 26, 0.4);
+  }
+}
+
+// 拖拽调整区域样式
+.resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border: none;
+  border-radius: 0 3px 3px 0;
+  transition: background 0.2s ease;
+
+  &.resizing {
+    background: #1890ff;
+    box-shadow: 0 0 12px rgba(24, 144, 255, 0.3);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+// 收起按钮样式
+.collapse-button {
+  position: absolute;
+  top: 20px;
+  right: 0px;
+  width: 40px;
+  height: 80px;
+  background: #52c41a;
+  border-radius: 40px 0 0 40px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.4);
+  z-index: 1001;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #73d13d;
+    box-shadow: 0 6px 16px rgba(82, 196, 26, 0.6);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

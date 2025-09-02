@@ -1,4 +1,105 @@
 // 博客时间轴样式
+
+// 页面容器样式
+.blogs-timeline-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.blogs-timeline-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.blogs-timeline-header-container {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.blogs-timeline-title-section {
+  text-align: center;
+}
+
+.blogs-timeline-title {
+  margin: 0;
+}
+
+.blogs-timeline-subtitle {
+  margin-top: 8px;
+}
+
+.blogs-timeline-meng-tag {
+  margin-top: 8px;
+}
+
+.blogs-timeline-new-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// 加载和空状态样式
+.blogs-timeline-loading {
+  padding: 24px;
+  text-align: center;
+}
+
+.blogs-timeline-empty {
+  padding: 24px;
+}
+
+// 博客卡片内容样式
+.blog-card-tags {
+  margin-bottom: 12px;
+}
+
+.blog-card-title {
+  margin-bottom: 12px;
+}
+
+.blog-card-summary {
+  margin-bottom: 12px;
+  color: #666;
+}
+
+.blog-card-expand-button {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.blog-card-content {
+  margin-bottom: 12px;
+}
+
+.blog-card-full-content {
+  color: #333;
+  line-height: 1.6;
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 6px;
+  border-left: 4px solid #1890ff;
+}
+
+.blog-card-collapse-button {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.blog-card-meta {
+  margin-bottom: 12px;
+}
+
+.blog-card-meta-text {
+  font-size: 12px;
+}
+
+.blog-card-tags-container {
+  margin-top: 8px;
+}
+
+// 时间轴容器样式
 .timeline-container {
   display: flex;
   flex-direction: column;
@@ -14,12 +115,12 @@
 }
 
 .timeline-time-section {
-  width: 6%;
+  width: 5%;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding-right: 12px;
+  padding-right: 4px;
   padding-top: 8px;
 }
 
