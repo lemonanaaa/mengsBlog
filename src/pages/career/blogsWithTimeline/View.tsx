@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Timeline, Card, Typography, Tag, Button, Space, Spin, Empty } from "antd";
-import { CalendarOutlined, EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Timeline, Card, Typography, Tag, Button, Space, Spin, Empty, Modal, message } from "antd";
+import { CalendarOutlined, EyeOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../common/Layout";
-
+import "../../../css/career/blogsTimeline.css";
 const { Title, Text, Paragraph } = Typography;
 
 interface Blog {
@@ -46,11 +46,8 @@ const BlogsWithTimeline = () => {
       const response = await fetch("http://localhost:3001/blogs");
       if (response.ok) {
         const data = await response.json();
-        // 按创建时间倒序排列
-        const sortedBlogs = (data.data || []).sort((a: Blog, b: Blog) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        setBlogs(sortedBlogs);
+        // 直接使用后端返回的数据，不进行前端排序
+        setBlogs(data.data || []);
       } else {
         console.error("获取博客列表失败");
       }
@@ -62,17 +59,31 @@ const BlogsWithTimeline = () => {
   };
 
   // 删除博客
-  const deleteBlog = async (id: string) => {
-    try {
-      const response = await fetch(`http://localhost:3001/blogs/${id}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        fetchBlogs(); // 重新获取列表
-      }
-    } catch (error) {
-      console.error("删除失败:", error);
-    }
+  const deleteBlog = async (id: string, title: string) => {
+    Modal.confirm({
+      title: '确认删除',
+      icon: <ExclamationCircleOutlined />,
+      content: `确定要删除博客《${title}》吗？此操作不可撤销。`,
+      okText: '确认删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          const response = await fetch(`http://localhost:3001/blogs/${id}`, {
+            method: "DELETE",
+          });
+          if (response.ok) {
+            message.success('博客删除成功！');
+            fetchBlogs(); // 重新获取列表
+          } else {
+            message.error('删除失败，请稍后重试');
+          }
+        } catch (error) {
+          console.error("删除失败:", error);
+          message.error('网络错误，删除失败');
+        }
+      },
+    });
   };
 
   // 格式化日期
@@ -151,8 +162,8 @@ const BlogsWithTimeline = () => {
               )}
             </div>
             {isMeng && (
-              <Button 
-                type="primary" 
+              <Button
+                type="primary"
                 onClick={() => navigate(`/editblogs?blogId=new&meng=true`)}
               >
                 新建博客
@@ -161,122 +172,136 @@ const BlogsWithTimeline = () => {
           </div>
         </div>
 
-        <Timeline
-          mode="left"
-          items={blogs.map((blog, index) => {
+        <div className="timeline-container">
+          {blogs.map((blog, index) => {
             const { date, time } = formatDate(blog.createdAt);
             const readTime = blog.readingTime || calculateReadTime(blog.content);
 
-            return {
-              dot: (
-                <div style={{
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "50%",
-                  backgroundColor: getStatusColor(blog.status),
-                  border: "2px solid #fff",
-                  boxShadow: "0 0 0 2px #d9d9d9"
-                }} />
-              ),
-              children: (
-                <Card
-                  hoverable
-                  style={{ marginBottom: "16px" }}
-                  actions={[
-                    <Button
-                      type="link"
-                      icon={<EyeOutlined />}
-                      onClick={() => navigate(`/career/blogView/${blog._id}${isMeng ? '?meng=true' : ''}`)}
-                    >
-                      查看
-                    </Button>,
-                    ...(isMeng ? [
+            return (
+              <div key={blog._id} className="timeline-row">
+                {/* 左侧时间区域 */}
+                <div className="timeline-time-section">
+                  <div className="timeline-time-text">
+                    <div>{date}</div>
+                    <div className="timeline-time-detail">{time}</div>
+                  </div>
+                </div>
+
+                {/* 中间时间轴区域 */}
+                <div className="timeline-axis-section">
+                  {/* 时间轴节点 */}
+                  <div 
+                    className={`timeline-dot timeline-dot--${blog.status}`}
+                    style={{ backgroundColor: getStatusColor(blog.status) }}
+                  />
+                  
+                  {/* 连接线 - 只在非最后一行显示 */}
+                  {index < blogs.length - 1 && (
+                    <div className="timeline-connector" />
+                  )}
+                </div>
+
+                {/* 右侧内容区域 */}
+                <div className="timeline-content-section">
+                  <Card
+                    className="timeline-card"
+                    hoverable
+                    actions={[
                       <Button
-                        key="edit"
                         type="link"
-                        icon={<EditOutlined />}
-                        onClick={() => navigate(`/editblogs?blogId=${blog._id}&meng=true`)}
+                        icon={<EyeOutlined />}
+                        onClick={() => navigate(`/career/blogView/${blog._id}${isMeng ? '?meng=true' : ''}`)}
                       >
-                        编辑
+                        查看
                       </Button>,
-                      <Button
-                        key="delete"
-                        type="link"
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => deleteBlog(blog._id)}
-                      >
-                        删除
-                      </Button>
-                    ] : [])
-                  ]}
-                >
-                  <div style={{ marginBottom: "12px" }}>
-                    <Space wrap>
-                      <Tag color={getStatusColor(blog.status)}>
-                        {getStatusText(blog.status)}
-                      </Tag>
-                      {blog.isFeatured && (
-                        <Tag color="gold">
-                          精选
-                        </Tag>
-                      )}
-                      <Text type="secondary">
-                        <CalendarOutlined /> {date} {time}
-                      </Text>
-                      <Text type="secondary">
-                        阅读时间: {readTime} 分钟
-                      </Text>
-                      <Text type="secondary">
-                        浏览: {blog.viewCount} 次
-                      </Text>
-                      {blog.category && (
-                        <Tag color="purple">
-                          {blog.category.name}
-                        </Tag>
-                      )}
-                    </Space>
-                  </div>
-
-                  <Title level={4} style={{ marginBottom: "12px" }}>
-                    {blog.title}
-                  </Title>
-
-                  {blog.summary && (
-                    <Paragraph
-                      style={{ marginBottom: "12px", color: "#666" }}
-                    >
-                      {blog.summary}
-                    </Paragraph>
-                  )}
-
-                  <Paragraph
-                    ellipsis={{ rows: 3, expandable: true, symbol: '展开' }}
-                    style={{ marginBottom: "12px" }}
+                      ...(isMeng ? [
+                        <Button
+                          key="edit"
+                          type="link"
+                          icon={<EditOutlined />}
+                          onClick={() => navigate(`/editblogs?blogId=${blog._id}&meng=true`)}
+                        >
+                          编辑
+                        </Button>,
+                        <Button
+                          key="delete"
+                          type="link"
+                          danger
+                          icon={<DeleteOutlined />}
+                          onClick={() => deleteBlog(blog._id, blog.title)}
+                        >
+                          删除
+                        </Button>
+                      ] : [])
+                    ]}
                   >
-                    {blog.content.replace(/<[^>]*>/g, '')}
-                  </Paragraph>
-
-                  <div style={{ marginBottom: "12px" }}>
-                    <Text type="secondary" style={{ fontSize: "12px" }}>
-                      作者: {blog.author} | 发布时间: {blog.publishedAt ? formatDate(blog.publishedAt).date : '未发布'}
-                    </Text>
-                  </div>
-
-                  {blog.tags && blog.tags.length > 0 && (
-                    <div>
-                      {blog.tags.map((tag, tagIndex) => (
-                        <Tag key={tagIndex} color="blue">
-                          {tag}
+                    <div style={{ marginBottom: "12px" }}>
+                      <Space wrap>
+                        <Tag color={getStatusColor(blog.status)}>
+                          {getStatusText(blog.status)}
                         </Tag>
-                      ))}
+                        {blog.isFeatured && (
+                          <Tag color="gold">
+                            精选
+                          </Tag>
+                        )}
+                        <Text type="secondary">
+                          <CalendarOutlined /> {date} {time}
+                        </Text>
+                        <Text type="secondary">
+                          阅读时间: {readTime} 分钟
+                        </Text>
+                        <Text type="secondary">
+                          浏览: {blog.viewCount} 次
+                        </Text>
+                        {blog.category && (
+                          <Tag color="purple">
+                            {blog.category.name}
+                          </Tag>
+                        )}
+                      </Space>
                     </div>
-                  )}
-                </Card>
-              )
-            };
+
+                    <Title level={4} style={{ marginBottom: "12px" }}>
+                      {blog.title}
+                    </Title>
+
+                    {blog.summary && (
+                      <Paragraph
+                        style={{ marginBottom: "12px", color: "#666" }}
+                      >
+                        {blog.summary}
+                      </Paragraph>
+                    )}
+
+                    <Paragraph
+                      ellipsis={{ rows: 3, expandable: true, symbol: '展开' }}
+                      style={{ marginBottom: "12px" }}
+                    >
+                      {blog.content.replace(/<[^>]*>/g, '')}
+                    </Paragraph>
+
+                    <div style={{ marginBottom: "12px" }}>
+                      <Text type="secondary" style={{ fontSize: "12px" }}>
+                        作者: {blog.author} | 发布时间: {blog.publishedAt ? formatDate(blog.publishedAt).date : '未发布'}
+                      </Text>
+                    </div>
+
+                    {blog.tags && blog.tags.length > 0 && (
+                      <div>
+                        {blog.tags.map((tag, tagIndex) => (
+                          <Tag key={tagIndex} color="blue">
+                            {tag}
+                          </Tag>
+                        ))}
+                      </div>
+                    )}
+                  </Card>
+                </div>
+              </div>
+            );
           })}
-        />
+        </div>
       </div>
     </Layout>
   );

@@ -2,6 +2,7 @@
   box-sizing: border-box;
   height: 100%;
   padding: 40px 20px;
+  position: relative;
 }
 .left-marks .img-box {
   border: 1px solid #000;
@@ -16,4 +17,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* 收起状态样式 */
+.left-marks-collapsed {
+  padding: 0;
+  overflow: hidden;
+  background-color: #ffeae8; /* 与layout-left保持一致 */
+}
+
+.left-marks.collapsed .img-box,
+.left-marks.collapsed .desc-box {
+  display: none;
 }

@@ -107,10 +107,10 @@ const EditBlogs = () => {
       const result = await response.json();
 
       if (result.success) {
-        message.success(isNewBlog ? '博客创建成功！' : '博客保存成功！');
+        message.success(isNewBlog ? '博客创建成功！' : '博客更新成功！');
         navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`)
       } else {
-        message.error(result.message || (isNewBlog ? '创建失败' : '保存失败'));
+        message.error(result.message || (isNewBlog ? '创建失败' : '更新失败'));
       }
     } catch (error) {
       console.error('保存博客失败:', error);
@@ -212,7 +212,7 @@ const EditBlogs = () => {
               onClick={handleSubmit}
               icon={<SaveOutlined />}
             >
-              {isNewBlog ? '创建博客' : '保存博客'}
+              {isNewBlog ? '创建博客' : '更新博客'}
             </Button>
             <Button
               size="large"
