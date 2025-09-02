@@ -5,11 +5,11 @@
 .layout-left {
   width: 24%;
   height: 100vh;
-  background-color: #ffeae8;
+  background: linear-gradient(135deg, #fafaff 0%, #f5f5ff 25%, #f0f0ff 50%, #ebebff 75%, #e6e6ff 100%);
   position: sticky;
   top: 0;
 }
 .layout-right {
   width: 76%;
-  background-color: #e5e5ff;
+  background: linear-gradient(135deg, #f8f8ff 0%, #f3f3ff 50%, #eeeeff 100%);
 }

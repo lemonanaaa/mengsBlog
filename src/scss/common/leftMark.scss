@@ -5,15 +5,17 @@
   position: relative;
 
   .img-box {
-    border: 1px solid #000;
     height: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
+    
+    img {
+      border-radius: 12px;
+    }
   }
 
   .desc-box {
-    border: 1px solid #000;
     height: 60%;
     display: flex;
     flex-direction: column;

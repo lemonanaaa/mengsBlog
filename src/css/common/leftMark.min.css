@@ -6,15 +6,17 @@
 }
 
 .left-marks .img-box {
-  border: 1px solid #000;
   height: 40%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.left-marks .img-box img {
+  border-radius: 12px;
+}
+
 .left-marks .desc-box {
-  border: 1px solid #000;
   height: 60%;
   display: flex;
   flex-direction: column;

@@ -186,24 +186,25 @@
   
   // 特殊阴影
   box-shadow: 
-    0 8px 25px rgba(213, 142, 191, 0.2),
-    0 4px 10px rgba(213, 142, 191, 0.15) !important;
+    0 8px 25px rgba(255, 182, 193, 0.15),
+    0 4px 10px rgba(255, 182, 193, 0.1) !important;
   
   // 渐变背景
-  background: linear-gradient(135deg, #F6FFEE 0%, #F1DFD3 100%) !important;
+  background: linear-gradient(135deg, rgba(255, 248, 220, 0.9) 0%, rgba(255, 245, 238, 0.8) 100%) !important;
+  backdrop-filter: blur(10px);
   
   // 悬停效果
   &:hover {
     transform: translateY(-2px);
     box-shadow: 
-      0 12px 35px rgba(213, 142, 191, 0.3),
-      0 6px 15px rgba(213, 142, 191, 0.25) !important;
+      0 12px 35px rgba(255, 182, 193, 0.2),
+      0 6px 15px rgba(255, 182, 193, 0.15) !important;
     transition: all 0.3s ease;
   }
   
   // 标题特殊样式
   .blog-card-title {
-    color: #D58EBF !important;
+    color: #FF8C00 !important;
     font-weight: 600 !important;
   }
 }
@@ -217,12 +218,18 @@
 
 .featured-blog-star {
   font-size: 20px;
-  color: #D58EBF;
-  filter: drop-shadow(0 0 4px rgba(213, 142, 191, 0.3));
+  background: linear-gradient(135deg, #FFD700 0%, #FFA07A 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
 }
 
 .featured-blog-text {
-  color: #D58EBF;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA07A 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 // 展开/收起按钮样式
