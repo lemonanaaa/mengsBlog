@@ -1,46 +1,10 @@
-// 博客时间轴样式
-
-// 页面容器样式
+// 博客时间线页面样式
 .blogs-timeline-page {
   padding: 24px;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-.blogs-timeline-header {
-  margin-bottom: 32px;
-  text-align: center;
-}
-
-.blogs-timeline-header-container {
-  position: relative;
-  margin-bottom: 16px;
-}
-
-.blogs-timeline-title-section {
-  text-align: center;
-}
-
-.blogs-timeline-title {
-  margin: 0;
-}
-
-.blogs-timeline-subtitle {
-  margin-top: 8px;
-}
-
-.blogs-timeline-meng-tag {
-  margin-top: 8px;
-}
-
-.blogs-timeline-new-button {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-// 加载和空状态样式
 .blogs-timeline-loading {
   padding: 24px;
   text-align: center;
@@ -50,9 +14,46 @@
   padding: 24px;
 }
 
-// 博客卡片内容样式
-.blog-card-tags {
-  margin-bottom: 12px;
+// 页面头部样式
+.blogs-timeline-header {
+  margin-bottom: 32px;
+}
+
+.blogs-timeline-header-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.blogs-timeline-title-section {
+  text-align: center;
+}
+
+.blogs-timeline-title {
+  margin-bottom: 8px;
+}
+
+.blogs-timeline-subtitle {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.blogs-timeline-meng-tag {
+  margin-top: 16px;
+}
+
+.blogs-timeline-new-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// 博客卡片样式
+.blog-card-header {
+  margin-bottom: 16px;
 }
 
 .blog-card-title {
@@ -60,35 +61,18 @@
 }
 
 .blog-card-summary {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   color: #666;
-}
-
-.blog-card-expand-button {
-  margin-bottom: 12px;
-  text-align: left;
+  line-height: 1.6;
 }
 
 .blog-card-content {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .blog-card-full-content {
+  line-height: 1.8;
   color: #333;
-  line-height: 1.6;
-  background-color: #f9f9f9;
-  padding: 16px;
-  border-radius: 6px;
-  border-left: 4px solid #1890ff;
-}
-
-.blog-card-collapse-button {
-  text-align: center;
-  margin-top: 8px;
-}
-
-.blog-card-meta {
-  margin-bottom: 12px;
 }
 
 .blog-card-meta-text {
@@ -109,7 +93,6 @@
 .timeline-row {
   display: flex;
   align-items: stretch;
-  gap: 12px;
   position: relative;
   min-height: 200px;
 }
@@ -188,4 +171,110 @@
 
 .timeline-dot--archived {
   background-color: #d9d9d9;
+}
+
+// 精选博客的dot颜色
+.timeline-dot--featured {
+  background-color: #ff6b35 !important;
+  box-shadow: 0 0 0 2px #ff6b35, 0 0 8px rgba(255, 107, 53, 0.4) !important;
+}
+
+// 精选博客特殊样式
+.featured-blog-card {
+  // 圆角边框
+  border-radius: 12px !important;
+  
+  // 特殊阴影
+  box-shadow: 
+    0 8px 25px rgba(255, 107, 53, 0.15),
+    0 4px 10px rgba(255, 107, 53, 0.1) !important;
+  
+  // 渐变背景
+  background: linear-gradient(135deg, #fff 0%, #fff8f5 100%) !important;
+  
+  // 悬停效果
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 35px rgba(255, 107, 53, 0.2),
+      0 6px 15px rgba(255, 107, 53, 0.15) !important;
+    transition: all 0.3s ease;
+  }
+  
+  // 精选标识样式
+  .featured-blog-indicator {
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    background: linear-gradient(45deg, #ff6b35, #ff8c42);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+    z-index: 10;
+  }
+  
+  // 标题特殊样式
+  .blog-card-title {
+    color: #ff6b35 !important;
+    font-weight: 600 !important;
+  }
+  
+  // 内容区域特殊样式
+  .blog-card-summary {
+    // 移除橙色装饰条和背景色，避免与蓝色按钮冲突
+  }
+}
+
+// 精选博客标识样式
+.featured-blog-identifier {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.featured-blog-star {
+  font-size: 20px;
+  color: #ff6b35;
+  filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.3));
+}
+
+.featured-blog-text {
+  color: #ff6b35;
+}
+
+// 展开/收起按钮样式
+.blog-card-expand-button {
+  margin-bottom: 20px;
+  
+  .expand-button {
+    padding: 4px 16px;
+    height: auto;
+    border-radius: 4px;
+    background-color: #ffffff;
+    border-color: #1890ff;
+    color: #1890ff;
+    border-width: 1px;
+    font-size: 13px;
+    
+    &:hover {
+      background-color: #1890ff;
+      border-color: #1890ff;
+      color: #ffffff;
+    }
+  }
+}
+
+// 收起按钮样式
+.blog-card-collapse-button {
+  margin-top: 20px;
+  text-align: center;
+  
+  .collapse-button-primary {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+    color: #ffffff;
+  }
 }
