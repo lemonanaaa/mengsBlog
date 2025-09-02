@@ -286,33 +286,101 @@ const LeftMarks = () => {
       {/* 介绍部分 */}
       <div className="desc-box">
         {/* 首页 */}
-        <a href="/">Meng's home</a>
+        <a href="/" className="nav-link home-link">
+          <span className="nav-icon">🏠</span>
+          <span className="nav-text">Meng's home</span>
+          {location.pathname === '/' && <span className="active-indicator">●</span>}
+        </a>
+        
         {/* 前端工作介绍 */}
-        <a href="/career">前端Meng</a>
+        <a href="/career" className="nav-link career-link">
+          <span className="nav-icon">💻</span>
+          <span className="nav-text">前端Meng</span>
+          {location.pathname.startsWith('/career') && <span className="active-indicator">●</span>}
+        </a>
+        
         {location.pathname.startsWith('/career') && (
           <>
-            <div onClick={() => { window.location.href = '/career/resume' }}>简历页面</div>
-            <div onClick={() => { window.location.href = '/career/blogstree' }}>前端知识树</div>
-            <div onClick={() => { window.location.href = '/career/blogswithtimeline' }}>Blogs with timeLine</div>
+            <div 
+              onClick={() => { window.location.href = '/career/resume' }} 
+              className="sub-nav-item"
+              data-path="/career/resume"
+            >
+              <span className="sub-nav-icon">📄</span>
+              <span className="sub-nav-text">简历页面</span>
+            </div>
+            <div 
+              onClick={() => { window.location.href = '/career/blogstree' }} 
+              className="sub-nav-item"
+              data-path="/career/blogstree"
+            >
+              <span className="sub-nav-icon">🌳</span>
+              <span className="sub-nav-text">前端知识树</span>
+            </div>
+            <div 
+              onClick={() => { window.location.href = '/career/blogswithtimeline' }} 
+              className="sub-nav-item"
+              data-path="/career/blogswithtimeline"
+            >
+              <span className="sub-nav-icon">📅</span>
+              <span className="sub-nav-text">Blogs with timeLine</span>
+            </div>
           </>
         )}
+        
         {/* 算法工作介绍 */}
-        {false && <a href="/algorithm">算法Meng</a>}
+        {false && (
+          <a href="/algorithm" className="nav-link algorithm-link">
+            <span className="nav-icon">🧮</span>
+            <span className="nav-text">算法Meng</span>
+          </a>
+        )}
+        
         {/* 摄影介绍 */}
-        <a href="/photography" >摄影师Meng</a>
+        <a href="/photography" className="nav-link photography-link">
+          <span className="nav-icon">📸</span>
+          <span className="nav-text">摄影师Meng</span>
+          {location.pathname === '/photography' && <span className="active-indicator">●</span>}
+        </a>
+        
         {(location.pathname === '/photography') && (
           <>
             {/* 给外界看的，修好的图 */}
-            <div onClick={() => { setBlogCommonStore({ 'showComponent': 'introduction' }) }}>介绍</div>
+            <div 
+              onClick={() => { setBlogCommonStore({ 'showComponent': 'introduction' }) }} 
+              className="sub-nav-item"
+              data-path="/photography/introduction"
+            >
+              <span className="sub-nav-icon">📖</span>
+              <span className="sub-nav-text">介绍</span>
+            </div>
             {/* 给客人们单独看自己的图片 */}
-            <div onClick={() => { setBlogCommonStore({ 'showComponent': 'pictures' }) }}>底片们</div>
+            <div 
+              onClick={() => { setBlogCommonStore({ 'showComponent': 'pictures' }) }} 
+              className="sub-nav-item"
+              data-path="/photography/pictures"
+            >
+              <span className="sub-nav-icon">🖼️</span>
+              <span className="sub-nav-text">底片们</span>
+            </div>
             {/* 公开的一些策划，每次拍摄的时间，地点，任务，设备等记录 */}
-            <div onClick={() => { setBlogCommonStore({ 'showComponent': 'timeline' }) }}>Pictures with timeline</div>
+            <div 
+              onClick={() => { setBlogCommonStore({ 'showComponent': 'timeline' }) }} 
+              className="sub-nav-item"
+              data-path="/photography/timeline"
+            >
+              <span className="sub-nav-icon">⏰</span>
+              <span className="sub-nav-text">Pictures with timeline</span>
+            </div>
           </>
         )}
 
         {/* 个人日记等 */}
-        <a href="/writing">Meng's碎碎念</a>
+        <a href="/writing" className="nav-link writing-link">
+          <span className="nav-icon">✍️</span>
+          <span className="nav-text">Meng's碎碎念</span>
+          {location.pathname === '/writing' && <span className="active-indicator">●</span>}
+        </a>
       </div>
     </div>
   );

@@ -34,6 +34,28 @@
         font-size: 16px !important; // 更大的字体
         font-weight: 500 !important; // 适中的字重，不会太粗
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif !important; // 现代字体栈
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        
+        // 导航图标
+        .nav-icon {
+          font-size: 18px !important;
+          opacity: 0.8 !important;
+          transition: all 0.3s ease !important;
+        }
+        
+        // 导航文字
+        .nav-text {
+          flex: 1 !important;
+        }
+        
+        // 活跃状态指示器
+        .active-indicator {
+          color: #1890ff !important;
+          font-size: 12px !important;
+          animation: pulse 2s infinite !important;
+        }
         
         // 悬停效果
         &:hover {
@@ -41,6 +63,11 @@
           background: linear-gradient(135deg, rgba(24, 144, 255, 0.1) 0%, rgba(24, 144, 255, 0.05) 100%) !important;
           transform: translateY(-2px) !important;
           box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2) !important;
+          
+          .nav-icon {
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
+          }
         }
         
         // 点击效果
@@ -80,6 +107,21 @@
         text-align: left !important; // 文字左对齐
         width: 60% !important; // 子菜单宽度为容器的60%
         margin-left: 40% !important; // 左边距40%，让子菜单更靠右
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        
+        // 子导航图标
+        .sub-nav-icon {
+          font-size: 14px !important;
+          opacity: 0.7 !important;
+          transition: all 0.3s ease !important;
+        }
+        
+        // 子导航文字
+        .sub-nav-text {
+          flex: 1 !important;
+        }
         
         // 悬停效果
         &:hover {
@@ -87,6 +129,11 @@
           background: linear-gradient(135deg, rgba(24, 144, 255, 0.08) 0%, rgba(24, 144, 255, 0.03) 100%) !important;
           transform: translateX(3px) !important;
           box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15) !important;
+          
+          .sub-nav-icon {
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
+          }
         }
         
         // 点击效果
@@ -100,6 +147,19 @@
           color: #1890ff !important;
           margin-right: 8px !important;
           font-weight: bold !important;
+        }
+      }
+      
+      // 脉冲动画
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
         }
       }
   }
