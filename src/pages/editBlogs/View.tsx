@@ -15,7 +15,10 @@ const EditBlogs = () => {
   const [editor, setEditor] = useState<IDomEditor | null>(null)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('<p>开始编写你的博客...</p>')
+  const [summary, setSummary] = useState('')
   const [status, setStatus] = useState('draft')
+  const [tags, setTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -44,7 +47,9 @@ const EditBlogs = () => {
         const blog = data.data || data
         setTitle(blog.title || '')
         setContent(blog.content || '<p>开始编写你的博客...</p>')
+        setSummary(blog.summary || '')
         setStatus(blog.status || 'draft')
+        setTags(blog.tags || [])
       } else {
         message.error('获取博客详情失败')
       }
@@ -53,6 +58,25 @@ const EditBlogs = () => {
       console.error('Error fetching blog:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // 标签管理函数
+  const addTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()])
+      setTagInput('')
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove))
+  }
+
+  const handleTagInputKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      addTag()
     }
   }
 
@@ -100,7 +124,9 @@ const EditBlogs = () => {
         body: JSON.stringify({
           title: title.trim(),
           content: content,
-          status: status
+          summary: summary.trim(),
+          status: status,
+          tags: tags
         })
       });
 
@@ -183,6 +209,50 @@ const EditBlogs = () => {
               <Option value="published">已发布</Option>
               <Option value="archived">已归档</Option>
             </Select>
+          </div>
+
+          {/* 摘要输入 */}
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>摘要：</div>
+            <TextArea
+              placeholder="请输入博客摘要（可选）"
+              value={summary}
+              onChange={(e) => setSummary(e.target.value)}
+              rows={3}
+              maxLength={200}
+              showCount
+            />
+          </div>
+
+          {/* 标签输入 */}
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>标签：</div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+              <Input
+                placeholder="输入标签后按回车或点击添加"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyPress={handleTagInputKeyPress}
+                style={{ flex: 1 }}
+              />
+              <Button onClick={addTag} disabled={!tagInput.trim()}>
+                添加
+              </Button>
+            </div>
+            {tags.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {tags.map((tag, index) => (
+                  <Tag
+                    key={index}
+                    color="blue"
+                    closable
+                    onClose={() => removeTag(tag)}
+                  >
+                    {tag}
+                  </Tag>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 富文本编辑器 */}

@@ -33,6 +33,7 @@ interface Blog {
 const BlogsWithTimeline = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(false);
+  const [expandedBlogs, setExpandedBlogs] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -115,6 +116,19 @@ const BlogsWithTimeline = () => {
     }
   };
 
+  // 切换博客展开/收起状态
+  const toggleBlogExpansion = (blogId: string) => {
+    const newExpandedBlogs = new Set(expandedBlogs);
+    if (newExpandedBlogs.has(blogId)) {
+      newExpandedBlogs.delete(blogId);
+    } else {
+      newExpandedBlogs.add(blogId);
+    }
+    setExpandedBlogs(newExpandedBlogs);
+  };
+
+
+
   // 计算阅读时间（如果API没有提供）
   const calculateReadTime = (content: string) => {
     const wordsPerMinute = 200; // 中文阅读速度
@@ -129,7 +143,7 @@ const BlogsWithTimeline = () => {
   if (loading) {
     return (
       <Layout>
-        <div style={{ padding: "24px", textAlign: "center" }}>
+        <div className="blogs-timeline-loading">
           <Spin size="large" />
         </div>
       </Layout>
@@ -139,7 +153,7 @@ const BlogsWithTimeline = () => {
   if (blogs.length === 0) {
     return (
       <Layout>
-        <div style={{ padding: "24px" }}>
+        <div className="blogs-timeline-empty">
           <Empty description="暂无博客内容" />
         </div>
       </Layout>
@@ -148,22 +162,25 @@ const BlogsWithTimeline = () => {
 
   return (
     <Layout>
-      <div style={{ padding: "24px" }}>
-        <div style={{ marginBottom: "32px", textAlign: "center" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-            <div></div>
-            <div>
-              <Title level={2} style={{ margin: 0 }}>博客时间线</Title>
-              <Text type="secondary">按时间顺序展示所有博客文章</Text>
+      <div className="blogs-timeline-page">
+        <div className="blogs-timeline-header">
+          <div className="blogs-timeline-header-container">
+            {/* 标题部分 - 始终居中 */}
+            <div className="blogs-timeline-title-section">
+              <Title level={2} className="blogs-timeline-title">博客时间线</Title>
+              <Text type="secondary" className="blogs-timeline-subtitle">按时间顺序展示所有博客文章</Text>
               {isMeng && (
-                <div style={{ marginTop: "8px" }}>
+                <div className="blogs-timeline-meng-tag">
                   <Tag color="blue">Meng 模式</Tag>
                 </div>
               )}
             </div>
+            
+            {/* 新建博客按钮 - 绝对定位在右侧 */}
             {isMeng && (
               <Button
                 type="primary"
+                className="blogs-timeline-new-button"
                 onClick={() => navigate(`/editblogs?blogId=new&meng=true`)}
               >
                 新建博客
@@ -192,7 +209,6 @@ const BlogsWithTimeline = () => {
                   {/* 时间轴节点 */}
                   <div 
                     className={`timeline-dot timeline-dot--${blog.status}`}
-                    style={{ backgroundColor: getStatusColor(blog.status) }}
                   />
                   
                   {/* 连接线 - 只在非最后一行显示 */}
@@ -235,7 +251,7 @@ const BlogsWithTimeline = () => {
                       ] : [])
                     ]}
                   >
-                    <div style={{ marginBottom: "12px" }}>
+                    <div className="blog-card-tags">
                       <Space wrap>
                         <Tag color={getStatusColor(blog.status)}>
                           {getStatusText(blog.status)}
@@ -262,33 +278,65 @@ const BlogsWithTimeline = () => {
                       </Space>
                     </div>
 
-                    <Title level={4} style={{ marginBottom: "12px" }}>
+                    <Title level={4} className="blog-card-title">
                       {blog.title}
                     </Title>
 
                     {blog.summary && (
-                      <Paragraph
-                        style={{ marginBottom: "12px", color: "#666" }}
-                      >
+                      <Paragraph className="blog-card-summary">
                         {blog.summary}
                       </Paragraph>
                     )}
 
-                    <Paragraph
-                      ellipsis={{ rows: 3, expandable: true, symbol: '展开' }}
-                      style={{ marginBottom: "12px" }}
-                    >
-                      {blog.content.replace(/<[^>]*>/g, '')}
-                    </Paragraph>
+                    {/* 展开/收起按钮 - 固定在摘要下方，左对齐 */}
+                    <div className="blog-card-expand-button">
+                      <Button 
+                        type="primary"
+                        size="small"
+                        onClick={() => toggleBlogExpansion(blog._id)}
+                        style={{ 
+                          padding: '4px 16px',
+                          height: 'auto',
+                          borderRadius: '4px'
+                        }}
+                      >
+                        {expandedBlogs.has(blog._id) ? '收起' : '在此页阅读全文'}
+                      </Button>
+                    </div>
 
-                    <div style={{ marginBottom: "12px" }}>
-                      <Text type="secondary" style={{ fontSize: "12px" }}>
+                    {/* 博客原文内容 */}
+                    {expandedBlogs.has(blog._id) && (
+                      <div className="blog-card-content">
+                        <Paragraph className="blog-card-full-content">
+                          {blog.content.replace(/<[^>]*>/g, '')}
+                        </Paragraph>
+                        {/* 全文后的收起按钮 */}
+                        <div className="blog-card-collapse-button">
+                          <Button 
+                            type="default"
+                            size="small"
+                            onClick={() => toggleBlogExpansion(blog._id)}
+                            style={{ 
+                              padding: '4px 16px',
+                              height: 'auto',
+                              borderRadius: '4px',
+                              marginTop: '16px'
+                            }}
+                          >
+                            收起全文
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="blog-card-meta">
+                      <Text type="secondary" className="blog-card-meta-text">
                         作者: {blog.author} | 发布时间: {blog.publishedAt ? formatDate(blog.publishedAt).date : '未发布'}
                       </Text>
                     </div>
 
                     {blog.tags && blog.tags.length > 0 && (
-                      <div>
+                      <div className="blog-card-tags-container">
                         {blog.tags.map((tag, tagIndex) => (
                           <Tag key={tagIndex} color="blue">
                             {tag}

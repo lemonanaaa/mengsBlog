@@ -114,7 +114,7 @@ const BlogView = () => {
 
   return (
     <Layout>
-      <div style={{ padding: "24px", maxWidth: "800px", margin: "0 auto" }}>
+      <div style={{ padding: "24px", maxWidth: "88%", margin: "0 auto" }}>
         {/* 返回按钮 */}
         <div style={{ marginBottom: "24px" }}>
           <Button

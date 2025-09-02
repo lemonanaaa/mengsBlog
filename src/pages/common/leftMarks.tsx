@@ -205,35 +205,12 @@ const LeftMarks = () => {
     return (
       <div 
         className="left-marks-collapsed"
-        onClick={toggleCollapse} // 整个区域都可以点击
-        style={{
-          width: `${config.collapsedWidth}px`,
-          height: '100%',
-          display: 'flex',
-          alignItems: 'flex-start', // 改为顶部对齐
-          justifyContent: 'center',
-          position: 'relative',
-          cursor: 'pointer', // 整个区域显示手型光标
-          paddingTop: '20px' // 给顶部一些间距
-        }}
+        onClick={toggleCollapse}
         title="点击展开侧边栏"
+        style={{ width: `${config.collapsedWidth}px` }}
       >
         {/* 向右箭头 - 放在上方 */}
-        <div
-          style={{
-            width: '40px',
-            height: '80px',
-            background: '#52c41a',
-            borderRadius: '0 40px 40px 0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: '24px',
-            fontWeight: 'bold',
-            boxShadow: '0 4px 12px rgba(82, 196, 26, 0.4)'
-          }}
-        >
+        <div className="collapse-arrow">
           ›
         </div>
       </div>
@@ -246,36 +223,19 @@ const LeftMarks = () => {
       ref={leftMarksRef}
       className="left-marks"
       style={{
-        width: width,
-        transition: isResizing ? 'none' : 'none'
+        width: width
       }}
     >
       {/* 拖拽调整区域 */}
       <div
+        className={`resize-handle ${isResizing ? 'resizing' : ''}`}
         onMouseDown={handleResizeStart}
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '6px',
-          height: '100%',
-          cursor: 'col-resize',
-          background: isResizing 
-            ? '#1890ff' 
-            : 'rgba(0, 0, 0, 0.1)',
-
-          zIndex: 1000,
-          border: 'none',
-          borderRadius: '0 3px 3px 0',
-          boxShadow: isResizing 
-            ? '0 0 12px rgba(24, 144, 255, 0.3)' 
-            : 'none'
-        }}
         title="拖拽调整宽度"
       />
 
             {/* 收起按钮 */}
       <div
+        className="collapse-button"
         onMouseDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -313,24 +273,6 @@ const LeftMarks = () => {
           
           document.addEventListener('mousemove', handleMouseMove);
           document.addEventListener('mouseup', handleMouseUp);
-        }}
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '0px',
-          width: '40px',
-          height: '80px',
-          background: '#52c41a',
-          borderRadius: '40px 0 0 40px',
-          cursor: 'col-resize',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          boxShadow: '0 4px 12px rgba(82, 196, 26, 0.4)',
-          zIndex: 1001
         }}
         title="拖拽调整宽度，点击收起侧边栏"
       >
