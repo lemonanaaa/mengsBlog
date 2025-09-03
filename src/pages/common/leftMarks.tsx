@@ -94,7 +94,7 @@ const LeftMarks = () => {
   // 侧边栏配置
   const config: LeftMarksConfig = {
     defaultWidth: 280,
-    minWidth: 200,
+    minWidth: 230,
     maxWidth: 500,
     collapsedWidth: 20
   };

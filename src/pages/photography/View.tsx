@@ -4,6 +4,7 @@ import { mengsBlogContext } from "../common/Layout";
 import Introduction from "./component/Introduction";
 import Pictures from "./component/Pictures";
 import Timeline from "./component/Timeline";
+import "../../css/photography/photography.css";
 
 
 const Photography = () => {

@@ -1,0 +1,208 @@
+.pictures-gallery {
+  padding: 24px;
+}
+.pictures-gallery .gallery-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.pictures-gallery .gallery-header h2 {
+  margin-bottom: 8px;
+  color: #333;
+}
+.pictures-gallery .gallery-header .ant-typography {
+  color: #666;
+  font-size: 16px;
+}
+.pictures-gallery .sessions-grid .session-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  transition: all 0.3s ease;
+  min-height: 300px;
+}
+.pictures-gallery .sessions-grid .session-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
+}
+.pictures-gallery .sessions-grid .session-card.unlocked {
+  border-color: #52c41a;
+  box-shadow: 0 4px 20px rgba(82, 196, 26, 0.1);
+}
+.pictures-gallery .sessions-grid .session-card .lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(139, 92, 246, 0.8) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+.pictures-gallery .sessions-grid .session-card .lock-overlay:hover {
+  background: linear-gradient(135deg, rgb(139, 92, 246) 0%, rgba(139, 92, 246, 0.9) 100%);
+  transform: scale(1.02);
+}
+.pictures-gallery .sessions-grid .session-card .lock-overlay .lock-content {
+  text-align: center;
+  color: white;
+}
+.pictures-gallery .sessions-grid .session-card .lock-overlay .lock-content .lock-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+  animation: pulse 2s infinite;
+}
+.pictures-gallery .sessions-grid .session-card .lock-overlay .lock-content .lock-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+.pictures-gallery .sessions-grid .session-card .lock-overlay .lock-content .lock-info {
+  font-size: 14px;
+  margin-bottom: 4px;
+  display: block;
+  opacity: 0.9;
+}
+.pictures-gallery .sessions-grid .session-card .lock-overlay .lock-content .lock-date {
+  font-size: 12px;
+  opacity: 0.8;
+  display: block;
+}
+.pictures-gallery .sessions-grid .session-card .session-content {
+  padding: 20px;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .session-header {
+  margin-bottom: 16px;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .session-header h4 {
+  margin-bottom: 8px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .session-header .ant-typography {
+  font-size: 14px;
+  color: #666;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .photos-grid .photo-item {
+  margin-bottom: 12px;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .photos-grid .photo-item .photo-thumbnail {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .photos-grid .photo-item .photo-thumbnail:hover {
+  transform: scale(1.05);
+}
+.pictures-gallery .sessions-grid .session-card .session-content .photos-grid .photo-item .photo-info {
+  margin-top: 8px;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .photos-grid .photo-item .photo-info .photo-title {
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pictures-gallery .sessions-grid .session-card .session-content .photos-grid .photo-item .photo-info .photo-tags .ant-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.password-modal-content .session-info {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+}
+.password-modal-content .session-info .ant-typography {
+  display: block;
+  margin-bottom: 4px;
+}
+.password-modal-content .password-form {
+  margin-bottom: 20px;
+}
+.password-modal-content .password-form .ant-form-item {
+  margin-bottom: 20px;
+}
+.password-modal-content .password-form .ant-input-affix-wrapper {
+  border-radius: 8px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  height: 44px;
+}
+.password-modal-content .password-form .ant-input-affix-wrapper:hover, .password-modal-content .password-form .ant-input-affix-wrapper:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+}
+.password-modal-content .password-form .ant-btn {
+  border-radius: 8px;
+  height: 44px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  border: none;
+}
+.password-modal-content .password-form .ant-btn:hover {
+  background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+.password-modal-content .password-help {
+  text-align: center;
+  padding: 16px;
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+.password-modal-content .password-help .ant-typography {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (max-width: 768px) {
+  .pictures-gallery {
+    padding: 16px;
+  }
+  .pictures-gallery .sessions-grid .session-card {
+    min-height: 250px;
+  }
+  .pictures-gallery .sessions-grid .session-card .lock-overlay .lock-content .lock-icon {
+    font-size: 36px;
+  }
+  .pictures-gallery .sessions-grid .session-card .lock-overlay .lock-content .lock-text {
+    font-size: 16px;
+  }
+  .pictures-gallery .sessions-grid .session-card .session-content {
+    padding: 16px;
+  }
+  .pictures-gallery .sessions-grid .session-card .session-content .photos-grid .photo-item .photo-thumbnail {
+    height: 100px;
+  }
+}
