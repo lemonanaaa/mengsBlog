@@ -36,10 +36,19 @@ export class PhotographyController {
   }
 
   // 获取指定批次的照片
-  static async getSessionPhotos(sessionId: string): Promise<any[]> {
+  static async getSessionPhotos(sessionId: string, params?: { types?: string[] }): Promise<any[]> {
     try {
-      // 调用真实API: GET /shoot-sessions/:id/photos
-      const response = await apiRequest(`/shoot-sessions/${sessionId}/photos`);
+      // 调用真实API: POST /shoot-sessions/:id/photos (支持请求体传参)
+      const response = await apiRequest(`/shoot-sessions/${sessionId}/photos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params || {})
+      });
+      
+      // 根据参数类型返回不同的数据
+      if (params?.types?.includes('retouched')) {
+        return response.data?.retouchedPhotos || [];
+      }
       
       return response.photos || [];
       
@@ -66,7 +75,7 @@ export class PhotographyController {
   }
 
   // 批量删除多张图片
-  static async deletePhotos(photoIds: string[]): Promise<{ success: boolean; deletedCount: number; failedIds: string[] }> {
+  static async deletePhotos(photoIds: string[]): Promise<{ success: boolean; deletedCount: number; failedIds: string[]; message?: string }> {
     try {
       // 调用批量删除API: POST /photos/delete
       const response = await apiRequest('/photos/delete', {
@@ -97,10 +106,13 @@ export class PhotographyController {
   }
 
   // 获取所有照片批次
-  static async getAllPhotoSessions(): Promise<PhotoSession[]> {
+  static async getAllPhotoSessions(retouchedOnly: boolean = false): Promise<PhotoSession[]> {
     try {
       // 调用真实API: GET /shoot-sessions/overview
-      const response = await apiRequest('/shoot-sessions/overview');
+      const url = retouchedOnly 
+        ? '/shoot-sessions/overview?retouchedOnly=true'
+        : '/shoot-sessions/overview';
+      const response = await apiRequest(url);
       
       // 检查响应格式是否正确
       if (!response || typeof response !== 'object') {
@@ -152,6 +164,8 @@ export class PhotographyController {
         } : null,
         // 添加照片总数字段
         totalPhotos: session.totalPhotos,
+        // 添加精修照片字段
+        retouchedPhoto: session.retouchedPhoto || [],
         createdAt: session.createdAt,
         updatedAt: session.updatedAt
       }));
@@ -283,7 +297,7 @@ export class PhotographyController {
   }
 
   // 上传照片到指定批次
-  static async uploadPhotosToSession(sessionId: string, photos: PhotoUpload[], session?: PhotoSession): Promise<boolean> {
+  static async uploadPhotosToSession(sessionId: string, photos: PhotoUpload[], session?: PhotoSession, imageType: string = 'normal'): Promise<boolean> {
     try {
       // 调用真实API: POST /photos/upload
       const formData = new FormData();
@@ -334,8 +348,8 @@ export class PhotographyController {
           formData.append('description', session.description);
         }
         
-        // 图片类型（默认normal）
-        formData.append('imageType', 'normal');
+        // 图片类型
+        formData.append('imageType', imageType);
       }
       
       // 添加所有图片文件

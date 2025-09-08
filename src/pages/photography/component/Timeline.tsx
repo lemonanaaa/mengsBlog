@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import Layout from "../../common/Layout";
 import { mengsBlogContext } from "../../common/Layout";
 import { Typography, Tag, Card, Row, Col, Image, Button, Space, Spin, Empty, Modal, message } from "antd";
-import { CrownOutlined, ClockCircleOutlined, CameraOutlined, EnvironmentOutlined, UserOutlined, EyeOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, FolderOutlined, StarOutlined } from "@ant-design/icons";
+import { CrownOutlined, ClockCircleOutlined, CameraOutlined, EnvironmentOutlined, UserOutlined, EyeOutlined, StarOutlined, MoreOutlined, DownOutlined, UpOutlined, LoadingOutlined } from "@ant-design/icons";
 import { PhotographyController } from "../Controller";
 import { PhotoSession } from "../Model";
 import { createNavigateWithMeng } from "../../../utils/navigation";
@@ -20,6 +20,8 @@ const PhotographyTimeline = () => {
   const [photoSessions, setPhotoSessions] = useState<PhotoSession[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
+  const [expandedRetouchedPhotos, setExpandedRetouchedPhotos] = useState<{[key: string]: any[]}>({});
+  const [loadingRetouchedPhotos, setLoadingRetouchedPhotos] = useState<Set<string>>(new Set());
   
   // 检查是否为 Meng 模式
   const isMeng = searchParams.get('meng') === 'true';
@@ -27,14 +29,12 @@ const PhotographyTimeline = () => {
   // 通用导航函数，自动保持meng参数
   const navigateWithMeng = createNavigateWithMeng(navigate, searchParams);
 
-  // 获取拍摄批次列表
+  // 获取拍摄批次列表（只获取有精修图的批次）
   const fetchPhotoSessions = async () => {
     setLoading(true);
     try {
-      const sessions = await PhotographyController.getAllPhotoSessions();
-      // 按日期倒序排列（最新的在前）
-      const sortedSessions = sessions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      setPhotoSessions(sortedSessions);
+      const sessions = await PhotographyController.getAllPhotoSessions(true); // 只获取有精修图的批次
+      setPhotoSessions(sessions);
     } catch (error) {
       console.error('获取拍摄批次失败:', error);
       message.error('获取拍摄批次失败');
@@ -43,27 +43,6 @@ const PhotographyTimeline = () => {
     }
   };
 
-  // 删除拍摄批次
-  const deleteSession = async (id: string, title: string) => {
-    Modal.confirm({
-      title: '确认删除',
-      icon: <ExclamationCircleOutlined />,
-      content: `确定要删除拍摄批次《${title}》吗？此操作不可撤销。`,
-      okText: '确认删除',
-      okType: 'danger',
-      cancelText: '取消',
-      onOk: async () => {
-        try {
-          await PhotographyController.deletePhotoSession(id);
-          message.success('拍摄批次删除成功！');
-          fetchPhotoSessions();
-        } catch (error) {
-          console.error("删除失败:", error);
-          message.error('网络错误，删除失败');
-        }
-      },
-    });
-  };
 
   // 格式化日期
   const formatDate = (dateString: string) => {
@@ -84,81 +63,106 @@ const PhotographyTimeline = () => {
     return isPublic ? '公开' : '私密';
   };
 
-  // 切换批次展开/收起状态
-  const toggleSessionExpansion = (sessionId: string) => {
+  // 切换精修照片展开/收起状态
+  const toggleRetouchedExpansion = async (sessionId: string) => {
     const newExpandedSessions = new Set(expandedSessions);
+    
     if (newExpandedSessions.has(sessionId)) {
+      // 收起
       newExpandedSessions.delete(sessionId);
+      setExpandedSessions(newExpandedSessions);
     } else {
+      // 展开 - 获取精修照片
       newExpandedSessions.add(sessionId);
+      setExpandedSessions(newExpandedSessions);
+      
+      // 如果还没有加载过精修照片，则调用接口获取
+      if (!expandedRetouchedPhotos[sessionId]) {
+        await fetchRetouchedPhotos(sessionId);
+      }
     }
-    setExpandedSessions(newExpandedSessions);
+  };
+
+  // 获取指定批次的精修照片
+  const fetchRetouchedPhotos = async (sessionId: string) => {
+    setLoadingRetouchedPhotos(prev => new Set(prev).add(sessionId));
+    try {
+      // 调用接口获取该批次的精修照片，只获取精修图片
+      const photosResult = await PhotographyController.getSessionPhotos(sessionId, { types: ['retouched'] });
+      
+      // 转换API返回的照片数据为本地Photo格式
+      const convertPhotoData = (photo: any) => ({
+        id: photo._id,
+        url: photo.frontendUrl || photo.thumbnailUrl,
+        thumbnail: photo.thumbnailUrl || photo.frontendUrl,
+        title: photo.title,
+        description: photo.description || '',
+        tags: photo.tags || [],
+        date: photo.shootDate,
+        sessionId: sessionId,
+        isRetouched: photo.isRetouched || false,
+        createdAt: photo.createdAt,
+        updatedAt: photo.updatedAt
+      });
+
+      // 直接使用后端返回的精修照片数据
+      const retouchedPhotos = photosResult?.map(convertPhotoData) || [];
+      
+      // 更新状态
+      setExpandedRetouchedPhotos(prev => ({
+        ...prev,
+        [sessionId]: retouchedPhotos
+      }));
+    } catch (error) {
+      console.error('获取精修照片失败:', error);
+      message.error('获取精修照片失败');
+    } finally {
+      setLoadingRetouchedPhotos(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(sessionId);
+        return newSet;
+      });
+    }
   };
 
   // 获取精修照片作为封面
   const getRetouchedPhoto = (session: PhotoSession) => {
-    if (session.photos && session.photos.length > 0) {
-      // 优先选择精修照片
-      const retouchedPhotos = session.photos.filter(photo => photo.isRetouched);
-      if (retouchedPhotos.length > 0) {
-        // 如果有多个精修照片，选择第一张
-        return retouchedPhotos[0];
-      }
-      // 如果没有精修照片，选择代表性照片
-      if (session.representativePhoto) {
-        return {
-          id: 'representative',
-          url: session.representativePhoto.imageUrl,
-          thumbnail: session.representativePhoto.thumbnailUrl,
-          title: session.representativePhoto.title,
-          isRetouched: session.representativePhoto.isRetouched
-        };
-      }
-      // 最后选择第一张照片
-      return session.photos[0];
+    // 优先使用新的 retouchedPhoto 数组
+    if ((session as any).retouchedPhoto && (session as any).retouchedPhoto.length > 0) {
+      const firstRetouched = (session as any).retouchedPhoto[0];
+      return {
+        id: firstRetouched.filename || firstRetouched.title,
+        url: firstRetouched.imageUrl,
+        thumbnail: firstRetouched.thumbnailUrl,
+        title: firstRetouched.title,
+        isRetouched: true
+      };
     }
+    
     return null;
   };
 
   // 获取精修照片数量
   const getRetouchedPhotoCount = (session: PhotoSession) => {
-    let count = 0;
-    if (session.photos && session.photos.length > 0) {
-      count += session.photos.filter(photo => photo.isRetouched).length;
+    if ((session as any).retouchedPhoto && (session as any).retouchedPhoto.length > 0) {
+      return (session as any).retouchedPhoto.length;
     }
-    // 如果代表性照片也是精修的，也要计算在内
-    if (session.representativePhoto && session.representativePhoto.isRetouched) {
-      count += 1;
-    }
-    return count;
+    return 0;
   };
 
   // 获取所有精修照片
   const getAllRetouchedPhotos = (session: PhotoSession) => {
-    const retouchedPhotos = [];
-    
-    // 添加照片列表中的精修照片
-    if (session.photos && session.photos.length > 0) {
-      retouchedPhotos.push(...session.photos.filter(photo => photo.isRetouched));
+    if ((session as any).retouchedPhoto && (session as any).retouchedPhoto.length > 0) {
+      return (session as any).retouchedPhoto.map((photo: any) => ({
+        id: photo.filename || photo.title,
+        url: photo.imageUrl,
+        thumbnail: photo.thumbnailUrl,
+        title: photo.title,
+        isRetouched: true,
+        retouchedAt: photo.retouchedAt
+      }));
     }
-    
-    // 添加代表性照片（如果是精修的且不在照片列表中）
-    if (session.representativePhoto && session.representativePhoto.isRetouched) {
-      const isAlreadyIncluded = retouchedPhotos.some(photo => 
-        photo.url === session.representativePhoto.imageUrl
-      );
-      if (!isAlreadyIncluded) {
-        retouchedPhotos.push({
-          id: 'representative',
-          url: session.representativePhoto.imageUrl,
-          thumbnail: session.representativePhoto.thumbnailUrl,
-          title: session.representativePhoto.title,
-          isRetouched: true
-        });
-      }
-    }
-    
-    return retouchedPhotos;
+    return [];
   };
 
   useEffect(() => {
@@ -203,16 +207,6 @@ const PhotographyTimeline = () => {
               )}
             </div>
             
-            {/* 新建批次按钮 - 绝对定位在右侧 */}
-            {isMeng && (
-              <Button
-                type="primary"
-                className="blogs-timeline-new-button"
-                onClick={() => navigateWithMeng('/photography/management')}
-              >
-                新建批次
-              </Button>
-            )}
           </div>
         </div>
 
@@ -252,24 +246,14 @@ const PhotographyTimeline = () => {
                     className={`timeline-card ${session.isFeatured ? 'featured-blog-card' : ''}`}
                     hoverable
                     actions={[
-                      <Button
-                        type="link"
-                        icon={<EyeOutlined />}
-                        onClick={() => navigateWithMeng(`/photography/batch/${session.id}`)}
-                      >
-                        查看批次
-                      </Button>,
-                      ...(isMeng ? [
-                        <Button
-                          key="delete"
-                          type="link"
-                          danger
-                          icon={<DeleteOutlined />}
-                          onClick={() => deleteSession(session.id, session.batchName || session.friendName)}
-                        >
-                          删除
-                        </Button>
-                      ] : [])
+                      // 暂时隐藏查看全部按钮，等精修页面完善后再显示
+                      // <Button
+                      //   type="link"
+                      //   icon={<EyeOutlined />}
+                      //   onClick={() => navigateWithMeng(`/photography/retouched/${session.id}`)}
+                      // >
+                      //   查看全部
+                      // </Button>
                     ]}
                   >
                     <div className="blog-card-tags">
@@ -325,70 +309,101 @@ const PhotographyTimeline = () => {
                       if (allRetouchedPhotos.length > 0) {
                         return (
                           <div style={{ marginBottom: '16px' }}>
-                            <div style={{ marginBottom: '8px' }}>
+                            <div style={{ 
+                              marginBottom: '12px', 
+                              display: 'flex', 
+                              justifyContent: 'space-between', 
+                              alignItems: 'center' 
+                            }}>
                               <Text strong style={{ fontSize: '14px' }}>
                                 <StarOutlined /> 精修照片 ({allRetouchedPhotos.length}张)
                               </Text>
+                              {allRetouchedPhotos.length > 4 && (
+                                <Button
+                                  type="link"
+                                  size="small"
+                                  icon={loadingRetouchedPhotos.has(session.id) ? <LoadingOutlined /> : (expandedSessions.has(session.id) ? <UpOutlined /> : <DownOutlined />)}
+                                  onClick={() => toggleRetouchedExpansion(session.id)}
+                                  loading={loadingRetouchedPhotos.has(session.id)}
+                                  style={{ 
+                                    padding: '0 8px',
+                                    height: 'auto',
+                                    fontSize: '12px'
+                                  }}
+                                >
+                                  {expandedSessions.has(session.id) ? '收起' : '展开查看全部'}
+                                </Button>
+                              )}
                             </div>
                             <Row gutter={[8, 8]}>
-                              {allRetouchedPhotos.slice(0, 4).map((photo, photoIndex) => (
+                              {(expandedSessions.has(session.id) ? 
+                                (expandedRetouchedPhotos[session.id] || allRetouchedPhotos) : 
+                                allRetouchedPhotos.slice(0, 4)
+                              ).map((photo, photoIndex) => (
                                 <Col span={6} key={photo.id || photoIndex}>
-                                  <div style={{ position: 'relative' }}>
+                                  <div 
+                                    style={{ 
+                                      position: 'relative',
+                                      borderRadius: '6px',
+                                      overflow: 'hidden',
+                                      transition: 'transform 0.2s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.transform = 'scale(1.05)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.transform = 'scale(1)';
+                                    }}
+                                  >
                                     <Image
                                       src={photo.thumbnail || photo.url}
                                       alt={photo.title}
                                       style={{ 
                                         width: '100%', 
-                                        height: '120px', 
-                                        objectFit: 'cover',
-                                        borderRadius: '6px',
-                                        border: '2px solid #52c41a'
+                                        height: '200px', 
+                                        objectFit: 'cover'
                                       }}
                                       preview={{
-                                        src: photo.url
+                                        src: photo.url,
+                                        mask: (
+                                          <div style={{ 
+                                            display: 'flex', 
+                                            flexDirection: 'column', 
+                                            alignItems: 'center',
+                                            color: 'white'
+                                          }}>
+                                            <EyeOutlined style={{ fontSize: '20px', marginBottom: '4px' }} />
+                                            <span style={{ fontSize: '12px' }}>预览</span>
+                                          </div>
+                                        )
                                       }}
                                     />
                                     <div style={{
                                       position: 'absolute',
-                                      top: '4px',
+                                      bottom: '4px',
+                                      left: '4px',
                                       right: '4px',
-                                      background: 'rgba(82, 196, 26, 0.9)',
+                                      background: 'rgba(0, 0, 0, 0.7)',
                                       color: 'white',
-                                      padding: '2px 6px',
+                                      padding: '2px 4px',
                                       borderRadius: '3px',
                                       fontSize: '10px',
-                                      fontWeight: 'bold'
+                                      textAlign: 'center',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap'
                                     }}>
-                                      <StarOutlined />
+                                      {photo.title}
                                     </div>
-                                  </div>
-                                  <div style={{ 
-                                    fontSize: '10px', 
-                                    textAlign: 'center', 
-                                    marginTop: '4px',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap'
-                                  }}>
-                                    {photo.title}
                                   </div>
                                 </Col>
                               ))}
                             </Row>
-                            {allRetouchedPhotos.length > 4 && (
-                              <div style={{ textAlign: 'center', marginTop: '8px' }}>
-                                <Text type="secondary" style={{ fontSize: '12px' }}>
-                                  还有 {allRetouchedPhotos.length - 4} 张精修照片...
-                                </Text>
-                              </div>
-                            )}
                           </div>
                         );
                       }
                       return null;
                     })()}
-
-
                     <div className="blog-card-meta">
                       <Text type="secondary" className="blog-card-meta-text">
                         创建时间: {formatDate(session.createdAt).date} | 更新时间: {formatDate(session.updatedAt).date}

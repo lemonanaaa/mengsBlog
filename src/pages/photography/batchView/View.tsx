@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
-import { Button, Tag, Space, Input, InputNumber, Select, Switch, Collapse, Divider, Empty, Row, Col, Card, Image, Modal, Form, DatePicker, Upload, Typography, message } from "antd";
+import { Button, Tag, Space, Input, InputNumber, Select, Switch, Collapse, Divider, Empty, Row, Col, Card, Image, Modal, Form, DatePicker, Upload, Typography, message, Tabs, Popconfirm } from "antd";
 import { FolderOutlined, UserOutlined, ArrowLeftOutlined, CalendarOutlined, SettingOutlined, EditOutlined, SaveOutlined, UpOutlined, DeleteOutlined, UploadOutlined, CrownOutlined } from "@ant-design/icons";
 import { PhotographyController } from "../Controller";
 import { PhotoSession, Photo, PRESET_TAGS } from "../Model";
 import { apiRequest } from "../../../config/api";
 import Layout from "../../common/Layout";
 import pinyin from "pinyin";
-import moment from "moment";
+import dayjs from "dayjs";
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { createNavigateWithMeng } from "../../../utils/navigation";
 import "../../../css/photography/photography.css";
@@ -42,14 +42,27 @@ export default function BatchView() {
     const [loading, setLoading] = useState(false);
     const [batchEditActive, setBatchEditActive] = useState<string[]>([]);
     const [showUploadModal, setShowUploadModal] = useState(false);
+    const [showRetouchedUploadModal, setShowRetouchedUploadModal] = useState(false);
     const [isDeleteMode, setIsDeleteMode] = useState(false);
     const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
     const [uploading, setUploading] = useState(false);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [retouchedFileList, setRetouchedFileList] = useState<UploadFile[]>([]);
+    const [activeTab, setActiveTab] = useState<'original' | 'retouched'>('original');
+    
+    // 分别管理原始照片和精修照片
+    const [originalPhotos, setOriginalPhotos] = useState<Photo[]>([]);
+    const [retouchedPhotos, setRetouchedPhotos] = useState<Photo[]>([]);
+    const [photoStats, setPhotoStats] = useState<{
+        totalPhotos: number;
+        retouchedPhotos: number;
+        normalPhotos: number;
+    }>({ totalPhotos: 0, retouchedPhotos: 0, normalPhotos: 0 });
 
     // 表单实例
     const [detailEditForm] = Form.useForm();
     const [form] = Form.useForm();
+    const [retouchedForm] = Form.useForm();
 
     // 生成拼音函数
     const generatePinyin = (chineseName: string): string => {
@@ -71,12 +84,19 @@ export default function BatchView() {
             const batchResult = await apiRequest(`/shoot-sessions/${batchId}`);
 
             if (batchResult.success && batchResult.data) {
-                // 2. 获取批次照片
-                const photosResult = await apiRequest(`/shoot-sessions/${batchId}/photos`);
+                // 2. 获取批次照片 - 使用新的接口，同时获取所有类型和精修照片
+                const photosResult = await apiRequest(`/shoot-sessions/${batchId}/photos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        types: ['all', 'retouched']
+                    })
+                });
 
-                // 添加批次照片的展示逻辑
                 // 转换API返回的照片数据为本地Photo格式
-                const convertedPhotos = photosResult.data?.photos?.map((photo: any) => ({
+                const convertPhotoData = (photo: any) => ({
                     id: photo._id,
                     url: photo.frontendUrl || photo.thumbnailUrl,
                     thumbnail: photo.thumbnailUrl || photo.frontendUrl,
@@ -85,9 +105,39 @@ export default function BatchView() {
                     tags: photo.tags || [],
                     date: photo.shootDate || batchResult.data.shootSession?.shootDate,
                     sessionId: batchResult.data.shootSession?.id || batchResult.data.id,
+                    isRetouched: photo.isRetouched || false,
                     createdAt: photo.createdAt,
                     updatedAt: photo.updatedAt
-                })) || [];
+                });
+
+                // 处理所有照片
+                const allPhotos = photosResult.data?.photos?.map(convertPhotoData) || [];
+                
+                // 处理精修照片
+                const retouchedPhotosData = photosResult.data?.retouchedPhotos?.map(convertPhotoData) || [];
+                
+                // 计算原始照片（所有照片 - 精修照片）
+                const originalPhotosData = allPhotos.filter(photo => !photo.isRetouched);
+                
+                // 更新状态
+                setOriginalPhotos(originalPhotosData);
+                setRetouchedPhotos(retouchedPhotosData);
+                
+                // 更新统计信息
+                if (photosResult.data?.stats) {
+                    setPhotoStats({
+                        totalPhotos: photosResult.data.stats.totalPhotos || 0,
+                        retouchedPhotos: photosResult.data.stats.retouchedPhotos || 0,
+                        normalPhotos: photosResult.data.stats.normalPhotos || 0
+                    });
+                } else {
+                    // 如果没有统计信息，手动计算
+                    setPhotoStats({
+                        totalPhotos: allPhotos.length,
+                        retouchedPhotos: retouchedPhotosData.length,
+                        normalPhotos: originalPhotosData.length
+                    });
+                }
 
                 // 转换API数据格式为本地PhotoSession格式
                 const batchData: PhotoSession = {
@@ -98,7 +148,7 @@ export default function BatchView() {
                     phoneTail: batchResult.data.shootSession?.phoneTail || batchResult.data.phoneTail,
                     isPublic: batchResult.data.shootSession?.isPublic || batchResult.data.isPublic,
                     batchName: batchResult.data.shootSession?.name || batchResult.data.batchName,
-                    location: batchResult.data.shootSession?.location || batchResult.data.location,
+                    location: batchResult.data.shootSession?.shootLocation || batchResult.data.shootLocation,
                     description: batchResult.data.shootSession?.description || batchResult.data.description,
                     theme: batchResult.data.shootSession?.theme || batchResult.data.theme,
                     camera: batchResult.data.shootSession?.camera || batchResult.data.camera,
@@ -114,7 +164,7 @@ export default function BatchView() {
                     sortOrder: batchResult.data.shootSession?.sortOrder || batchResult.data.sortOrder,
                     createdAt: batchResult.data.shootSession?.createdAt || batchResult.data.createdAt,
                     updatedAt: batchResult.data.shootSession?.updatedAt || batchResult.data.updatedAt,
-                    photos: convertedPhotos, // 使用转换后的照片数据
+                    photos: allPhotos, // 使用所有照片数据
                     password: ''
                 };
 
@@ -129,7 +179,7 @@ export default function BatchView() {
                     batchName: batchData.batchName,
                     location: batchData.location,
                     description: batchData.description,
-                    date: batchData.date ? moment(batchData.date) : undefined,
+                    date: batchData.date ? dayjs(batchData.date) : undefined,
                     tags: batchData.tags,
                     isFeatured: batchData.isFeatured,
                     sortOrder: batchData.sortOrder,
@@ -243,6 +293,23 @@ export default function BatchView() {
                     };
                     setBatch(updatedBatch);
                 }
+                
+                // 同时更新精修照片和原始照片状态
+                setRetouchedPhotos(prev => prev.filter(photo => !selectedPhotos.includes(photo.id)));
+                setOriginalPhotos(prev => prev.filter(photo => !selectedPhotos.includes(photo.id)));
+                
+                // 更新统计信息
+                setPhotoStats(prev => {
+                    const deletedRetouchedCount = retouchedPhotos.filter(photo => selectedPhotos.includes(photo.id)).length;
+                    const deletedOriginalCount = originalPhotos.filter(photo => selectedPhotos.includes(photo.id)).length;
+                    
+                    return {
+                        totalPhotos: prev.totalPhotos - result.deletedCount,
+                        retouchedPhotos: prev.retouchedPhotos - deletedRetouchedCount,
+                        normalPhotos: prev.normalPhotos - deletedOriginalCount
+                    };
+                });
+                
                 setSelectedPhotos([]);
                 setIsDeleteMode(false);
                 
@@ -259,28 +326,34 @@ export default function BatchView() {
         }
     };
 
-    // 上传照片
-    const handleUploadPhotos = async (values: any) => {
-        if (!batch || fileList.length === 0) {
-            message.error('请选择要上传的图片');
+    // 通用上传照片函数
+    const handleUploadPhotos = async (values: any, isRetouched: boolean = false) => {
+        const currentFileList = isRetouched ? retouchedFileList : fileList;
+        const currentForm = isRetouched ? retouchedForm : form;
+        const setCurrentFileList = isRetouched ? setRetouchedFileList : setFileList;
+        const setCurrentModal = isRetouched ? setShowRetouchedUploadModal : setShowUploadModal;
+        
+        if (!batch || currentFileList.length === 0) {
+            message.error(`请选择要上传的${isRetouched ? '精修' : ''}图片`);
             return;
         }
 
         setUploading(true);
         try {
-            const newPhotos = fileList.map((file, index) => ({
-                id: Date.now().toString() + index,
+            const newPhotos = currentFileList.map((file, index) => ({
+                id: Date.now().toString() + index + (isRetouched ? '_retouched' : ''),
                 file,
-                title: `照片 ${index + 1}`,
+                title: `${isRetouched ? '精修' : ''}照片 ${index + 1}`,
                 description: '',
-                tags: [],
+                tags: isRetouched ? ['精修'] : [],
                 date: batch.date,
                 friendName: batch.friendName,
                 friendFullName: batch.friendFullName,
                 phoneTail: batch.phoneTail
             }));
 
-            const success = await PhotographyController.uploadPhotosToSession(batch.id, newPhotos, batch);
+            const imageType = isRetouched ? 'retouched' : 'normal';
+            const success = await PhotographyController.uploadPhotosToSession(batch.id, newPhotos, batch, imageType);
 
             if (success) {
                 const newPhotoObjects = newPhotos.map(p => ({
@@ -292,10 +365,19 @@ export default function BatchView() {
                     tags: p.tags,
                     date: p.date,
                     sessionId: batch.id,
+                    isRetouched: isRetouched,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 }));
 
+                // 更新对应的照片状态
+                if (isRetouched) {
+                    setRetouchedPhotos(prev => [...prev, ...newPhotoObjects]);
+                } else {
+                    setOriginalPhotos(prev => [...prev, ...newPhotoObjects]);
+                }
+                
+                // 更新批次数据
                 if (batch) {
                     const updatedBatch = {
                         ...batch,
@@ -303,11 +385,18 @@ export default function BatchView() {
                     };
                     setBatch(updatedBatch);
                 }
+                
+                // 更新统计信息
+                setPhotoStats(prev => ({
+                    totalPhotos: prev.totalPhotos + newPhotoObjects.length,
+                    retouchedPhotos: isRetouched ? prev.retouchedPhotos + newPhotoObjects.length : prev.retouchedPhotos,
+                    normalPhotos: isRetouched ? prev.normalPhotos : prev.normalPhotos + newPhotoObjects.length
+                }));
 
-                setFileList([]);
-                form.resetFields();
-                setShowUploadModal(false);
-                message.success('照片上传成功！');
+                setCurrentFileList([]);
+                currentForm.resetFields();
+                setCurrentModal(false);
+                message.success(`${isRetouched ? '精修' : ''}照片上传成功！`);
             } else {
                 message.error('上传失败，请重试');
             }
@@ -317,6 +406,7 @@ export default function BatchView() {
             setUploading(false);
         }
     };
+
 
     // 上传组件配置
     const uploadProps: UploadProps = {
@@ -345,6 +435,35 @@ export default function BatchView() {
             setFileList(newFileList);
         }
     };
+
+    // 精修照片上传组件配置
+    const retouchedUploadProps: UploadProps = {
+        fileList: retouchedFileList,
+        maxCount: 100,
+        multiple: true,
+        accept: "image/*",
+        beforeUpload: () => false,
+        onChange: ({ fileList: newFileList }) => {
+            const validFiles = newFileList.filter(file => {
+                if (file.originFileObj) {
+                    const validation = PhotographyController.validateImageFile(file.originFileObj);
+                    if (!validation.isValid) {
+                        message.error(`${file.name}: ${validation.message || '文件验证失败'}`);
+                        return false;
+                    }
+                }
+                return true;
+            });
+            setRetouchedFileList(validFiles);
+        },
+        onRemove: (file) => {
+            const index = retouchedFileList.indexOf(file);
+            const newFileList = retouchedFileList.slice();
+            newFileList.splice(index, 1);
+            setRetouchedFileList(newFileList);
+        }
+    };
+
 
     // 如果正在加载，显示加载状态
     if (loading) {
@@ -401,7 +520,7 @@ export default function BatchView() {
                                 </Tag>
                             )}
                             <Tag color="purple" icon={<CalendarOutlined />}>
-                                {batch.date ? moment(batch.date).format('YYYY-MM-DD') : '未知日期'}
+                                {batch.date ? dayjs(batch.date).format('YYYY-MM-DD') : '未知日期'}
                             </Tag>
                             {batch.location && (
                                 <Tag color="geekblue">
@@ -738,9 +857,29 @@ export default function BatchView() {
 
                 {/* 批次照片展示和管理 */}
                 <div className="photos-section">
-                    <div className="photos-header" style={{ display: 'flex', alignItems: 'center' }}>
-                        <Title level={4} style={{ margin: 0, marginRight: 'auto' }}>批次照片 ({batch.photos.length} 张)</Title>
+                    <div className="photos-header" style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                        <Title level={4} style={{ margin: 0, marginRight: 'auto' }}>
+                            批次照片 (原始: {originalPhotos.length} 张, 精修: {retouchedPhotos.length} 张)
+                        </Title>
                         <Space>
+                            {isDeleteMode && selectedPhotos.length > 0 && (
+                                <Popconfirm
+                                    title="确认删除"
+                                    description={`确定要删除选中的 ${selectedPhotos.length} 张照片吗？此操作不可撤销。`}
+                                    onConfirm={handleBatchDeletePhotos}
+                                    okText="确认删除"
+                                    cancelText="取消"
+                                    okType="danger"
+                                >
+                                    <Button
+                                        type="primary"
+                                        danger
+                                        icon={<DeleteOutlined />}
+                                    >
+                                        删除选中 ({selectedPhotos.length})
+                                    </Button>
+                                </Popconfirm>
+                            )}
                             <Button
                                 type={isDeleteMode ? 'primary' : 'default'}
                                 icon={<DeleteOutlined />}
@@ -758,86 +897,178 @@ export default function BatchView() {
                                 icon={<UploadOutlined />}
                                 onClick={() => setShowUploadModal(true)}
                             >
-                                批量上传
+                                上传原片
                             </Button>
-                            {isDeleteMode && selectedPhotos.length > 0 && (
-                                <Button
-                                    type="primary"
-                                    danger
-                                    icon={<DeleteOutlined />}
-                                    onClick={handleBatchDeletePhotos}
-                                >
-                                    删除选中 ({selectedPhotos.length})
-                                </Button>
-                            )}
+                            <Button
+                                type="primary"
+                                icon={<UploadOutlined />}
+                                onClick={() => setShowRetouchedUploadModal(true)}
+                                style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
+                            >
+                                上传精修
+                            </Button>
                         </Space>
                     </div>
 
-                    {batch.photos.length === 0 ? (
-                        <Empty description="该批次暂无照片" />
-                    ) : (
-                        <Row className="photos-grid" gutter={[16, 16]}>
-                            {batch.photos.map(photo => (
-                                <Col xs={24} sm={12} lg={8} xl={6} key={photo.id}>
-                                    <Card
-                                        hoverable
-                                        style={{
-                                            cursor: isDeleteMode ? 'pointer' : 'default',
-                                            border: isDeleteMode && selectedPhotos.includes(photo.id) ? '2px solid #1890ff' : undefined,
-                                            position: 'relative'
-                                        }}
-                                        onClick={() => handleTogglePhotoSelection(photo.id)}
-                                        cover={
-                                            <div style={{ position: 'relative' }}>
-                                                <Image
-                                                    alt="照片"
-                                                    src={photo.thumbnail}
-                                                    fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-                                                    style={{ height: 150, objectFit: 'cover' }}
-                                                />
-                                                {isDeleteMode && selectedPhotos.includes(photo.id) && (
-                                                    <div
-                                                        style={{
-                                                            position: 'absolute',
-                                                            top: 8,
-                                                            right: 8,
-                                                            width: 20,
-                                                            height: 20,
-                                                            borderRadius: '50%',
-                                                            backgroundColor: '#1890ff',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            color: 'white',
-                                                            fontSize: '12px',
-                                                            fontWeight: 'bold'
-                                                        }}
-                                                    >
-                                                        ✓
-                                                    </div>
-                                                )}
-                                            </div>
-                                        }
-                                    >
-                                        <Card.Meta
-                                            title={`照片 ${photo.id}`}
-                                            description={
-                                                <div>
-                                                    <div style={{ marginTop: 8 }}>
-                                                        {photo.tags && photo.tags.length > 0 && photo.tags.map(tag => (
-                                                            <Tag key={tag} color="blue" style={{ fontSize: '12px', marginBottom: 4 }}>
-                                                                {tag}
-                                                            </Tag>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            }
-                                        />
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
-                    )}
+                    <Tabs
+                        activeKey={activeTab}
+                        onChange={(key) => setActiveTab(key as 'original' | 'retouched')}
+                        items={[
+                            {
+                                key: 'original',
+                                label: `原始照片 (${originalPhotos.length})`,
+                                children: originalPhotos.length === 0 ? (
+                                    <Empty description="暂无原始照片" />
+                                ) : (
+                                    <Row className="photos-grid" gutter={[16, 16]}>
+                                        {originalPhotos.map(photo => (
+                                            <Col xs={24} sm={12} lg={8} xl={6} key={photo.id}>
+                                                <Card
+                                                    hoverable
+                                                    style={{
+                                                        cursor: isDeleteMode ? 'pointer' : 'default',
+                                                        border: isDeleteMode && selectedPhotos.includes(photo.id) ? '2px solid #1890ff' : undefined,
+                                                        position: 'relative'
+                                                    }}
+                                                    onClick={() => handleTogglePhotoSelection(photo.id)}
+                                                    cover={
+                                                        <div style={{ position: 'relative' }}>
+                                                            <Image
+                                                                alt="照片"
+                                                                src={photo.thumbnail}
+                                                                fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+                                                                style={{ height: 150, objectFit: 'cover' }}
+                                                            />
+                                                            {isDeleteMode && selectedPhotos.includes(photo.id) && (
+                                                                <div
+                                                                    style={{
+                                                                        position: 'absolute',
+                                                                        top: 8,
+                                                                        right: 8,
+                                                                        width: 20,
+                                                                        height: 20,
+                                                                        borderRadius: '50%',
+                                                                        backgroundColor: '#1890ff',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center',
+                                                                        color: 'white',
+                                                                        fontSize: '12px',
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                >
+                                                                    ✓
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    }
+                                                >
+                                                    <Card.Meta
+                                                        title={photo.title || `照片 ${photo.id}`}
+                                                        description={
+                                                            <div>
+                                                                <div style={{ marginTop: 8 }}>
+                                                                    {photo.tags && photo.tags.length > 0 && photo.tags.map(tag => (
+                                                                        <Tag key={tag} color="blue" style={{ fontSize: '12px', marginBottom: 4 }}>
+                                                                            {tag}
+                                                                        </Tag>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    />
+                                                </Card>
+                                            </Col>
+                                        ))}
+                                    </Row>
+                                )
+                            },
+                            {
+                                key: 'retouched',
+                                label: `精修照片 (${retouchedPhotos.length})`,
+                                children: retouchedPhotos.length === 0 ? (
+                                    <Empty description="暂无精修照片" />
+                                ) : (
+                                    <Row className="photos-grid" gutter={[16, 16]}>
+                                        {retouchedPhotos.map(photo => (
+                                            <Col xs={24} sm={12} lg={8} xl={6} key={photo.id}>
+                                                <Card
+                                                    hoverable
+                                                    style={{
+                                                        cursor: isDeleteMode ? 'pointer' : 'default',
+                                                        border: isDeleteMode && selectedPhotos.includes(photo.id) ? '2px solid #52c41a' : '2px solid #52c41a',
+                                                        position: 'relative'
+                                                    }}
+                                                    onClick={() => handleTogglePhotoSelection(photo.id)}
+                                                    cover={
+                                                        <div style={{ position: 'relative' }}>
+                                                            <Image
+                                                                alt="精修照片"
+                                                                src={photo.thumbnail}
+                                                                fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+                                                                style={{ height: 150, objectFit: 'cover' }}
+                                                            />
+                                                            <div
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    top: 8,
+                                                                    left: 8,
+                                                                    backgroundColor: '#52c41a',
+                                                                    color: 'white',
+                                                                    padding: '2px 6px',
+                                                                    borderRadius: '4px',
+                                                                    fontSize: '10px',
+                                                                    fontWeight: 'bold'
+                                                                }}
+                                                            >
+                                                                精修
+                                                            </div>
+                                                            {isDeleteMode && selectedPhotos.includes(photo.id) && (
+                                                                <div
+                                                                    style={{
+                                                                        position: 'absolute',
+                                                                        top: 8,
+                                                                        right: 8,
+                                                                        width: 20,
+                                                                        height: 20,
+                                                                        borderRadius: '50%',
+                                                                        backgroundColor: '#52c41a',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center',
+                                                                        color: 'white',
+                                                                        fontSize: '12px',
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                >
+                                                                    ✓
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    }
+                                                >
+                                                    <Card.Meta
+                                                        title={photo.title || `精修照片 ${photo.id}`}
+                                                        description={
+                                                            <div>
+                                                                <div style={{ marginTop: 8 }}>
+                                                                    {photo.tags && photo.tags.length > 0 && photo.tags.map(tag => (
+                                                                        <Tag key={tag} color="green" style={{ fontSize: '12px', marginBottom: 4 }}>
+                                                                            {tag}
+                                                                        </Tag>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    />
+                                                </Card>
+                                            </Col>
+                                        ))}
+                                    </Row>
+                                )
+                            }
+                        ]}
+                    />
                 </div>
             </div>
             {/* 批量上传弹窗 */}
@@ -856,7 +1087,7 @@ export default function BatchView() {
                 <Form
                     form={form}
                     layout="vertical"
-                    onFinish={handleUploadPhotos}
+                    onFinish={(values) => handleUploadPhotos(values, false)}
                 >
                     <Form.Item
                         name="photos"
@@ -884,6 +1115,58 @@ export default function BatchView() {
                                 上传照片
                             </Button>
                             <Button onClick={() => setShowUploadModal(false)}>
+                                取消
+                            </Button>
+                        </Space>
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+            {/* 精修照片上传弹窗 */}
+            <Modal
+                title={
+                    <Space>
+                        <UploadOutlined />
+                        批量上传精修照片
+                    </Space>
+                }
+                open={showRetouchedUploadModal}
+                onCancel={() => setShowRetouchedUploadModal(false)}
+                footer={null}
+                width={600}
+            >
+                <Form
+                    form={retouchedForm}
+                    layout="vertical"
+                    onFinish={(values) => handleUploadPhotos(values, true)}
+                >
+                    <Form.Item
+                        name="retouchedPhotos"
+                        label="选择精修照片"
+                        rules={[{ required: true, message: '请选择要上传的精修照片' }]}
+                        extra="支持一次选择多张精修图片，最多100张"
+                    >
+                        <Upload {...retouchedUploadProps} listType="picture-card">
+                            <div>
+                                <UploadOutlined />
+                                <div style={{ marginTop: 8 }}>选择精修照片</div>
+                                <div style={{ fontSize: '12px', color: '#8c8c8c' }}>支持多选</div>
+                            </div>
+                        </Upload>
+                    </Form.Item>
+
+                    <Form.Item style={{ marginTop: 24 }}>
+                        <Space>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={uploading}
+                                icon={<UploadOutlined />}
+                                style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
+                            >
+                                上传精修照片
+                            </Button>
+                            <Button onClick={() => setShowRetouchedUploadModal(false)}>
                                 取消
                             </Button>
                         </Space>

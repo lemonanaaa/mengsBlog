@@ -9,6 +9,7 @@ import PhotographyIntroduction from "../pages/photography/component/Introduction
 import PhotographyPictures from "../pages/photography/component/Pictures";
 import PhotographyTimeline from "../pages/photography/component/Timeline";
 import PhotographyManagement from "../pages/photography/component/PhotographyManagement";
+import RetouchedPhotos from "../pages/photography/batchView/RetouchedView";
 import BatchView from "../pages/photography/batchView/View";
 import PhotographyForGusetView from "../pages/photographyForGuset/View"
 import WritingView from "../pages/writings/View";
@@ -59,6 +60,10 @@ const routes = [
   {
     path: "/photography/management",
     Component: <PhotographyManagement />,
+  },
+  {
+    path: "/photography/retouched/:batchId",
+    Component: <RetouchedPhotos />,
   },
   {
     path: "/photography/batch/:batchId",

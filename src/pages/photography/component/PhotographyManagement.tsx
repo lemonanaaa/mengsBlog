@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import Layout from "../../common/Layout";
 import pinyin from "pinyin";
@@ -18,72 +18,153 @@ import {
   Modal,
   Form,
   DatePicker,
-  Upload,
   Select,
-  Divider,
-  List,
   Popconfirm,
-  Empty,
-  Collapse,
-  Switch,
-  InputNumber
+  Empty
 } from "antd";
 
 import {
-  UploadOutlined,
-  CameraOutlined,
   PlusOutlined,
   DeleteOutlined,
   CrownOutlined,
   SaveOutlined,
   FolderOutlined,
-  EyeOutlined,
   EditOutlined,
   ArrowLeftOutlined,
   UserOutlined,
-  CalendarOutlined,
-  SettingOutlined,
-  UpOutlined,
-  DownOutlined,
-  RightOutlined
+  CalendarOutlined
 } from "@ant-design/icons";
-import { mengsBlogContext } from "../../common/Layout";
 import { PhotographyController } from "../Controller";
-import { PhotoUpload, PhotoSession, Photo, PRESET_TAGS } from "../Model";
-import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { PhotoSession } from "../Model";
 import "../../../css/photography/uploadPhotos.css";
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 
+// 生成拼音函数
+const generatePinyin = (chineseName: string): string => {
+  if (!chineseName) return '';
+
+  try {
+    const result = pinyin(chineseName, {
+      style: pinyin.STYLE_NORMAL
+    });
+    return result.flat().join('').toLowerCase();
+  } catch (error) {
+    console.error('拼音生成失败:', error);
+    return chineseName;
+  }
+};
+
+// 可复用的表单字段组件
+const BatchFormFields = ({ form, showAdvanced = false }: { form: any; showAdvanced?: boolean }) => (
+  <>
+    {/* 拍摄批次名称 */}
+    <Form.Item
+      name="batchName"
+      label="拍摄批次名称"
+    >
+      <Input placeholder="如：春日樱花人像拍摄" />
+    </Form.Item>
+
+    {/* 客户姓名和姓名全拼 */}
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          name="friendName"
+          label="客户姓名"
+          rules={[{ required: true, message: '请输入客户姓名' }]}
+        >
+          <Input
+            placeholder="如：张伟"
+            onChange={(e) => {
+              const pinyin = generatePinyin(e.target.value);
+              form.setFieldsValue({ friendFullName: pinyin });
+            }}
+          />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item
+          name="friendFullName"
+          label=" "
+        >
+          <Input
+            placeholder="自动生成"
+            readOnly
+            style={{ backgroundColor: '#f5f5f5' }}
+          />
+        </Form.Item>
+      </Col>
+    </Row>
+
+    {/* 拍摄日期和手机尾号 */}
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          name="date"
+          label="拍摄日期"
+          rules={[{ required: true, message: '请选择拍摄日期' }]}
+        >
+          <DatePicker 
+            style={{ width: '100%' }} 
+            placeholder="请选择拍摄日期"
+            format="YYYY-MM-DD"
+          />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item
+          name="phoneTail"
+          label="手机尾号"
+          rules={[{ required: true, message: '请输入手机尾号' }]}
+        >
+          <Input placeholder="如：1234" />
+        </Form.Item>
+      </Col>
+    </Row>
+
+    {/* 基本设置字段 */}
+    <Form.Item
+      name="isPublic"
+      label="可见性"
+      extra="控制后端是否返回该批次数据，不影响密码验证"
+    >
+      <Select placeholder="选择可见性">
+        <Option value={false}>私密（后端不返回）</Option>
+        <Option value={true}>公开（后端返回）</Option>
+      </Select>
+    </Form.Item>
+
+    <Form.Item
+      name="location"
+      label="拍摄地点"
+    >
+      <Input placeholder="如：樱花公园、咖啡厅等" />
+    </Form.Item>
+
+    <Form.Item
+      name="description"
+      label={showAdvanced ? "拍摄描述" : "描述信息"}
+    >
+      <TextArea
+        placeholder="拍摄主题、风格、特殊要求等描述信息"
+        rows={3}
+        maxLength={100}
+        showCount
+      />
+    </Form.Item>
+  </>
+);
+
 const PhotographyManagement = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const params = useParams();
-  const { blogCommonStore } = useContext(mengsBlogContext) as any;
-  const [form] = Form.useForm();
   const [batchForm] = Form.useForm();
   const [editBatchForm] = Form.useForm();
-  const [detailEditForm] = Form.useForm();
 
-  // 使用pinyin包生成拼音
-  const generatePinyin = (chineseName: string): string => {
-    if (!chineseName) return '';
-
-    try {
-      // 使用pinyin包，设置style为NORMAL（不带声调）
-      const result = pinyin(chineseName, {
-        style: pinyin.STYLE_NORMAL
-      });
-
-      // 将二维数组扁平化并连接
-      return result.flat().join('').toLowerCase();
-    } catch (error) {
-      console.error('拼音生成失败:', error);
-      return chineseName; // 如果失败，返回原字符串
-    }
-  };
 
   // 检查是否为 Meng 模式
   const isMeng = searchParams.get('meng') === 'true';
@@ -130,15 +211,8 @@ const PhotographyManagement = () => {
   const [photoSessions, setPhotoSessions] = useState<PhotoSession[]>([]);
   const [currentSession, setCurrentSession] = useState<PhotoSession | null>(null);
   const [showBatchModal, setShowBatchModal] = useState(false);
-  const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showEditBatchModal, setShowEditBatchModal] = useState(false);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [batchEditActive, setBatchEditActive] = useState<string[]>([]);
 
   // 组件加载时获取所有批次
   useEffect(() => {
@@ -151,8 +225,6 @@ const PhotographyManagement = () => {
       const targetSession = photoSessions.find(s => s.id === params.batchId);
       if (targetSession) {
         setCurrentSession(targetSession);
-        setIsDeleteMode(false);
-        setSelectedPhotos([]);
       }
     }
   }, [params.batchId, photoSessions]);
@@ -236,51 +308,6 @@ const PhotographyManagement = () => {
     navigateWithMeng(`/photography/batch/${session.id}`);
   };
 
-  // 选择/取消选择照片
-  const handleTogglePhotoSelection = (photoId: string) => {
-    if (!isDeleteMode) return;
-
-    setSelectedPhotos(prev => {
-      if (prev.includes(photoId)) {
-        return prev.filter(id => id !== photoId);
-      } else {
-        return [...prev, photoId];
-      }
-    });
-  };
-
-  // 批量删除选中的照片
-  const handleBatchDeletePhotos = async () => {
-    if (selectedPhotos.length === 0) {
-      message.warning('请先选择要删除的照片');
-      return;
-    }
-
-    try {
-      // 使用批量删除接口
-      const result = await PhotographyController.deletePhotos(selectedPhotos);
-
-      if (result.success && result.deletedCount > 0) {
-        // 更新批次列表
-        setPhotoSessions(prev => prev.map(s =>
-          s.id === currentSession?.id ? { ...s, photos: s.photos.filter(photo => !selectedPhotos.includes(photo.id)) } : s
-        ));
-
-        setSelectedPhotos([]);
-        setIsDeleteMode(false);
-
-        if (result.failedIds.length > 0) {
-          message.warning(`成功删除 ${result.deletedCount} 张照片，${result.failedIds.length} 张删除失败`);
-        } else {
-          message.success(`成功删除 ${result.deletedCount} 张照片`);
-        }
-      } else {
-        message.error('删除失败，请重试');
-      }
-    } catch (error) {
-      message.error('删除失败，请重试');
-    }
-  };
 
   // 编辑批次信息
   const handleEditBatch = (session: PhotoSession) => {
@@ -296,7 +323,7 @@ const PhotographyManagement = () => {
       batchName: session.batchName,
       location: session.location,
       description: session.description,
-      // 日期字段需要转换为 moment 对象
+      // 日期字段需要转换为 dayjs 对象
       date: session.date ? dayjs(session.date) : undefined,
       // 新增字段
       tags: session.tags,
@@ -545,102 +572,7 @@ const PhotographyManagement = () => {
               layout="vertical"
               onFinish={handleUpdateBatch}
             >
-              {/* 拍摄批次名称 - 第一排，虽然不是必填但很重要 */}
-              <Form.Item
-                name="batchName"
-                label="拍摄批次名称"
-              >
-                <Input placeholder="如：春日樱花人像拍摄" />
-              </Form.Item>
-
-              {/* 客户姓名和姓名全拼 - 第二行 */}
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item
-                    name="friendName"
-                    label="客户姓名"
-                    rules={[{ required: true, message: '请输入客户姓名' }]}
-                  >
-                    <Input
-                      placeholder="如：张伟"
-                      onChange={(e) => {
-                        // 自动生成姓名全拼
-                        const pinyin = generatePinyin(e.target.value);
-                        editBatchForm.setFieldsValue({ friendFullName: pinyin });
-                      }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="friendFullName"
-                    label=" "
-                  >
-                    <Input
-                      placeholder="自动生成"
-                      readOnly
-                      style={{ backgroundColor: '#f5f5f5' }}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              {/* 拍摄日期和手机尾号 - 第三行 */}
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item
-                    name="date"
-                    label="拍摄日期"
-                    rules={[{ required: true, message: '请选择拍摄日期' }]}
-                  >
-                    <DatePicker 
-                      style={{ width: '100%' }} 
-                      placeholder="请选择新的拍摄日期"
-                      format="YYYY-MM-DD"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="phoneTail"
-                    label="手机尾号"
-                    rules={[{ required: true, message: '请输入手机尾号' }]}
-                  >
-                    <Input placeholder="如：1234" />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              {/* 基本设置字段 */}
-              <Form.Item
-                name="isPublic"
-                label="可见性"
-                extra="控制后端是否返回该批次数据，不影响密码验证"
-              >
-                <Select placeholder="选择可见性">
-                  <Option value={false}>私密（后端不返回）</Option>
-                  <Option value={true}>公开（后端返回）</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                name="location"
-                label="拍摄地点"
-              >
-                <Input placeholder="如：樱花公园、咖啡厅等" />
-              </Form.Item>
-
-              <Form.Item
-                name="description"
-                label="拍摄描述"
-              >
-                <TextArea
-                  placeholder="拍摄主题、风格、特殊要求等描述信息"
-                  rows={3}
-                  maxLength={100}
-                  showCount
-                />
-              </Form.Item>
+              <BatchFormFields form={editBatchForm} showAdvanced={true} />
 
               <Form.Item style={{ marginTop: 24 }}>
                 <Space>
@@ -678,101 +610,7 @@ const PhotographyManagement = () => {
             layout="vertical"
             onFinish={handleCreateBatch}
           >
-            {/* 拍摄批次名称 - 第一排，虽然不是必填但很重要 */}
-            <Form.Item
-              name="batchName"
-              label="拍摄批次名称"
-            >
-              <Input placeholder="如：春日樱花人像拍摄" />
-            </Form.Item>
-
-            {/* 客户姓名和姓名全拼 - 第二行 */}
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  name="friendName"
-                  label="客户姓名"
-                  rules={[{ required: true, message: '请输入客户姓名' }]}
-                >
-                  <Input
-                    placeholder="如：张伟"
-                    onChange={(e) => {
-                      // 自动生成姓名全拼
-                      const pinyin = generatePinyin(e.target.value);
-                      batchForm.setFieldsValue({ friendFullName: pinyin });
-                    }}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="friendFullName"
-                  label=" "
-                >
-                  <Input
-                    placeholder="自动生成"
-                    readOnly
-                    style={{ backgroundColor: '#f5f5f5' }}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            {/* 拍摄日期和手机尾号 - 第三行 */}
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  name="date"
-                  label="拍摄日期"
-                  rules={[{ required: true, message: '请选择拍摄日期' }]}
-                >
-                  <DatePicker 
-                    style={{ width: '100%' }} 
-                    format="YYYY-MM-DD"
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="phoneTail"
-                  label="手机尾号"
-                  rules={[{ required: true, message: '请输入手机尾号' }]}
-                >
-                  <Input placeholder="如：1234" />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Form.Item
-              name="isPublic"
-              label="可见性"
-              extra="控制后端是否返回该批次数据，不影响密码验证"
-            >
-              <Select placeholder="选择可见性">
-                <Option value={false}>私密（后端不返回）</Option>
-                <Option value={true}>公开（后端返回）</Option>
-              </Select>
-            </Form.Item>
-
-            {/* 其他可选字段 */}
-            <Form.Item
-              name="location"
-              label="拍摄地点"
-            >
-              <Input placeholder="如：樱花公园、咖啡厅等" />
-            </Form.Item>
-
-            <Form.Item
-              name="description"
-              label="描述信息"
-            >
-              <TextArea
-                placeholder="拍摄主题、风格、特殊要求等描述信息"
-                rows={3}
-                maxLength={100}
-                showCount
-              />
-            </Form.Item>
+            <BatchFormFields form={batchForm} showAdvanced={false} />
 
             <Form.Item style={{ marginTop: 24 }}>
               <Space>
