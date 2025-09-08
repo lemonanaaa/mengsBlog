@@ -1,0 +1,374 @@
+.photo-management {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  // 兼容旧的类名
+  &.upload-photos {
+    @extend .photo-management;
+  }
+
+  // 通用页面标题样式 - 与前端meng模块保持一致
+  .page-header {
+    margin-bottom: 32px;
+    padding: 24px 0;
+    text-align: center;
+    
+    h2 {
+      margin-bottom: 16px;
+      color: #262626;
+      font-weight: 600;
+      
+      .anticon {
+        margin-right: 8px;
+        color: #1890ff;
+      }
+    }
+    
+    .ant-typography {
+      color: #8c8c8c;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    
+    .ant-tag {
+      margin-left: 12px;
+      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 16px;
+    }
+  }
+
+  // 副标题样式 - 与前端meng模块保持一致
+  .photography-subpage-header {
+    margin-bottom: 24px;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    
+    .photography-subtitle {
+      margin-bottom: 8px;
+      color: #262626;
+      font-weight: 600;
+      
+      .anticon {
+        margin-right: 8px;
+        color: #1890ff;
+      }
+    }
+    
+    .photography-subtitle-desc {
+      color: #8c8c8c;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .ant-tag {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+  }
+
+  .photography-header {
+    margin-bottom: 32px;
+    
+    .photography-header-container {
+      position: relative;
+      text-align: center;
+      
+      .photography-title-section {
+        .photography-title {
+          margin-bottom: 8px;
+          color: #262626;
+          
+          .anticon {
+            margin-right: 8px;
+            color: #1890ff;
+          }
+        }
+        
+        .photography-subtitle {
+          color: #8c8c8c;
+          font-size: 16px;
+          margin-bottom: 16px;
+        }
+        
+        .photography-meng-tag {
+          margin-top: 8px;
+          
+          .ant-tag {
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  .upload-header {
+    text-align: center;
+    margin-bottom: 32px;
+    
+    h2 {
+      margin-bottom: 8px;
+      color: #262626;
+      
+      .anticon {
+        margin-right: 8px;
+        color: #1890ff;
+      }
+    }
+    
+    .ant-typography {
+      color: #8c8c8c;
+      font-size: 16px;
+    }
+  }
+
+  .upload-actions {
+    text-align: center;
+    margin-bottom: 32px;
+    
+    .ant-btn {
+      height: 48px;
+      padding: 0 32px;
+      font-size: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+      }
+    }
+  }
+
+  .batch-list {
+    margin-top: 40px;
+    
+    h3 {
+      margin-bottom: 24px;
+      color: #262626;
+      font-weight: 600;
+    }
+  }
+
+  .uploaded-photos {
+    margin-top: 40px;
+    
+    h3 {
+      margin-bottom: 24px;
+      color: #262626;
+      font-weight: 600;
+    }
+    
+    .ant-card {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+      
+      .ant-card-cover {
+        .ant-image {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+        }
+      }
+      
+      .ant-card-meta {
+        padding: 16px;
+        
+        .ant-card-meta-title {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 8px;
+          color: #262626;
+        }
+        
+        .ant-card-meta-description {
+          color: #595959;
+          line-height: 1.6;
+          
+          .ant-tag {
+            margin: 2px 4px 2px 0;
+            border-radius: 4px;
+          }
+        }
+      }
+      
+      .ant-card-actions {
+        background: #fafafa;
+        border-top: 1px solid #f0f0f0;
+        
+        li {
+          margin: 8px 0;
+          
+          .anticon {
+            font-size: 16px;
+            
+            &:hover {
+              transform: scale(1.1);
+              transition: transform 0.2s ease;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 上传弹窗样式
+  .ant-modal {
+    .ant-modal-header {
+      border-bottom: 2px solid #f0f0f0;
+      
+      .ant-modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #262626;
+        
+        .anticon {
+          margin-right: 8px;
+          color: #1890ff;
+        }
+      }
+    }
+    
+    .ant-modal-body {
+      padding: 24px;
+      
+      .ant-form-item {
+        margin-bottom: 20px;
+        
+        .ant-form-item-label {
+          label {
+            font-weight: 500;
+            color: #262626;
+          }
+        }
+        
+        .ant-input,
+        .ant-select-selector,
+        .ant-picker {
+          border-radius: 6px;
+          border: 1px solid #d9d9d9;
+          
+          &:hover {
+            border-color: #40a9ff;
+          }
+          
+          &:focus,
+          &.ant-input-focused,
+          &.ant-select-focused .ant-select-selector {
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+          }
+        }
+        
+        .ant-upload {
+          .ant-upload-list-picture-card {
+            .ant-upload-list-item {
+              border-radius: 8px;
+              border: 2px dashed #d9d9d9;
+              
+              &:hover {
+                border-color: #40a9ff;
+              }
+            }
+          }
+          
+          .ant-upload-select-picture-card {
+            border-radius: 8px;
+            border: 2px dashed #d9d9d9;
+            background: #fafafa;
+            
+            &:hover {
+              border-color: #40a9ff;
+              background: #f0f8ff;
+            }
+            
+            .anticon {
+              font-size: 24px;
+              color: #999;
+            }
+            
+            .ant-upload-text {
+              margin-top: 8px;
+              color: #666;
+            }
+          }
+        }
+      }
+      
+      .ant-divider {
+        margin: 24px 0;
+        border-color: #f0f0f0;
+        
+        .ant-divider-inner-text {
+          font-weight: 600;
+          color: #262626;
+          font-size: 16px;
+        }
+      }
+      
+      .ant-btn {
+        height: 40px;
+        padding: 0 24px;
+        border-radius: 6px;
+        font-weight: 500;
+        
+        &.ant-btn-primary {
+          background: #1890ff;
+          border-color: #1890ff;
+          
+          &:hover {
+            background: #40a9ff;
+            border-color: #40a9ff;
+          }
+        }
+      }
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 768px) {
+    padding: 16px;
+    
+    .upload-header {
+      margin-bottom: 24px;
+      
+      h2 {
+        font-size: 20px;
+      }
+    }
+    
+    .upload-actions {
+      margin-bottom: 24px;
+      
+      .ant-btn {
+        width: 100%;
+        height: 44px;
+        padding: 0 24px;
+      }
+    }
+    
+    .uploaded-photos {
+      .ant-card {
+        margin-bottom: 16px;
+      }
+    }
+    
+    .ant-modal {
+      .ant-modal-body {
+        padding: 16px;
+      }
+    }
+  }
+}

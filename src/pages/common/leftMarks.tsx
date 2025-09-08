@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useContext, useRef, useEffect } from "react";
 import { Image } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { mengsBlogContext } from "../common/Layout";
+import { createNavigateWithMeng } from "../../utils/navigation";
 
 import mengsPhoto from "../../assets/mengsPhoto.jpg";
 
@@ -89,7 +90,12 @@ export class LeftMarksStorage {
 
 const LeftMarks = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { blogCommonStore, setBlogCommonStore } = useContext(mengsBlogContext) as any;
+  
+  // 通用导航函数，自动保持meng参数
+  const navigateWithMeng = createNavigateWithMeng(navigate, searchParams);
   
   // 侧边栏配置
   const config: LeftMarksConfig = {
@@ -286,14 +292,28 @@ const LeftMarks = () => {
       {/* 介绍部分 */}
       <div className="desc-box">
         {/* 首页 */}
-        <a href="/" className="nav-link home-link">
+        <a 
+          href="#" 
+          onClick={(e) => {
+            e.preventDefault();
+            navigateWithMeng('/');
+          }}
+          className="nav-link home-link"
+        >
           <span className="nav-icon">🏠</span>
           <span className="nav-text">Meng's home</span>
           {location.pathname === '/' && <span className="active-indicator">●</span>}
         </a>
         
         {/* 前端工作介绍 */}
-        <a href="/career" className="nav-link career-link">
+        <a 
+          href="#" 
+          onClick={(e) => {
+            e.preventDefault();
+            navigateWithMeng('/career');
+          }}
+          className="nav-link career-link"
+        >
           <span className="nav-icon">💻</span>
           <span className="nav-text">前端Meng</span>
           {location.pathname.startsWith('/career') && <span className="active-indicator">●</span>}
@@ -302,7 +322,7 @@ const LeftMarks = () => {
         {location.pathname.startsWith('/career') && (
           <>
             <div 
-              onClick={() => { window.location.href = '/career/resume' }} 
+              onClick={() => navigateWithMeng('/career/resume')} 
               className="sub-nav-item"
               data-path="/career/resume"
             >
@@ -310,7 +330,7 @@ const LeftMarks = () => {
               <span className="sub-nav-text">简历页面</span>
             </div>
             <div 
-              onClick={() => { window.location.href = '/career/blogstree' }} 
+              onClick={() => navigateWithMeng('/career/blogstree')} 
               className="sub-nav-item"
               data-path="/career/blogstree"
             >
@@ -318,7 +338,7 @@ const LeftMarks = () => {
               <span className="sub-nav-text">前端知识树</span>
             </div>
             <div 
-              onClick={() => { window.location.href = '/career/blogswithtimeline' }} 
+              onClick={() => navigateWithMeng('/career/blogswithtimeline')} 
               className="sub-nav-item"
               data-path="/career/blogswithtimeline"
             >
@@ -337,46 +357,72 @@ const LeftMarks = () => {
         )}
         
         {/* 摄影介绍 */}
-        <a href="/photography" className="nav-link photography-link">
+        <a 
+          href="#" 
+          onClick={(e) => {
+            e.preventDefault();
+            navigateWithMeng('/photography');
+          }}
+          className="nav-link photography-link"
+        >
           <span className="nav-icon">📸</span>
           <span className="nav-text">摄影师Meng</span>
-          {location.pathname === '/photography' && <span className="active-indicator">●</span>}
+          {location.pathname.startsWith('/photography') && <span className="active-indicator">●</span>}
         </a>
         
-        {(location.pathname === '/photography') && (
+        {location.pathname.startsWith('/photography') && (
           <>
-            {/* 给外界看的，修好的图 */}
+            {/* 摄影师介绍 */}
             <div 
-              onClick={() => { setBlogCommonStore({ 'showComponent': 'introduction' }) }} 
+              onClick={() => navigateWithMeng('/photography/introduction')} 
               className="sub-nav-item"
               data-path="/photography/introduction"
             >
               <span className="sub-nav-icon">📖</span>
               <span className="sub-nav-text">介绍</span>
             </div>
-            {/* 给客人们单独看自己的图片 */}
+            
+            {/* 底片展示 */}
             <div 
-              onClick={() => { setBlogCommonStore({ 'showComponent': 'pictures' }) }} 
+              onClick={() => navigateWithMeng('/photography/pictures')} 
               className="sub-nav-item"
               data-path="/photography/pictures"
             >
               <span className="sub-nav-icon">🖼️</span>
               <span className="sub-nav-text">底片们</span>
             </div>
-            {/* 公开的一些策划，每次拍摄的时间，地点，任务，设备等记录 */}
+            
+            {/* 拍摄时间线 */}
             <div 
-              onClick={() => { setBlogCommonStore({ 'showComponent': 'timeline' }) }} 
+              onClick={() => navigateWithMeng('/photography/timeline')} 
               className="sub-nav-item"
               data-path="/photography/timeline"
             >
               <span className="sub-nav-icon">⏰</span>
-              <span className="sub-nav-text">Pictures with timeline</span>
+              <span className="sub-nav-text">拍摄时间线</span>
             </div>
+            
+            {/* meng模式下的底片管理功能 */}
+            {searchParams.get('meng') === 'true' && (
+              <div 
+                onClick={() => { 
+                  window.location.href = '/photography/management?meng=true';
+                }} 
+                className="sub-nav-item"
+                data-path="/photography/management"
+              >
+                <span className="sub-nav-icon">📁</span>
+              <span className="sub-nav-text">底片管理</span>
+              </div>
+            )}
           </>
         )}
 
         {/* 个人日记等 */}
-        <a href="/writing" className="nav-link writing-link">
+        <a 
+          href={searchParams.get('meng') === 'true' ? '/writing?meng=true' : '/writing'} 
+          className="nav-link writing-link"
+        >
           <span className="nav-icon">✍️</span>
           <span className="nav-text">Meng's碎碎念</span>
           {location.pathname === '/writing' && <span className="active-indicator">●</span>}

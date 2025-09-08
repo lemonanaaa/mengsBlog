@@ -4,6 +4,7 @@ import { CalendarOutlined, EyeOutlined, EditOutlined, DeleteOutlined, Exclamatio
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../common/Layout";
 import "../../../css/career/blogsTimeline.css";
+import { blogApiRequest } from "../../../config/api";
 const { Title, Text, Paragraph } = Typography;
 
 interface Blog {
@@ -45,18 +46,11 @@ const BlogsWithTimeline = () => {
     setLoading(true);
     try {
       // 根据isMeng模式决定请求参数
-      const url = isMeng 
-        ? "http://localhost:3001/blogs?isMeng=true"
-        : "http://localhost:3001/blogs?isMeng=false";
+      const endpoint = isMeng ? "/blogs?isMeng=true" : "/blogs?isMeng=false";
         
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        // 直接使用后端返回的数据，不进行前端排序
-        setBlogs(data.data || []);
-      } else {
-        console.error("获取博客列表失败");
-      }
+      const data = await blogApiRequest(endpoint);
+      // 直接使用后端返回的数据，不进行前端排序
+      setBlogs(data.data || []);
     } catch (error) {
       console.error("网络错误:", error);
     } finally {
@@ -75,15 +69,11 @@ const BlogsWithTimeline = () => {
       cancelText: '取消',
       onOk: async () => {
         try {
-          const response = await fetch(`http://localhost:3001/blogs/${id}`, {
+          await blogApiRequest(`/blogs/${id}`, {
             method: "DELETE",
           });
-          if (response.ok) {
-            message.success('博客删除成功！');
-            fetchBlogs(); // 重新获取列表，会使用当前的isMeng参数
-          } else {
-            message.error('删除失败，请稍后重试');
-          }
+          message.success('博客删除成功！');
+          fetchBlogs(); // 重新获取列表，会使用当前的isMeng参数
         } catch (error) {
           console.error("删除失败:", error);
           message.error('网络错误，删除失败');

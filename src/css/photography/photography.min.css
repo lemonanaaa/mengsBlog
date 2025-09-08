@@ -218,6 +218,136 @@
     transform: scale(1);
   }
 }
+.batch-view {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.batch-view .ant-collapse {
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.batch-view .ant-form-item {
+  margin-bottom: 20px;
+}
+
+.batch-view .ant-divider {
+  margin: 24px 0 20px 0;
+}
+
+.batch-view .ant-card {
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+
+.batch-view .ant-image {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.batch-view .ant-tag {
+  margin-bottom: 8px;
+  margin-right: 8px;
+}
+
+.batch-view .ant-space {
+  gap: 12px;
+}
+
+.batch-view .ant-btn {
+  border-radius: 6px;
+}
+
+.batch-view .ant-input,
+.batch-view .ant-select,
+.batch-view .ant-date-picker {
+  border-radius: 6px;
+}
+
+.batch-view .ant-collapse-header {
+  border-radius: 8px 8px 0 0 !important;
+  padding: 16px 24px !important;
+}
+
+.batch-view .ant-collapse-content {
+  border-radius: 0 0 8px 8px;
+}
+
+.batch-view .ant-collapse-content-box {
+  padding: 24px !important;
+}
+
+.batch-view .ant-modal-content {
+  border-radius: 8px;
+}
+
+.batch-view .ant-upload-list-picture-card .ant-upload-list-item {
+  border-radius: 6px;
+}
+
+.batch-view .ant-upload.ant-upload-select-picture-card {
+  border-radius: 6px;
+}
+
+.batch-view .ant-typography h3 {
+  margin-bottom: 16px;
+  color: #262626;
+}
+
+.batch-view .ant-typography h4 {
+  margin-bottom: 16px;
+  color: #262626;
+}
+
+.batch-view .ant-empty {
+  padding: 48px 0;
+}
+
+.batch-view .page-header {
+  margin-bottom: 32px;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.batch-view .page-header h2 {
+  margin-bottom: 16px;
+  color: #262626;
+  font-weight: 600;
+}
+
+.batch-view .page-header h2 .anticon {
+  margin-right: 8px;
+  color: #1890ff;
+}
+
+.batch-view .page-header .ant-typography {
+  color: #8c8c8c;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.batch-view .page-header .ant-tag {
+  margin-left: 12px;
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 16px;
+}
+
+.batch-view .photos-section {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.batch-view .photos-header {
+  margin-bottom: 20px;
+}
+
+.batch-view .photos-grid .ant-col {
+  margin-bottom: 16px;
+}
+
 @media (max-width: 768px) {
   .pictures-gallery {
     padding: 16px;

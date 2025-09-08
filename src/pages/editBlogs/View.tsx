@@ -8,6 +8,7 @@ import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
 
 import '@wangeditor/editor/dist/css/style.css'
 import '../../css/career/editBlogs.css'
+import { blogApiRequest, API_CONFIG } from '../../config/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -51,27 +52,22 @@ const EditBlogs = () => {
   const fetchBlog = async (id: string) => {
     setLoading(true)
     try {
-      const response = await fetch(`http://localhost:3001/blogs/${id}`)
-      if (response.ok) {
-        const data = await response.json()
-        const blog = data.data || data
-        setTitle(blog.title || '')
-        setContent(blog.content || '<p>开始编写你的博客...</p>')
-        setSummary(blog.summary || '')
-        setStatus(blog.status || 'draft')
-        setIsFeatured(blog.isFeatured || false)
-        setTags(blog.tags || [])
-        setOriginalData({
-          title: blog.title || '',
-          content: blog.content || '<p>开始编写你的博客...</p>',
-          summary: blog.summary || '',
-          status: blog.status || 'draft',
-          isFeatured: blog.isFeatured || false,
-          tags: blog.tags || []
-        })
-      } else {
-        message.error('获取博客详情失败')
-      }
+      const data = await blogApiRequest(`/blogs/${id}`)
+      const blog = data.data || data
+      setTitle(blog.title || '')
+      setContent(blog.content || '<p>开始编写你的博客...</p>')
+      setSummary(blog.summary || '')
+      setStatus(blog.status || 'draft')
+      setIsFeatured(blog.isFeatured || false)
+      setTags(blog.tags || [])
+      setOriginalData({
+        title: blog.title || '',
+        content: blog.content || '<p>开始编写你的博客...</p>',
+        summary: blog.summary || '',
+        status: blog.status || 'draft',
+        isFeatured: blog.isFeatured || false,
+        tags: blog.tags || []
+      })
     } catch (error) {
       message.error('网络错误')
       console.error('Error fetching blog:', error)
@@ -148,17 +144,11 @@ const EditBlogs = () => {
 
     setLoading(true);
     try {
-      const url = isNewBlog
-        ? 'http://localhost:3001/blogs'
-        : `http://localhost:3001/blogs/${blogId}`
+      const endpoint = isNewBlog ? '/blogs' : `/blogs/${blogId}`;
+      const method = isNewBlog ? 'POST' : 'PUT';
 
-      const method = isNewBlog ? 'POST' : 'PUT'
-
-      const response = await fetch(url, {
+      const result = await blogApiRequest(endpoint, {
         method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({
           title: title.trim(),
           content: content,
@@ -168,8 +158,6 @@ const EditBlogs = () => {
           tags: tags
         })
       });
-
-      const result = await response.json();
 
       if (result.success) {
         message.success(isNewBlog ? '博客创建成功！' : '博客更新成功！');
@@ -189,9 +177,8 @@ const EditBlogs = () => {
   const handleOldSubmit = async () => {
     setLoading(true);
     try {
-      await fetch('http://localhost:3001/initblog', {
+      await blogApiRequest('/initblog', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html: content })
       });
       message.success('上传成功！');

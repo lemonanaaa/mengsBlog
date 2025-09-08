@@ -3,7 +3,9 @@ import { Card, Typography, Tag, Button, Space, Spin, Empty, Divider } from "antd
 import { ArrowLeftOutlined, CalendarOutlined, EyeOutlined, EditOutlined, CrownOutlined } from "@ant-design/icons";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Layout from "../../common/Layout";
-import { ClockCircleOutlined, SyncOutlined, UserOutlined, FieldTimeOutlined } from "@ant-design/icons";import "../../../css/career/blogView.css";
+import { ClockCircleOutlined, SyncOutlined, UserOutlined, FieldTimeOutlined } from "@ant-design/icons";
+import "../../../css/career/blogView.css";
+import { blogApiRequest } from "../../../config/api";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -52,14 +54,8 @@ const BlogView = () => {
     hasFetchedRef.current = true;
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3001/blogs/${blogId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setBlog(data.data || data);
-      } else {
-        console.error("获取博客详情失败");
-        navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`);
-      }
+      const data = await blogApiRequest(`/blogs/${blogId}`);
+      setBlog(data.data || data);
     } catch (error) {
       console.error("网络错误:", error);
       navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`);
