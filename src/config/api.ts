@@ -1,10 +1,14 @@
 // API配置文件
+const isDevelopment = process.env.NODE_ENV === 'development';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 
+  (isDevelopment ? 'http://localhost:3001/api' : 'http://lemonanaaa.top/api');
+
 export const API_CONFIG = {
-  // 博客相关API (端口3001)
-  BLOG_BASE_URL: 'http://localhost:3001/api',
+  // 博客相关API
+  BLOG_BASE_URL: API_BASE_URL,
   
-  // 摄影相关API (端口3001)
-  PHOTO_BASE_URL: 'http://localhost:3001/api',
+  // 摄影相关API
+  PHOTO_BASE_URL: API_BASE_URL,
   
   // 其他API配置
   RESUME_URL: '/resume.md', // 直接从public目录加载
