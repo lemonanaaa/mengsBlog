@@ -135,6 +135,35 @@ const BlogsWithTimeline = () => {
     fetchBlogs();
   }, [isMeng]); // 当isMeng参数变化时重新获取博客列表
 
+  // 渲染页面头部组件
+  const renderHeader = () => (
+    <div className="blogs-timeline-header">
+      <div className="blogs-timeline-header-container">
+        {/* 标题部分 - 始终居中 */}
+        <div className="blogs-timeline-title-section">
+          <Title level={2} className="blogs-timeline-title">博客时间线</Title>
+          <Text type="secondary" className="blogs-timeline-subtitle">按时间顺序展示所有博客文章</Text>
+          {isMeng && (
+            <div className="blogs-timeline-meng-tag">
+              <Tag color="purple" icon={<CrownOutlined />}>meng模式</Tag>
+            </div>
+          )}
+        </div>
+        
+        {/* 新建博客按钮 - 绝对定位在右侧 */}
+        {isMeng && (
+          <Button
+            type="primary"
+            className="blogs-timeline-new-button"
+            onClick={() => navigate(`/editblogs?blogId=new&meng=true`)}
+          >
+            新建博客
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
       <Layout>
@@ -148,8 +177,11 @@ const BlogsWithTimeline = () => {
   if (blogs.length === 0) {
     return (
       <Layout>
-        <div className="blogs-timeline-empty">
-          <Empty description="暂无博客内容" />
+        <div className="blogs-timeline-page">
+          {renderHeader()}
+          <div className="blogs-timeline-empty">
+            <Empty description="暂无博客内容" />
+          </div>
         </div>
       </Layout>
     );
@@ -158,31 +190,7 @@ const BlogsWithTimeline = () => {
   return (
     <Layout>
       <div className="blogs-timeline-page">
-        <div className="blogs-timeline-header">
-          <div className="blogs-timeline-header-container">
-            {/* 标题部分 - 始终居中 */}
-            <div className="blogs-timeline-title-section">
-              <Title level={2} className="blogs-timeline-title">博客时间线</Title>
-              <Text type="secondary" className="blogs-timeline-subtitle">按时间顺序展示所有博客文章</Text>
-              {isMeng && (
-                <div className="blogs-timeline-meng-tag">
-                  <Tag color="purple" icon={<CrownOutlined />}>meng模式</Tag>
-                </div>
-              )}
-            </div>
-            
-            {/* 新建博客按钮 - 绝对定位在右侧 */}
-            {isMeng && (
-              <Button
-                type="primary"
-                className="blogs-timeline-new-button"
-                onClick={() => navigate(`/editblogs?blogId=new&meng=true`)}
-              >
-                新建博客
-              </Button>
-            )}
-          </div>
-        </div>
+        {renderHeader()}
 
         <div className="timeline-container">
           {blogs.map((blog, index) => {
