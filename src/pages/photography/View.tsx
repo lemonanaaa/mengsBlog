@@ -2,16 +2,20 @@ import React, { useContext } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Layout from "../common/Layout";
 import { mengsBlogContext } from "../common/Layout";
-import { Typography, Card, Row, Col, Button, Tag } from "antd";
+import { Typography, Card, Row, Col, Button, Tag, Space } from "antd";
 import { 
   CameraOutlined, 
   BookOutlined, 
   PictureOutlined, 
   ClockCircleOutlined, 
   FolderOutlined,
-  CrownOutlined 
+  CrownOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  EnvironmentOutlined
 } from "@ant-design/icons";
 import { createNavigateWithMeng } from "../../utils/navigation";
+import "../../css/photography/photographyMain.css";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -31,23 +35,26 @@ const Photography = () => {
     {
       icon: <BookOutlined style={{ fontSize: '32px', color: '#1890ff' }} />,
       title: "摄影师介绍",
-      description: "了解摄影师萌的专业背景、技能和服务项目",
+      description: "了解摄影师萌的专业背景、技能和服务项目，探索摄影理念与风格",
       path: "/photography/introduction",
-      color: "#1890ff"
+      color: "#1890ff",
+      badge: "个人"
     },
     {
       icon: <PictureOutlined style={{ fontSize: '32px', color: '#52c41a' }} />,
       title: "底片展示",
-      description: "查看所有拍摄的照片集，支持密码解锁查看",
+      description: "查看所有拍摄的照片集，支持密码解锁查看，精选作品展示",
       path: "/photography/pictures",
-      color: "#52c41a"
+      color: "#52c41a",
+      badge: "作品"
     },
     {
       icon: <ClockCircleOutlined style={{ fontSize: '32px', color: '#722ed1' }} />,
       title: "拍摄时间线",
-      description: "记录每次拍摄的时间、地点、任务和设备等信息",
+      description: "记录每次拍摄的时间、地点、任务和设备等信息，见证成长历程",
       path: "/photography/timeline",
-      color: "#722ed1"
+      color: "#722ed1",
+      badge: "记录"
     }
   ];
 
@@ -56,9 +63,10 @@ const Photography = () => {
     featureCards.push({
       icon: <FolderOutlined style={{ fontSize: '32px', color: '#fa8c16' }} />,
       title: "底片管理",
-      description: "管理所有拍摄批次和照片，支持上传、删除等操作",
+      description: "管理所有拍摄批次和照片，支持上传、删除、编辑等操作",
       path: "/photography/management",
-      color: "#fa8c16"
+      color: "#fa8c16",
+      badge: "管理"
     });
   }
 
@@ -76,10 +84,10 @@ const Photography = () => {
             )}
           </Title>
           <Text type="secondary" style={{ fontSize: '18px' }}>
-            专业人像摄影师，专注于捕捉美好瞬间
+            专业人像摄影师，专注于捕捉美好瞬间，用镜头记录生活的温度
           </Text>
           {isMeng && (
-            <Paragraph style={{ marginTop: 16, fontSize: '16px', color: '#722ed1' }}>
+            <Paragraph className="ant-typography-caption">
               欢迎使用meng模式！在这里你可以管理所有拍摄内容，包括查看、上传、编辑照片等。
             </Paragraph>
           )}
@@ -102,13 +110,18 @@ const Photography = () => {
                   }}
                 >
                   <div className="card-content" style={{ textAlign: 'center' }}>
-                    <div className="card-icon" style={{ marginBottom: '16px' }}>
+                    <div className="card-icon">
                       {card.icon}
                     </div>
-                    <Title level={3} style={{ color: card.color, marginBottom: '12px' }}>
+                    <div style={{ marginBottom: '8px' }}>
+                      <Tag color={card.color} style={{ fontSize: '12px', fontWeight: 500 }}>
+                        {card.badge}
+                      </Tag>
+                    </div>
+                    <Title level={3} style={{ color: card.color, marginBottom: '8px' }}>
                       {card.title}
                     </Title>
-                    <Text type="secondary" style={{ fontSize: '14px', lineHeight: '1.6' }}>
+                    <Text type="secondary" style={{ fontSize: '14px', lineHeight: '1.5' }}>
                       {card.description}
                     </Text>
                   </div>
@@ -118,61 +131,40 @@ const Photography = () => {
           </Row>
         </div>
 
-        {/* 快速访问按钮 */}
-        <div className="quick-access">
-          <Title level={3}>快速访问</Title>
-          <Row gutter={[16, 16]}>
-            <Col>
-              <Button 
-                type="primary" 
-                size="large"
-                icon={<PictureOutlined />}
-                onClick={() => navigateWithMeng('/photography/pictures')}
-              >
-                查看底片
-              </Button>
-            </Col>
-            <Col>
-              <Button 
-                size="large"
-                icon={<ClockCircleOutlined />}
-                onClick={() => navigateWithMeng('/photography/timeline')}
-              >
-                拍摄记录
-              </Button>
-            </Col>
-            {isMeng && (
-              <Col>
-                <Button 
-                  type="primary" 
-                  size="large"
-                  icon={<FolderOutlined />}
-                  onClick={() => navigateWithMeng('/photography/management')}
-                  style={{ backgroundColor: '#fa8c16', borderColor: '#fa8c16' }}
-                >
-                  底片管理
-                </Button>
-              </Col>
-            )}
-          </Row>
-        </div>
-
         {/* 联系信息 */}
         <div className="contact-info">
-          <Card style={{ marginTop: '40px', background: '#f8f9fa' }}>
+          <Card>
             <Title level={3}>联系信息</Title>
             <Row gutter={[24, 16]}>
               <Col xs={24} md={8}>
-                <Text strong>📧 邮箱：</Text>
-                <Text>lemonanaaa@163.com</Text>
+                <Space>
+                  <MailOutlined style={{ color: '#1890ff', fontSize: '18px' }} />
+                  <div>
+                    <Text strong>邮箱</Text>
+                    <br />
+                    <Text>lemonanaaa@163.com</Text>
+                  </div>
+                </Space>
               </Col>
               <Col xs={24} md={8}>
-                <Text strong>📱 微信：</Text>
-                <Text>xxx</Text>
+                <Space>
+                  <PhoneOutlined style={{ color: '#52c41a', fontSize: '18px' }} />
+                  <div>
+                    <Text strong>微信</Text>
+                    <br />
+                    <Text>xxx</Text>
+                  </div>
+                </Space>
               </Col>
               <Col xs={24} md={8}>
-                <Text strong>📍 工作室：</Text>
-                <Text>shanghai</Text>
+                <Space>
+                  <EnvironmentOutlined style={{ color: '#722ed1', fontSize: '18px' }} />
+                  <div>
+                    <Text strong>工作室</Text>
+                    <br />
+                    <Text>shanghai</Text>
+                  </div>
+                </Space>
               </Col>
             </Row>
           </Card>

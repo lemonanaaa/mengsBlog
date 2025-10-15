@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 
 // 懒加载组件 - 按功能模块分割
 const FrontPage = React.lazy(() => import("../pages/frontPage/View"));
-const CareerView = React.lazy(() => import("../pages/career/index"));
+const CareerView = React.lazy(() => import("../pages/career/View"));
 const ResumeView = React.lazy(() => import("../pages/career/resume/View"));
 const BlogsTreeView = React.lazy(() => import("../pages/career/blogsTree/View"));
 const BlogsWithTimeline = React.lazy(() => import("../pages/career/blogsWithTimeline/View"));
