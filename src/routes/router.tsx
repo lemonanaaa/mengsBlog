@@ -14,6 +14,7 @@ const PhotographyIntroduction = React.lazy(() => import("../pages/photography/co
 const PhotographyPictures = React.lazy(() => import("../pages/photography/component/Pictures"));
 const PhotographyTimeline = React.lazy(() => import("../pages/photography/component/Timeline"));
 const PhotographyManagement = React.lazy(() => import("../pages/photography/component/PhotographyManagement"));
+const PhotographyDownload = React.lazy(() => import("../pages/photography/component/DownloadView"));
 const RetouchedPhotos = React.lazy(() => import("../pages/photography/batchView/RetouchedView"));
 const BatchView = React.lazy(() => import("../pages/photography/batchView/View"));
 const PhotographyForGusetView = React.lazy(() => import("../pages/photographyForGuset/View"));
@@ -122,6 +123,14 @@ const routes = [
     Component: (
       <Suspense fallback={<LoadingComponent />}>
         <PhotographyManagement />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/photography/download/:batchId",
+    Component: (
+      <Suspense fallback={<LoadingComponent />}>
+        <PhotographyDownload />
       </Suspense>
     ),
   },

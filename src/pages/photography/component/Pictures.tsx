@@ -1,124 +1,74 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Layout from "../../common/Layout";
 import { mengsBlogContext } from "../../common/Layout";
-import { Card, Typography, Button, Space, Input, message, Row, Col, Image, Tag, Modal, Form, DatePicker } from "antd";
-import { LockOutlined, EyeOutlined, CalendarOutlined, UserOutlined, CameraOutlined, UnlockOutlined, CrownOutlined, PictureOutlined } from "@ant-design/icons";
+import { Card, Typography, Button, Space, Input, message, Row, Col, Image, Tag, Modal, Form, DatePicker, Spin } from "antd";
+import { LockOutlined, EyeOutlined, CalendarOutlined, UserOutlined, CameraOutlined, UnlockOutlined, CrownOutlined, PictureOutlined, EnvironmentOutlined } from "@ant-design/icons";
+import { PhotographyController } from "../Controller";
+import { PhotoSession } from "../Model";
 import "../../../css/photography/uploadPhotos.css";
 
 const { Title, Text, Paragraph } = Typography;
 const { Password } = Input;
 
-interface Photo {
-  id: string;
-  url: string;
-  thumbnail: string;
-  title: string;
-  description?: string;
-  tags: string[];
-  date: string;
-}
-
-interface PhotoSession {
-  id: string;
-  date: string;
-  friendName: string;
-  friendFullName: string;
-  phoneTail: string;
-  password: string;
-  isPublic: boolean;
-  photos: Photo[];
-}
 
 const Pictures = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { blogCommonStore } = useContext(mengsBlogContext) as any;
   
-  const [unlockedSessions, setUnlockedSessions] = useState<Set<string>>(new Set());
+  // 从localStorage恢复解锁状态
+  const [unlockedSessions, setUnlockedSessions] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem('unlockedSessions');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch (error) {
+      console.error('恢复解锁状态失败:', error);
+      return new Set();
+    }
+  });
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [currentSession, setCurrentSession] = useState<PhotoSession | null>(null);
   const [loading, setLoading] = useState(false);
+  const [photoSessions, setPhotoSessions] = useState<PhotoSession[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
 
   // 检查是否为 Meng 模式
   const isMeng = searchParams.get('meng') === 'true';
 
-  // 模拟照片数据 - 实际应该从API获取
-  const photoSessions: PhotoSession[] = [
-    {
-      id: "1",
-      date: "2024-03-15",
-      friendName: "张伟",
-      friendFullName: "zhangwei",
-      phoneTail: "1234",
-      password: "20240315zhangwei1234",
-      isPublic: false,
-      photos: [
-        {
-          id: "1-1",
-          url: "/api/photos/zhangwei-spring-1.jpg",
-          thumbnail: "/api/photos/zhangwei-spring-1-thumb.jpg",
-          title: "春日樱花人像",
-          description: "在樱花盛开的季节，捕捉春天的美好瞬间",
-          tags: ["人像", "樱花", "春天"],
-          date: "2024-03-15"
-        },
-        {
-          id: "1-2",
-          url: "/api/photos/zhangwei-spring-2.jpg",
-          thumbnail: "/api/photos/zhangwei-spring-2-thumb.jpg",
-          title: "樱花树下",
-          description: "樱花飘落的美好瞬间",
-          tags: ["人像", "樱花", "自然"],
-          date: "2024-03-15"
-        }
-      ]
-    },
-    {
-      id: "2",
-      date: "2024-03-10",
-      friendName: "李娜",
-      friendFullName: "lina",
-      phoneTail: "5678",
-      password: "20240310lina5678",
-      isPublic: false,
-      photos: [
-        {
-          id: "2-1",
-          url: "/api/photos/lina-cafe-1.jpg",
-          thumbnail: "/api/photos/lina-cafe-1-thumb.jpg",
-          title: "咖啡厅人像",
-          description: "温暖的咖啡厅氛围中的人像摄影",
-          tags: ["人像", "咖啡厅", "温暖"],
-          date: "2024-03-10"
-        }
-      ]
-    },
-    {
-      id: "3",
-      date: "2024-02-28",
-      friendName: "王强",
-      friendFullName: "wangqiang",
-      phoneTail: "9999",
-      password: "20240228wangqiang9999",
-      isPublic: false,
-      photos: [
-        {
-          id: "3-1",
-          url: "/api/photos/wangqiang-mountain-1.jpg",
-          thumbnail: "/api/photos/wangqiang-mountain-1-thumb.jpg",
-          title: "山间晨雾",
-          description: "清晨山间的薄雾缭绕",
-          tags: ["山景", "晨雾", "自然"],
-          date: "2024-02-28"
-        }
-      ]
+  // 保存解锁状态到localStorage
+  const saveUnlockedSessions = (sessions: Set<string>) => {
+    try {
+      localStorage.setItem('unlockedSessions', JSON.stringify(Array.from(sessions)));
+    } catch (error) {
+      console.error('保存解锁状态失败:', error);
     }
-  ];
+  };
 
-  // 生成密码的函数
-  const generatePassword = (date: string, friendFullName: string, phoneTail: string): string => {
-    const dateStr = date.replace(/-/g, '');
-    return dateStr + friendFullName + phoneTail;
+  // 获取所有照片批次数据
+  useEffect(() => {
+    fetchPhotoSessions();
+  }, []);
+
+
+  // 获取照片批次数据
+  const fetchPhotoSessions = async () => {
+    setSessionsLoading(true);
+    try {
+      const sessions = await PhotographyController.getAllPhotoSessions();
+      setPhotoSessions(sessions);
+    } catch (error) {
+      console.error('获取照片批次失败:', error);
+      message.error('获取照片批次失败，请稍后重试');
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
+
+  // 生成密码的函数 - 修改为名字全拼+尾号
+  const generatePassword = (friendFullName: string, phoneTail: string): string => {
+    return friendFullName + phoneTail;
   };
 
   // 点击锁图标，显示密码输入弹窗
@@ -127,31 +77,43 @@ const Pictures = () => {
     setShowPasswordModal(true);
   };
 
-  // 验证密码
+  // 验证密码 - 前端自己掌握密码校验
   const verifyPassword = (inputPassword: string): boolean => {
     if (!currentSession) return false;
-    return currentSession.password === inputPassword;
+    // 使用名字全拼+尾号作为密码
+    const expectedPassword = generatePassword(currentSession.friendFullName, currentSession.phoneTail);
+    return expectedPassword === inputPassword;
   };
 
   // 处理密码验证
-  const handlePasswordSubmit = (values: { password: string }) => {
+  const handlePasswordSubmit = async (values: { password: string }) => {
     setLoading(true);
     
-    setTimeout(() => {
+    try {
       if (verifyPassword(values.password)) {
-        setUnlockedSessions(prev => {
-          prev.add(currentSession!.id);
-          return new Set(prev);
-        });
+        // 解锁成功，标记为已解锁
+        const newUnlockedSessions = new Set(unlockedSessions);
+        newUnlockedSessions.add(currentSession!.id);
+        setUnlockedSessions(newUnlockedSessions);
+        saveUnlockedSessions(newUnlockedSessions);
+        
         setShowPasswordModal(false);
         message.success(`解锁成功！欢迎 ${currentSession?.friendName}！`);
+        
+        // 解锁成功后直接跳转到下载页面，保持meng参数
+        const mengParam = isMeng ? '?meng=true' : '';
+        navigate(`/photography/download/${currentSession!.id}${mengParam}`);
       } else {
-        message.error('密码错误，请检查拍摄日期、姓名拼写和手机尾号');
+        message.error('密码错误，请检查姓名全拼和手机尾号');
       }
-      
+    } catch (error) {
+      console.error('解锁失败:', error);
+      message.error('解锁失败，请稍后重试');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
+
 
   // 检查会话是否已解锁
   const isSessionUnlocked = (sessionId: string): boolean => {
@@ -160,6 +122,18 @@ const Pictures = () => {
       return true;
     }
     return unlockedSessions.has(sessionId);
+  };
+
+  // 处理点击 card 跳转到下载页面
+  const handleCardClick = (session: PhotoSession) => {
+    if (isSessionUnlocked(session.id)) {
+      // 跳转到下载页面，保持 meng 参数
+      const mengParam = isMeng ? '?meng=true' : '';
+      navigate(`/photography/download/${session.id}${mengParam}`);
+    } else {
+      // 如果未解锁，显示密码输入弹窗
+      handleLockClick(session);
+    }
   };
 
   return (
@@ -173,7 +147,7 @@ const Pictures = () => {
           <Text type="secondary" style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
             {isMeng 
               ? "meng模式下可直接查看所有照片集" 
-              : "所有照片集都需要密码验证才能查看"
+              : "输入密码验证查看底片"
             }
           </Text>
           {isMeng && (
@@ -185,25 +159,41 @@ const Pictures = () => {
 
         {/* 照片集展示 */}
         <div className="sessions-grid">
-          <Row gutter={[24, 24]}>
-            {photoSessions.map(session => (
+          {sessionsLoading ? (
+            <div style={{ textAlign: 'center', padding: '60px 0' }}>
+              <Spin size="large" />
+              <div style={{ marginTop: 16, color: '#666' }}>正在加载照片集...</div>
+            </div>
+          ) : photoSessions.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#999' }}>
+              <PictureOutlined style={{ fontSize: 48, marginBottom: 16 }} />
+              <div>暂无照片集</div>
+            </div>
+          ) : (
+            <Row gutter={[24, 24]}>
+              {photoSessions.map(session => (
               <Col xs={24} sm={12} lg={8} xl={6} key={session.id}>
                 <Card 
                   className={`session-card ${isSessionUnlocked(session.id) ? 'unlocked' : 'locked'}`}
                   hoverable
+                  onClick={() => handleCardClick(session)}
+                  style={{ cursor: 'pointer' }}
                 >
                   {/* 锁覆盖层 - meng模式下不显示 */}
                   {!isMeng && !isSessionUnlocked(session.id) && (
-                    <div className="lock-overlay" onClick={() => handleLockClick(session)}>
-                      <div className="lock-content">
-                        <LockOutlined className="lock-icon" />
-                        <Text className="lock-text">点击解锁</Text>
-                        <Text className="lock-info" type="secondary">
-                          {session.friendName} 的照片集
-                        </Text>
-                        <Text className="lock-date" type="secondary">
-                          {session.date}
-                        </Text>
+                    <div className="pictures-lock-overlay" onClick={() => handleLockClick(session)}>
+                      <div className="pictures-lock-content">
+                        <LockOutlined className="pictures-lock-icon" />
+                        <Text className="pictures-lock-text">点击解锁</Text>
+                        <div className="pictures-lock-info">
+                          <Text className="pictures-lock-friend-name">{session.friendName}</Text>
+                          <Text className="pictures-lock-date">
+                            {new Date(session.date).toLocaleDateString('zh-CN')}
+                          </Text>
+                          {session.location && (
+                            <Text className="pictures-lock-location">📍 {session.location}</Text>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -223,36 +213,59 @@ const Pictures = () => {
                           </Tag>
                         )}
                       </Title>
-                      <Text type="secondary">
-                        <CalendarOutlined /> {session.date}
-                      </Text>
+                      
+                      <div className="session-info">
+                        <div className="info-item">
+                          <Text type="secondary">
+                            <CalendarOutlined style={{ color: '#1890ff' }} /> 拍摄时间：{new Date(session.date).toLocaleDateString('zh-CN')}
+                          </Text>
+                        </div>
+                        
+                        {session.location && (
+                          <div className="info-item">
+                            <Text type="secondary">
+                              <EnvironmentOutlined style={{ color: '#52c41a' }} /> 拍摄地点：{session.location}
+                            </Text>
+                          </div>
+                        )}
+                        
+                        <div className="info-item">
+                          <Text type="secondary">
+                            <PictureOutlined style={{ color: '#722ed1' }} /> 底片数量：{session.totalPhotos || session.photos?.length || 0} 张
+                          </Text>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* 照片网格 */}
-                    {isSessionUnlocked(session.id) && (
+                    {/* 照片网格 - 暂时不显示照片内容 */}
+                    {isSessionUnlocked(session.id) && session.photos && session.photos.length > 0 && (
                       <div className="photos-grid">
                         <Row gutter={[8, 8]}>
                           {session.photos.map(photo => (
                             <Col span={12} key={photo.id}>
                               <div className="photo-item">
                                 <Image
-                                  alt={photo.title}
-                                  src={photo.thumbnail}
+                                  alt={photo.title || '照片'}
+                                  src={photo.thumbnail || photo.url}
                                   fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
                                   className="photo-thumbnail"
                                   preview={{
                                     src: photo.url,
-                                    title: photo.title
+                                    title: photo.title || '照片'
                                   }}
                                 />
                                 <div className="photo-info">
-                                  <Text className="photo-title">{photo.title}</Text>
+                                  <Text className="photo-title">{photo.title || '未命名照片'}</Text>
                                   <div className="photo-tags">
-                                    {photo.tags.map(tag => (
-                                      <Tag key={tag} color="purple">
-                                        {tag}
-                                      </Tag>
-                                    ))}
+                                    {photo.tags && photo.tags.length > 0 ? (
+                                      photo.tags.map(tag => (
+                                        <Tag key={tag} color="purple">
+                                          {tag}
+                                        </Tag>
+                                      ))
+                                    ) : (
+                                      <Tag color="default">无标签</Tag>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -264,8 +277,9 @@ const Pictures = () => {
                   </div>
                 </Card>
               </Col>
-            ))}
-          </Row>
+              ))}
+            </Row>
+          )}
         </div>
 
         {/* 密码输入弹窗 */}
@@ -286,7 +300,7 @@ const Pictures = () => {
               <div className="session-info">
                 <Text strong>{currentSession.friendName} 的照片集</Text>
                 <br />
-                <Text type="secondary">拍摄日期：{currentSession.date}</Text>
+                <Text type="secondary">拍摄日期：{new Date(currentSession.date).toLocaleDateString('zh-CN')}</Text>
               </div>
               
               <Form onFinish={handlePasswordSubmit} className="password-form">
@@ -294,11 +308,11 @@ const Pictures = () => {
                   name="password"
                   rules={[
                     { required: true, message: '请输入密码' },
-                    { min: 12, message: '密码格式不正确' }
+                    { min: 5, message: '密码格式不正确' }
                   ]}
                 >
                   <Password
-                    placeholder="请输入密码（拍摄日期+姓名全拼+手机尾号）"
+                    placeholder="请输入密码（姓名全拼+手机尾号）"
                     size="large"
                     prefix={<LockOutlined />}
                   />
@@ -319,11 +333,11 @@ const Pictures = () => {
 
               <div className="password-help">
                 <Text type="secondary">
-                  <CalendarOutlined /> 密码格式：拍摄日期(YYYYMMDD) + 姓名全拼 + 手机尾号
+                  <UserOutlined /> 密码格式：姓名全拼 + 手机尾号(4位)
                 </Text>
                 <br />
                 <Text type="secondary">
-                  例如：{generatePassword(currentSession.date, currentSession.friendFullName, currentSession.phoneTail)}
+                  例如：{generatePassword(currentSession.friendFullName, currentSession.phoneTail)}
                 </Text>
               </div>
             </div>

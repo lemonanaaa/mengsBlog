@@ -55,13 +55,14 @@ const RetouchedPhotos = () => {
           updatedAt: photo.updatedAt
         });
 
+        // TODO 数据结构重构
         // 处理所有照片
         const allPhotos = photosResult?.map(convertPhotoData) || [];
         
         // 筛选精修照片
-        const retouchedPhotosData = allPhotos.filter(photo => photo.isRetouched);
+        // const retouchedPhotosData = allPhotos.filter(photo => photo.isRetouched);
         
-        setRetouchedPhotos(retouchedPhotosData);
+        setRetouchedPhotos([]);
       } else {
         message.error('批次不存在');
         navigateWithMeng('/photography/timeline');

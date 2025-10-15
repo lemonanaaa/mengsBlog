@@ -927,7 +927,9 @@ export default function BatchView() {
                                                     hoverable
                                                     style={{
                                                         cursor: isDeleteMode ? 'pointer' : 'default',
-                                                        border: isDeleteMode && selectedPhotos.includes(photo.id) ? '2px solid #1890ff' : undefined,
+                                                        border: isDeleteMode 
+                                                            ? (selectedPhotos.includes(photo.id) ? '3px solid #1890ff' : '2px dashed #1890ff')
+                                                            : undefined,
                                                         position: 'relative'
                                                     }}
                                                     onClick={() => handleTogglePhotoSelection(photo.id)}
@@ -996,7 +998,9 @@ export default function BatchView() {
                                                     hoverable
                                                     style={{
                                                         cursor: isDeleteMode ? 'pointer' : 'default',
-                                                        border: isDeleteMode && selectedPhotos.includes(photo.id) ? '2px solid #52c41a' : '2px solid #52c41a',
+                                                        border: isDeleteMode 
+                                                            ? (selectedPhotos.includes(photo.id) ? '3px solid #52c41a' : '2px dashed #52c41a')
+                                                            : undefined,
                                                         position: 'relative'
                                                     }}
                                                     onClick={() => handleTogglePhotoSelection(photo.id)}

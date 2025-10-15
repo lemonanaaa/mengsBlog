@@ -20,23 +20,19 @@
   }
   
   .sessions-grid {
-    .session-card {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(139, 92, 246, 0.1);
-      transition: all 0.3s ease;
-      min-height: 300px;
+      .session-card {
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
       
       &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       }
       
-      &.unlocked {
-        border-color: #52c41a;
-        box-shadow: 0 4px 20px rgba(82, 196, 26, 0.1);
-      }
+      // 移除解锁状态的样式差异，保持统一的card样式
       
       .lock-overlay {
         position: absolute;
@@ -44,7 +40,8 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(139, 92, 246, 0.8) 100%);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(4px);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -53,39 +50,55 @@
         transition: all 0.3s ease;
         
         &:hover {
-          background: linear-gradient(135deg, rgba(139, 92, 246, 1) 0%, rgba(139, 92, 246, 0.9) 100%);
-          transform: scale(1.02);
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(6px);
         }
         
         .lock-content {
           text-align: center;
-          color: white;
+          padding: 20px;
           
           .lock-icon {
             font-size: 48px;
+            color: #ff7875;
             margin-bottom: 16px;
             display: block;
-            animation: pulse 2s infinite;
           }
           
           .lock-text {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 8px;
-            display: block;
+            color: #262626;
+            margin: 0;
           }
           
           .lock-info {
-            font-size: 14px;
-            margin-bottom: 4px;
-            display: block;
-            opacity: 0.9;
-          }
-          
-          .lock-date {
-            font-size: 12px;
-            opacity: 0.8;
-            display: block;
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+            
+            .lock-friend-name {
+              font-size: 16px;
+              font-weight: 600;
+              color: white;
+              display: block;
+              margin-bottom: 8px;
+            }
+            
+            .lock-date {
+              font-size: 14px;
+              color: rgba(255, 255, 255, 0.9);
+              display: block;
+              margin-bottom: 4px;
+            }
+            
+            .lock-location {
+              font-size: 13px;
+              color: rgba(255, 255, 255, 0.8);
+              display: block;
+            }
           }
         }
       }
@@ -374,7 +387,6 @@
     
     .sessions-grid {
       .session-card {
-        min-height: 250px;
         
         .lock-overlay {
           .lock-content {

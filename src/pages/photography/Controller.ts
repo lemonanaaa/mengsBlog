@@ -36,7 +36,7 @@ export class PhotographyController {
   }
 
   // 获取指定批次的照片
-  static async getSessionPhotos(sessionId: string, params?: { types?: string[] }): Promise<any[]> {
+  static async getSessionPhotos(sessionId: string, params?: { types?: string[] }): Promise<any> {
     try {
       // 调用真实API: POST /shoot-sessions/:id/photos (支持请求体传参)
       const response = await apiRequest(`/shoot-sessions/${sessionId}/photos`, {
@@ -45,16 +45,22 @@ export class PhotographyController {
         body: JSON.stringify(params || {})
       });
       
-      // 根据参数类型返回不同的数据
-      if (params?.types?.includes('retouched')) {
-        return response.data?.retouchedPhotos || [];
-      }
-      
-      return response.photos || [];
+      // 统一返回完整的数据结构
+      return {
+        photos: response.data?.photos || [],
+        retouchedPhotos: response.data?.retouchedPhotos || [],
+        shootSession: response.data?.shootSession || null,
+        stats: response.data?.stats || null
+      };
       
     } catch (error) {
       console.error('获取批次照片失败:', error);
-      return [];
+      return {
+        photos: [],
+        retouchedPhotos: [],
+        shootSession: null,
+        stats: null
+      };
     }
   }
 
@@ -102,6 +108,63 @@ export class PhotographyController {
         deletedCount: 0,
         failedIds: photoIds
       };
+    }
+  }
+
+  // 获取单个批次详情
+  static async getSessionDetail(sessionId: string): Promise<PhotoSession | null> {
+    try {
+      // 调用真实API: GET /shoot-sessions/:id
+      const response = await apiRequest(`/shoot-sessions/${sessionId}`);
+      
+      if (response.success && response.data) {
+        const session = response.data;
+        
+        // 转换API响应格式为本地PhotoSession格式
+        return {
+          id: session.id,
+          date: session.date,
+          friendName: session.friendName,
+          friendFullName: session.friendFullName,
+          phoneTail: session.phoneTail,
+          password: session.password,
+          isPublic: session.isPublic,
+          batchName: session.batchName,
+          location: session.location,
+          description: session.description,
+          tags: session.tags,
+          isFeatured: session.isFeatured,
+          sortOrder: session.sortOrder,
+          theme: session.theme,
+          camera: session.camera,
+          lens: session.lens,
+          aperture: session.aperture,
+          shutterSpeed: session.shutterSpeed,
+          iso: session.iso,
+          focalLength: session.focalLength,
+          weather: session.weather,
+          lighting: session.lighting,
+          photos: session.photos || [],
+          representativePhoto: session.representativePhoto ? {
+            filename: session.representativePhoto.filename,
+            title: session.representativePhoto.title,
+            shootDate: session.representativePhoto.shootDate,
+            isRetouched: session.representativePhoto.isRetouched,
+            isFeatured: session.representativePhoto.isFeatured,
+            imageUrl: session.representativePhoto.imageUrl,
+            thumbnailUrl: session.representativePhoto.thumbnailUrl
+          } : null,
+          totalPhotos: session.totalPhotos,
+          createdAt: session.createdAt,
+          updatedAt: session.updatedAt
+        };
+      }
+      
+      return null;
+      
+    } catch (error) {
+      console.error('获取批次详情失败:', error);
+      return null;
     }
   }
 
