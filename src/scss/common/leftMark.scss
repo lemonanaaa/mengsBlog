@@ -148,6 +148,26 @@
           margin-right: 8px !important;
           font-weight: bold !important;
         }
+        
+        // 活跃状态样式
+        &.active {
+          color: #1890ff !important;
+          background: linear-gradient(135deg, rgba(24, 144, 255, 0.15) 0%, rgba(24, 144, 255, 0.08) 100%) !important;
+          box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2) !important;
+          
+          .sub-nav-icon {
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
+          }
+        }
+        
+        // 活跃状态指示器
+        .active-indicator {
+          color: #1890ff !important;
+          font-size: 12px !important;
+          animation: pulse 2s infinite !important;
+          margin-left: auto !important;
+        }
       }
       
       // 脉冲动画

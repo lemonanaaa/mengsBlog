@@ -323,27 +323,30 @@ const LeftMarks = () => {
           <>
             <div 
               onClick={() => navigateWithMeng('/career/resume')} 
-              className="sub-nav-item"
+              className={`sub-nav-item ${location.pathname === '/career/resume' ? 'active' : ''}`}
               data-path="/career/resume"
             >
               <span className="sub-nav-icon">📄</span>
               <span className="sub-nav-text">简历页面</span>
+              {location.pathname === '/career/resume' && <span className="active-indicator">●</span>}
             </div>
             <div 
-              onClick={() => navigateWithMeng('/career/blogstree')} 
-              className="sub-nav-item"
-              data-path="/career/blogstree"
+              onClick={() => navigateWithMeng('/career/blogsTree')} 
+              className={`sub-nav-item ${location.pathname === '/career/blogsTree' ? 'active' : ''}`}
+              data-path="/career/blogsTree"
             >
               <span className="sub-nav-icon">🌳</span>
               <span className="sub-nav-text">前端知识树</span>
+              {location.pathname === '/career/blogsTree' && <span className="active-indicator">●</span>}
             </div>
             <div 
-              onClick={() => navigateWithMeng('/career/blogswithtimeline')} 
-              className="sub-nav-item"
-              data-path="/career/blogswithtimeline"
+              onClick={() => navigateWithMeng('/career/blogsWithTimeline')} 
+              className={`sub-nav-item ${location.pathname === '/career/blogsWithTimeline' ? 'active' : ''}`}
+              data-path="/career/blogsWithTimeline"
             >
               <span className="sub-nav-icon">📅</span>
               <span className="sub-nav-text">Blogs with timeLine</span>
+              {location.pathname === '/career/blogsWithTimeline' && <span className="active-indicator">●</span>}
             </div>
           </>
         )}
@@ -375,31 +378,34 @@ const LeftMarks = () => {
             {/* 摄影师介绍 */}
             <div 
               onClick={() => navigateWithMeng('/photography/introduction')} 
-              className="sub-nav-item"
+              className={`sub-nav-item ${location.pathname === '/photography/introduction' ? 'active' : ''}`}
               data-path="/photography/introduction"
             >
               <span className="sub-nav-icon">📖</span>
               <span className="sub-nav-text">介绍</span>
+              {location.pathname === '/photography/introduction' && <span className="active-indicator">●</span>}
             </div>
             
             {/* 底片展示 */}
             <div 
               onClick={() => navigateWithMeng('/photography/pictures')} 
-              className="sub-nav-item"
+              className={`sub-nav-item ${location.pathname === '/photography/pictures' ? 'active' : ''}`}
               data-path="/photography/pictures"
             >
               <span className="sub-nav-icon">🖼️</span>
               <span className="sub-nav-text">底片们</span>
+              {location.pathname === '/photography/pictures' && <span className="active-indicator">●</span>}
             </div>
             
             {/* 拍摄时间线 */}
             <div 
               onClick={() => navigateWithMeng('/photography/timeline')} 
-              className="sub-nav-item"
+              className={`sub-nav-item ${location.pathname === '/photography/timeline' ? 'active' : ''}`}
               data-path="/photography/timeline"
             >
               <span className="sub-nav-icon">⏰</span>
               <span className="sub-nav-text">拍摄时间线</span>
+              {location.pathname === '/photography/timeline' && <span className="active-indicator">●</span>}
             </div>
             
             {/* meng模式下的底片管理功能 */}
@@ -408,11 +414,12 @@ const LeftMarks = () => {
                 onClick={() => { 
                   window.location.href = '/photography/management?meng=true';
                 }} 
-                className="sub-nav-item"
+                className={`sub-nav-item ${location.pathname === '/photography/management' ? 'active' : ''}`}
                 data-path="/photography/management"
               >
                 <span className="sub-nav-icon">📁</span>
-              <span className="sub-nav-text">底片管理</span>
+                <span className="sub-nav-text">底片管理</span>
+                {location.pathname === '/photography/management' && <span className="active-indicator">●</span>}
               </div>
             )}
           </>
