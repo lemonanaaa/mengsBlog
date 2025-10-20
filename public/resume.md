@@ -8,12 +8,6 @@
 
 ### 技能清单
 
-```typescript
-// 代码示例
-const skills = ["React", "TypeScript", "Node.js"];
-const skills = ["React", "TypeScript", "Node.jsqq"];
-```
-
 [查看完整作品集](https://example.com)
 
 aaaaaaaaaaaa

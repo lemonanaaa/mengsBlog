@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { tomorrow } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/tomorrow.css';
 
 import Layout from "../../common/Layout";
 
@@ -23,22 +22,7 @@ const ResumeView = () => {
     <div className="container">
       这是简历页
       <ReactMarkdown
-        components={{
-          code({ node, inline, className, children, ...props }:any) {
-            const match = /language-(\w+)/.exec(className || '');
-
-            if (!inline && match) {
-              return (
-                <CopyComponent children={children} match={match} {...props} />
-              );
-            }
-            return (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            );
-          }
-        }}
+        rehypePlugins={[rehypeHighlight]}
       >
         {content}
       </ReactMarkdown>
@@ -47,36 +31,6 @@ const ResumeView = () => {
 };
 
 export default ResumeView;
-
-
-
-const CopyComponent = ({ children, match, ...props }: { children: React.ReactNode, match: RegExpExecArray }) => {
-
-  const [copied, setCopied] = useState(false);
-  return <div style={{ position: 'relative' }}>
-    <CopyToClipboard
-      text={String(children).replace(/\n$/, '')}
-      onCopy={() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1000);
-      }}
-    >
-      <button className="custom-copy-btn"
-      >
-        {copied ? '已复制!' : '复制'}
-      </button>
-    </CopyToClipboard>
-    <SyntaxHighlighter
-
-      style={tomorrow}
-      language={match[1]}
-      PreTag="div"
-      {...props}
-    >
-      {String(children).replace(/\n$/, '')}
-    </SyntaxHighlighter>
-  </div>
-}
 
 
 
