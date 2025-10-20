@@ -1,7 +1,7 @@
 // API配置文件
 const isDevelopment = process.env.NODE_ENV === 'development';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 
-  (isDevelopment ? 'http://localhost:3001/api' : 'http://47.100.231.136/api');
+  (isDevelopment ? 'http://localhost:3001/api' : '/api');
 
 export const API_CONFIG = {
   // 博客相关API
