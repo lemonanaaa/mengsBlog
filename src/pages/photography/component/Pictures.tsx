@@ -16,7 +16,7 @@ const Pictures = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { blogCommonStore } = useContext(mengsBlogContext) as any;
-  
+
   // 从localStorage恢复解锁状态
   const [unlockedSessions, setUnlockedSessions] = useState<Set<string>>(() => {
     try {
@@ -88,7 +88,7 @@ const Pictures = () => {
   // 处理密码验证
   const handlePasswordSubmit = async (values: { password: string }) => {
     setLoading(true);
-    
+
     try {
       if (verifyPassword(values.password)) {
         // 解锁成功，标记为已解锁
@@ -96,10 +96,10 @@ const Pictures = () => {
         newUnlockedSessions.add(currentSession!.id);
         setUnlockedSessions(newUnlockedSessions);
         saveUnlockedSessions(newUnlockedSessions);
-        
+
         setShowPasswordModal(false);
         message.success(`解锁成功！欢迎 ${currentSession?.friendName}！`);
-        
+
         // 解锁成功后直接跳转到下载页面，保持meng参数
         const mengParam = isMeng ? '?meng=true' : '';
         navigate(`/photography/download/${currentSession!.id}${mengParam}`);
@@ -145,8 +145,8 @@ const Pictures = () => {
             <PictureOutlined /> 底片们
           </Title>
           <Text type="secondary" style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
-            {isMeng 
-              ? "meng模式下可直接查看所有照片集" 
+            {isMeng
+              ? "meng模式下可直接查看所有照片集"
               : "输入密码验证查看底片"
             }
           </Text>
@@ -172,111 +172,121 @@ const Pictures = () => {
           ) : (
             <Row gutter={[24, 24]}>
               {photoSessions.map(session => (
-              <Col xs={24} sm={12} lg={8} xl={6} key={session.id}>
-                <Card 
-                  className={`session-card ${isSessionUnlocked(session.id) ? 'unlocked' : 'locked'}`}
-                  hoverable
-                  onClick={() => handleCardClick(session)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {/* 锁覆盖层 - meng模式下不显示 */}
-                  {!isMeng && !isSessionUnlocked(session.id) && (
-                    <div className="pictures-lock-overlay" onClick={() => handleLockClick(session)}>
-                      <div className="pictures-lock-content">
-                        <LockOutlined className="pictures-lock-icon" />
-                        <Text className="pictures-lock-text">点击解锁</Text>
-                        <div className="pictures-lock-info">
-                          <Text className="pictures-lock-friend-name">{session.friendName}</Text>
-                          <Text className="pictures-lock-date">
-                            {new Date(session.date).toLocaleDateString('zh-CN')}
-                          </Text>
-                          {session.location && (
-                            <Text className="pictures-lock-location">📍 {session.location}</Text>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 照片内容 */}
-                  <div className="session-content">
-                    <div className="session-header">
-                      <Title level={4}>
-                        {isSessionUnlocked(session.id) ? (
-                          <UnlockOutlined style={{ color: '#52c41a' }} />
-                        ) : (
-                          <LockOutlined />
-                        )} {session.friendName} 的照片集
-                        {isMeng && (
-                          <Tag color="green" style={{ marginLeft: 8, fontSize: '12px' }}>
-                            已解锁
-                          </Tag>
-                        )}
-                      </Title>
-                      
-                      <div className="session-info">
-                        <div className="info-item">
-                          <Text type="secondary">
-                            <CalendarOutlined style={{ color: '#1890ff' }} /> 拍摄时间：{new Date(session.date).toLocaleDateString('zh-CN')}
-                          </Text>
-                        </div>
-                        
-                        {session.location && (
-                          <div className="info-item">
-                            <Text type="secondary">
-                              <EnvironmentOutlined style={{ color: '#52c41a' }} /> 拍摄地点：{session.location}
-                            </Text>
-                          </div>
-                        )}
-                        
-                        <div className="info-item">
-                          <Text type="secondary">
-                            <PictureOutlined style={{ color: '#722ed1' }} /> 底片数量：{session.totalPhotos || session.photos?.length || 0} 张
-                          </Text>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 照片网格 - 暂时不显示照片内容 */}
-                    {isSessionUnlocked(session.id) && session.photos && session.photos.length > 0 && (
-                      <div className="photos-grid">
-                        <Row gutter={[8, 8]}>
-                          {session.photos.map(photo => (
-                            <Col span={12} key={photo.id}>
-                              <div className="photo-item">
-                                <Image
-                                  alt={photo.title || '照片'}
-                                  src={photo.thumbnail || photo.url}
-                                  fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-                                  className="photo-thumbnail"
-                                  preview={{
-                                    src: photo.url,
-                                    title: photo.title || '照片'
-                                  }}
-                                />
-                                <div className="photo-info">
-                                  <Text className="photo-title">{photo.title || '未命名照片'}</Text>
-                                  <div className="photo-tags">
-                                    {photo.tags && photo.tags.length > 0 ? (
-                                      photo.tags.map(tag => (
-                                        <Tag key={tag} color="purple">
-                                          {tag}
-                                        </Tag>
-                                      ))
-                                    ) : (
-                                      <Tag color="default">无标签</Tag>
-                                    )}
-                                  </div>
-                                </div>
+                <Col xs={24} sm={12} lg={8} xl={6} key={session.id}>
+                  <Card
+                    className={`session-card ${isSessionUnlocked(session.id) ? 'unlocked' : 'locked'}`}
+                    hoverable
+                    onClick={() => handleCardClick(session)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {/* 锁覆盖层 - meng模式下不显示 */}
+                    {!isMeng && !isSessionUnlocked(session.id) && (
+                      <div className="pictures-lock-overlay" onClick={() => handleLockClick(session)}>
+                        <div className="pictures-lock-content">
+                          <LockOutlined className="pictures-lock-icon" />
+                          <Text className="pictures-lock-text">点击解锁</Text>
+                          <div className="pictures-lock-info">
+                            <div style={{ marginBottom: '8px' }}>
+                              <Text className="pictures-lock-friend-name" style={{ fontSize: '18px', fontWeight: 'bold', display: 'block' }}>
+                                {session.batchName || '未命名批次'}
+                              </Text>
+                            </div>
+                            <div style={{ marginBottom: '6px' }}>
+                              <Text className="pictures-lock-date" style={{ fontSize: '14px', display: 'block' }}>
+                                📅 {new Date(session.date).toLocaleDateString('zh-CN')}
+                              </Text>
+                            </div>
+                            {session.location && (
+                              <div>
+                                <Text className="pictures-lock-location" style={{ fontSize: '14px', display: 'block' }}>
+                                  📍 {session.location}
+                                </Text>
                               </div>
-                            </Col>
-                          ))}
-                        </Row>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     )}
-                  </div>
-                </Card>
-              </Col>
+
+                    {/* 照片内容 */}
+                    <div className="session-content">
+                      <div className="session-header">
+                        <Title level={4}>
+                          {isSessionUnlocked(session.id) ? (
+                            <UnlockOutlined style={{ color: '#52c41a' }} />
+                          ) : (
+                            <LockOutlined />
+                          )} {session.batchName}
+                          {isMeng && (
+                            <Tag color="green" style={{ marginLeft: 8, fontSize: '12px' }}>
+                              已解锁
+                            </Tag>
+                          )}
+                        </Title>
+
+                        <div className="session-info">
+                          <div className="info-item">
+                            <Text type="secondary">
+                              <CalendarOutlined style={{ color: '#1890ff' }} /> 拍摄时间：{new Date(session.date).toLocaleDateString('zh-CN')}
+                            </Text>
+                          </div>
+
+                          {session.location && (
+                            <div className="info-item">
+                              <Text type="secondary">
+                                <EnvironmentOutlined style={{ color: '#52c41a' }} /> 拍摄地点：{session.location}
+                              </Text>
+                            </div>
+                          )}
+
+                          <div className="info-item">
+                            <Text type="secondary">
+                              <PictureOutlined style={{ color: '#722ed1' }} /> 底片数量：{session.totalPhotos || session.photos?.length || 0} 张
+                            </Text>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 照片网格 - 暂时不显示照片内容 */}
+                      {isSessionUnlocked(session.id) && session.photos && session.photos.length > 0 && (
+                        <div className="photos-grid">
+                          <Row gutter={[8, 8]}>
+                            {session.photos.map(photo => (
+                              <Col span={12} key={photo.id}>
+                                <div className="photo-item">
+                                  <Image
+                                    alt={photo.title || '照片'}
+                                    src={photo.thumbnail || photo.url}
+                                    fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+                                    className="photo-thumbnail"
+                                    preview={{
+                                      src: photo.url,
+                                      title: photo.title || '照片'
+                                    }}
+                                  />
+                                  <div className="photo-info">
+                                    <Text className="photo-title">{photo.title || '未命名照片'}</Text>
+                                    <div className="photo-tags">
+                                      {photo.tags && photo.tags.length > 0 ? (
+                                        photo.tags.map(tag => (
+                                          <Tag key={tag} color="purple">
+                                            {tag}
+                                          </Tag>
+                                        ))
+                                      ) : (
+                                        <Tag color="default">无标签</Tag>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </Col>
+                            ))}
+                          </Row>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                </Col>
               ))}
             </Row>
           )}
@@ -298,11 +308,11 @@ const Pictures = () => {
           {currentSession && (
             <div className="password-modal-content">
               <div className="session-info">
-                <Text strong>{currentSession.friendName} 的照片集</Text>
+                <Text strong>{currentSession.batchName}</Text>
                 <br />
                 <Text type="secondary">拍摄日期：{new Date(currentSession.date).toLocaleDateString('zh-CN')}</Text>
               </div>
-              
+
               <Form onFinish={handlePasswordSubmit} className="password-form">
                 <Form.Item
                   name="password"
@@ -317,7 +327,7 @@ const Pictures = () => {
                     prefix={<LockOutlined />}
                   />
                 </Form.Item>
-                
+
                 <Form.Item>
                   <Button
                     type="primary"
