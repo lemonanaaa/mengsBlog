@@ -13,17 +13,16 @@ export class CareerController {
       { name: 'HTML5/CSS3', level: 85, category: 'frontend' },
       { name: 'SCSS', level: 80, category: 'frontend' },
       { name: 'Ant Design', level: 85, category: 'frontend' },
-      
-      // 后端技术
-      { name: 'Node.js', level: 75, category: 'backend' },
-      { name: 'Express', level: 70, category: 'backend' },
-      { name: 'MongoDB', level: 65, category: 'backend' },
+      { name: 'React Router', level: 85, category: 'frontend' },
+      { name: '状态管理与复杂表单', level: 82, category: 'frontend' },
       
       // 工具&工程化
       { name: 'Git', level: 85, category: 'tools' },
       { name: 'Webpack', level: 75, category: 'tools' },
       { name: 'Vite', level: 70, category: 'tools' },
       { name: 'npm/yarn', level: 80, category: 'tools' },
+      { name: 'Jest', level: 80, category: 'tools' },
+      { name: 'CI/CD', level: 78, category: 'tools' },
     ];
   }
 
@@ -59,41 +58,22 @@ export class CareerController {
     return [
       {
         id: '1',
-        company: '当前公司名称',
+        company: '携程（旅游BG）',
         position: '高级前端工程师',
-        startDate: '2023-01',  // 修改为你的实际入职时间，格式：YYYY-MM
+        startDate: '2022-07',
         endDate: '至今',
         isCurrent: true,
         responsibilities: [
-          '负责公司核心产品的前端架构设计与开发',
-          '参与产品需求讨论，提供技术方案',
-          '优化现有代码，提升用户体验和性能'
+          '负责 VBK 线路订单模块前端建设，覆盖跟团游、邮轮、签证等业务线订单操作场景',
+          '持续推进业务改造、性能优化、架构治理与前端可维护性建设',
+          '负责监控系统配置、流水线日常维护、技术文档沉淀与跨团队技术支持'
         ],
         achievements: [
-          '完成XX项目的前端开发，用户满意度提升25%',
-          '优化页面性能，首屏加载速度提升40%',
-          '建立前端代码规范，提升团队开发效率'
+          '完成供应商退款/退优惠能力升级，事件订单比由预计 8.39% 降至约 4%',
+          '推动邮轮业务接入 VBK，订单事件比降低约 0.55%，相关咨询单量上线一周增长约 10 倍',
+          '建设并推广精准测试小工具，提升研发自测效率，项目获集团年度程果奖'
         ],
-        techStack: ['React', 'TypeScript', 'JavaScript', 'Ant Design', 'Webpack', 'Git']
-      },
-      {
-        id: '2',
-        company: '上一家公司名称',
-        position: '前端工程师',
-        startDate: '2021-06',
-        endDate: '2022-12',
-        isCurrent: false,
-        responsibilities: [
-          '负责公司电商平台的前端开发',
-          '维护和优化现有业务代码',
-          '与后端团队协作完成API对接'
-        ],
-        achievements: [
-          '独立完成商品详情页重构，转化率提升15%',
-          '实现购物车模块性能优化，响应速度提升50%',
-          '参与移动端H5页面开发，支持多种机型适配'
-        ],
-        techStack: ['Vue', 'JavaScript', 'Element UI', 'Vuex', 'Webpack']
+        techStack: ['React', 'TypeScript', 'JavaScript', 'Ant Design', 'Webpack', 'Jest', 'Git']
       }
     ];
   }
@@ -103,78 +83,102 @@ export class CareerController {
     return [
       {
         id: '1',
-        name: '企业级管理后台系统',
-        description: '面向企业内部的数据管理平台，支持多角色权限管理、数据可视化、报表生成等功能',
-        role: '前端负责人',
+        name: '新版供应商退款 / 退优惠',
+        description: '针对供应商退款/退优惠高频依赖人工的问题，建设供应商在 VBK 的自助处理能力，减少 OP 介入并提升处理效率',
+        role: '核心开发',
         responsibilities: [
-          '负责整体前端架构设计',
-          '开发核心业务模块',
-          '指导团队成员进行开发',
-          '与后端对接API设计'
+          '改造 VBK 退款/退优惠链路，统一前端操作入口与弹窗交互',
+          '抽象金额计算与校验逻辑到 Pure-Model，实现 PC/H5 资源层与订单层复用',
+          '通过配置化开关和白名单机制支持灰度放量与快速回滚'
         ],
         achievements: [
-          '采用微前端架构，支持多团队并行开发',
-          '自研数据可视化组件库，减少第三方依赖',
-          '建立完善的权限系统，支持细粒度权限控制'
+          '事件订单比由预计 8.39% 降至约 4%',
+          '预计年减少事件量约 48,289 单',
+          '预计节省服务成本约 96.6 万元/年，ROI 约 5.89'
         ],
-        techStack: ['React', 'TypeScript', 'Ant Design', 'ECharts', 'qiankun'],
-        startDate: '2022-06',
-        endDate: '2023-12',
+        techStack: ['React', 'TypeScript', 'Pure-Model', 'Ant Design', '灰度发布'],
+        startDate: '2023-08',
+        endDate: '2024-03',
         companyId: '1',
         highlights: [
-          '用户数突破10000+',
-          '日活用户3000+',
-          '系统稳定性99.9%'
+          '高频人工场景自动化',
+          '支持灰度与快速回滚',
+          'ROI 可量化'
         ]
       },
       {
         id: '2',
-        name: '个人网站 & 摄影作品展示平台',
-        description: '个人品牌网站，集成了简历展示、博客系统、摄影作品管理等功能',
-        role: '全栈开发',
+        name: '邮轮接入 VBK 系统',
+        description: '在邮轮业务恢复后，将原独立系统数据接入 VBK，并完成订单相关能力适配',
+        role: '核心开发',
         responsibilities: [
-          '独立完成前后端开发',
-          '设计并实现博客系统',
-          '开发照片管理和展示功能',
-          '部署和运维'
+          '对现有跟团业务线进行适应性改造，通过开关配置准入供应商并展示对应订单数据',
+          '重构原列表页和详情页，抽象公共业务逻辑至 Pure-Model，减少 PC/H5 重复代码',
+          '优化流水线发布流程，加入 MR 拦截和覆盖率门禁，并将结果同步到群消息'
         ],
         achievements: [
-          '实现响应式设计，完美支持移动端',
-          '自建博客系统，支持Markdown编辑',
-          '照片批量上传和管理功能'
+          '优化供应商体验，费力度降低约 30%',
+          '订单事件比降低约 0.55%',
+          '邮轮私家团咨询单上线一周增长约 10 倍'
         ],
-        techStack: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'Ant Design'],
-        startDate: '2024-01',
-        endDate: '至今',
+        techStack: ['React', 'TypeScript', 'Pure-Model', 'Webpack', 'CI/CD'],
+        startDate: '2023-03',
+        endDate: '2023-08',
         highlights: [
-          '全栈独立开发',
-          '现代化UI设计',
-          '高性能优化'
+          '跨业务线适配',
+          '跨端逻辑复用',
+          '流程质量门禁'
         ]
       },
       {
         id: '3',
-        name: '电商平台商品详情页重构',
-        description: '重构电商平台的商品详情页，提升用户体验和转化率',
+        name: '9072 新版工作台',
+        description: '基于埋点与热力图数据，升级客服系统旧版 UI，提升操作效率与性能体验',
         role: '核心开发',
         responsibilities: [
-          '分析现有页面性能问题',
-          '设计新的页面结构',
-          '实现商品图片预加载优化',
-          '优化购买流程交互'
+          '完成 React-imvc 与 Ant Design 大版本升级和适配改造',
+          '实现订单详情、订单快照、智能问答等新版交互模块',
+          '通过拆包、延迟加载、图片压缩等手段优化首屏渲染性能'
         ],
         achievements: [
-          '首屏加载时间减少50%',
-          '转化率提升15%',
-          '用户停留时间增加30%'
+          'Lighthouse 指标提升',
+          '页面跳出率下降约 40%',
+          '新版操作日志点击量下降约 10%，售后 CPH 指标提升'
         ],
-        techStack: ['Vue', 'JavaScript', 'Webpack', 'Lazy Load'],
-        startDate: '2021-06',
-        endDate: '2021-09',
-        companyId: '2',
+        techStack: ['React-imvc', 'React', 'TypeScript', 'Ant Design', 'Webpack'],
+        startDate: '2022-10',
+        endDate: '2023-03',
+        companyId: '1',
         highlights: [
-          '性能优化显著',
-          '转化率大幅提升'
+          '体验驱动改版',
+          '性能专项治理',
+          '客服效率提升'
+        ]
+      },
+      {
+        id: '4',
+        name: '精准测试小工具',
+        description: '针对传统覆盖率口径不聚焦改动代码的问题，建设以 diff 为分母的精准覆盖率能力',
+        role: '方案设计与核心开发',
+        responsibilities: [
+          '使用 Istanbul 对代码进行插桩染色，统计页面真实执行代码',
+          '结合 diff-test-coverage 将统计数据与 diff patch 对比，产出 diff 代码覆盖率',
+          '对接测试平台与公共流水线，覆盖提测到测试发布全流程',
+          '完成用户侧配置页面、数据结构设计与说明文档沉淀'
+        ],
+        achievements: [
+          '提升研发自测效率与提测质量',
+          '项目获得携程集团年度程果奖',
+          '已推广至多个组，服务百余名研发同学'
+        ],
+        techStack: ['Jest', 'Istanbul', 'diff-test-coverage', 'CI/CD', 'Chrome Extension'],
+        startDate: '2024-01',
+        endDate: '2024-09',
+        companyId: '1',
+        highlights: [
+          '覆盖率口径更精准',
+          '全流程可落地',
+          '多团队推广'
         ]
       }
     ];

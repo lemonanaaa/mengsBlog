@@ -152,7 +152,7 @@ const Photography = () => {
                   <div>
                     <Text strong>微信</Text>
                     <br />
-                    <Text>xxx</Text>
+                    <Text>可邮件联系后获取</Text>
                   </div>
                 </Space>
               </Col>
@@ -162,7 +162,7 @@ const Photography = () => {
                   <div>
                     <Text strong>工作室</Text>
                     <br />
-                    <Text>shanghai</Text>
+                    <Text>上海</Text>
                   </div>
                 </Space>
               </Col>

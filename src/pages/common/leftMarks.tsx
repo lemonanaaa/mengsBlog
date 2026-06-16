@@ -331,6 +331,15 @@ const LeftMarks = () => {
               {location.pathname === '/career/resume' && <span className="active-indicator">●</span>}
             </div>
             <div 
+              onClick={() => navigateWithMeng('/career/detail')} 
+              className={`sub-nav-item ${location.pathname === '/career/detail' ? 'active' : ''}`}
+              data-path="/career/detail"
+            >
+              <span className="sub-nav-icon">🧭</span>
+              <span className="sub-nav-text">前端详情页</span>
+              {location.pathname === '/career/detail' && <span className="active-indicator">●</span>}
+            </div>
+            <div 
               onClick={() => navigateWithMeng('/career/blogsTree')} 
               className={`sub-nav-item ${location.pathname === '/career/blogsTree' ? 'active' : ''}`}
               data-path="/career/blogsTree"
@@ -433,6 +442,20 @@ const LeftMarks = () => {
           <span className="nav-icon">✍️</span>
           <span className="nav-text">Meng's碎碎念</span>
           {location.pathname === '/writing' && <span className="active-indicator">●</span>}
+        </a>
+
+        {/* 每日待办 */}
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            navigateWithMeng('/todo');
+          }}
+          className="nav-link todo-link"
+        >
+          <span className="nav-icon">✅</span>
+          <span className="nav-text">每日待办</span>
+          {location.pathname === '/todo' && <span className="active-indicator">●</span>}
         </a>
       </div>
     </div>

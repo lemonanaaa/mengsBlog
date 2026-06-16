@@ -52,7 +52,6 @@
 .left-marks .desc-box a:hover {
   color: #1890ff !important;
   background: linear-gradient(135deg, rgba(24, 144, 255, 0.1) 0%, rgba(24, 144, 255, 0.05) 100%) !important;
-  transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2) !important;
 }
 .left-marks .desc-box a:hover .nav-icon {
@@ -60,7 +59,7 @@
   transform: scale(1.1) !important;
 }
 .left-marks .desc-box a:active {
-  transform: translateY(0) scale(0.98) !important;
+  transform: scale(0.98) !important;
 }
 .left-marks .desc-box a::after {
   content: "" !important;
@@ -104,7 +103,6 @@
 .left-marks .desc-box div:hover {
   color: #1890ff !important;
   background: linear-gradient(135deg, rgba(24, 144, 255, 0.08) 0%, rgba(24, 144, 255, 0.03) 100%) !important;
-  transform: translateX(3px) !important;
   box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15) !important;
 }
 .left-marks .desc-box div:hover .sub-nav-icon {
@@ -112,7 +110,7 @@
   transform: scale(1.1) !important;
 }
 .left-marks .desc-box div:active {
-  transform: translateX(3px) scale(0.98) !important;
+  transform: scale(0.98) !important;
 }
 .left-marks .desc-box div::before {
   content: "•" !important;

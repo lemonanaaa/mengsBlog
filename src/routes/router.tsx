@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 const FrontPage = React.lazy(() => import("../pages/frontPage/View"));
 const CareerView = React.lazy(() => import("../pages/career/View"));
 const ResumeView = React.lazy(() => import("../pages/career/resume/View"));
+const CareerDetailView = React.lazy(() => import("../pages/career/detail/View"));
 const BlogsTreeView = React.lazy(() => import("../pages/career/blogsTree/View"));
 const BlogsWithTimeline = React.lazy(() => import("../pages/career/blogsWithTimeline/View"));
 const BlogView = React.lazy(() => import("../pages/career/blogView/View"));
@@ -22,6 +23,9 @@ const PhotographyForGusetView = React.lazy(() => import("../pages/photographyFor
 // 写作模块
 const WritingView = React.lazy(() => import("../pages/writings/View"));
 const EditBlogsView = React.lazy(() => import("../pages/editBlogs/View"));
+
+// 待办模块
+const TodoView = React.lazy(() => import("../pages/todo/View"));
 
 // 加载组件
 const LoadingComponent = () => (
@@ -59,6 +63,14 @@ const routes = [
     Component: (
       <Suspense fallback={<LoadingComponent />}>
         <ResumeView />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/career/detail",
+    Component: (
+      <Suspense fallback={<LoadingComponent />}>
+        <CareerDetailView />
       </Suspense>
     ),
   },
@@ -171,6 +183,14 @@ const routes = [
     Component: (
       <Suspense fallback={<LoadingComponent />}>
         <EditBlogsView />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/todo",
+    Component: (
+      <Suspense fallback={<LoadingComponent />}>
+        <TodoView />
       </Suspense>
     ),
   },
