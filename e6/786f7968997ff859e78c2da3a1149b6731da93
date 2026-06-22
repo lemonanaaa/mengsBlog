@@ -1,0 +1,24 @@
+src/css/todo/todo.css
+  s_e55680a20acdf3::t_1c53a0e07cb32e 472-474
+  s_e55680a20acdf3::t_a633aef1daaefe 63-68,72,76-77,79,86
+  s_e55680a20acdf3::t_f8e191976120bf 452-455
+  s_e55680a20acdf3::t_9869f72525d46c 18-20
+public/resume.md
+  ai_agent 1,3-6,8,10,12,14,16,18-21,23,25,27-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.17-trip",
+  "base_commit_sha": "e6786f7968997ff859e78c2da3a1149b6731da93",
+  "prompts": {},
+  "sessions": {
+    "s_e55680a20acdf3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "68576061-72d8-4340-b8f1-0f8df90ac167",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
