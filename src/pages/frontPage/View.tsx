@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../common/Layout";
 import { createNavigateWithMeng } from "../../utils/navigation";
@@ -53,6 +53,12 @@ const FrontPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const navigateWithMeng = createNavigateWithMeng(navigate, searchParams);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   const scrollToGrid = () => {
     document.getElementById("front-grid")?.scrollIntoView({ behavior: "smooth" });
@@ -60,10 +66,14 @@ const FrontPage = () => {
 
   return (
     <Layout>
-      <div className="front-page">
-        <div className="front-page-bg" aria-hidden="true" />
+      <div className={`front-page${ready ? " front-page--ready" : ""}`}>
+        <div className="front-page-bg" aria-hidden="true">
+          <span className="front-blob front-blob-1" />
+          <span className="front-blob front-blob-2" />
+          <span className="front-blob front-blob-3" />
+        </div>
 
-        <header className="front-topbar">
+        <header className="front-topbar front-animate" style={{ "--delay": "0.05s" } as React.CSSProperties}>
           <span className="front-logo">Meng</span>
           <div className="front-topbar-icons">
             <span className="front-topbar-icon" title="作品集入口">▦</span>
@@ -73,20 +83,27 @@ const FrontPage = () => {
 
         <div className="front-main">
           <section className="front-left">
-            <span className="front-badge">前端工程师 · 上海</span>
-            <h1 className="front-title">Meng</h1>
-            <p className="front-tagline">Build things that work.</p>
-            <p className="front-desc">
+            <span className="front-badge front-animate" style={{ "--delay": "0.12s" } as React.CSSProperties}>
+              前端工程师 · 上海
+            </span>
+            <h1 className="front-title front-animate" style={{ "--delay": "0.2s" } as React.CSSProperties}>
+              Meng
+            </h1>
+            <p className="front-tagline front-animate" style={{ "--delay": "0.28s" } as React.CSSProperties}>
+              Build things that work.
+            </p>
+            <p className="front-desc front-animate" style={{ "--delay": "0.36s" } as React.CSSProperties}>
               你好，我是李萌。这个站点是我的前端作品集，
               集中展示工作经历、项目实践与能力结构，方便快速了解我的背景。
             </p>
-            <div className="front-actions">
+            <div className="front-actions front-animate" style={{ "--delay": "0.44s" } as React.CSSProperties}>
               <button
                 type="button"
                 className="front-btn front-btn-primary"
                 onClick={() => navigateWithMeng("/career/resume")}
               >
-                查看简历 ↗
+                <span>查看简历</span>
+                <span className="front-btn-arrow" aria-hidden="true">↗</span>
               </button>
               <button
                 type="button"
@@ -97,28 +114,35 @@ const FrontPage = () => {
               </button>
             </div>
 
-            <div className="front-focus-strip">
+            <div className="front-focus-strip front-animate" style={{ "--delay": "0.52s" } as React.CSSProperties}>
               <div className="front-focus-strip-title">当前关注方向</div>
               <div className="front-focus-strip-items">
-                {focusItems.map((item) => (
-                  <span key={item}>{item}</span>
+                {focusItems.map((item, index) => (
+                  <span
+                    key={item}
+                    className="front-focus-item"
+                    style={{ "--delay": `${0.58 + index * 0.08}s` } as React.CSSProperties}
+                  >
+                    {item}
+                  </span>
                 ))}
               </div>
             </div>
           </section>
 
           <section className="front-right">
-            <div className="front-grid-header">
+            <div className="front-grid-header front-animate" style={{ "--delay": "0.3s" } as React.CSSProperties}>
               <span>作品集入口</span>
               <div className="front-grid-header-icon" aria-hidden="true">
                 <i /><i /><i /><i />
               </div>
             </div>
             <div className="front-grid" id="front-grid">
-              {guideCards.map((card) => (
+              {guideCards.map((card, index) => (
                 <div
                   key={card.key}
-                  className={`front-glass-card ${card.tint}`}
+                  className={`front-glass-card ${card.tint} front-animate`}
+                  style={{ "--delay": `${0.38 + index * 0.1}s` } as React.CSSProperties}
                   onClick={() => navigateWithMeng(card.path)}
                   role="button"
                   tabIndex={0}
@@ -131,13 +155,14 @@ const FrontPage = () => {
                   <span className="front-glass-card-icon">{card.icon}</span>
                   <h3 className="front-glass-card-title">{card.title}</h3>
                   <p className="front-glass-card-desc">{card.desc}</p>
+                  <span className="front-glass-card-go" aria-hidden="true">→</span>
                 </div>
               ))}
             </div>
           </section>
         </div>
 
-        <nav className="front-pills" aria-label="快捷导航">
+        <nav className="front-pills front-animate" aria-label="快捷导航" style={{ "--delay": "0.72s" } as React.CSSProperties}>
           {guideCards.map((card) => (
             <button
               key={card.key}

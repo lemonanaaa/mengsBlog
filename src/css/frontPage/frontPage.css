@@ -1,3 +1,66 @@
+/* ── keyframes ── */
+@keyframes frontFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes frontFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(18px, -24px) scale(1.04);
+  }
+  66% {
+    transform: translate(-12px, 14px) scale(0.97);
+  }
+}
+
+@keyframes frontFloatAlt {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20px, 18px) scale(1.06);
+  }
+}
+
+@keyframes frontShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes frontPulseGlow {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes frontIconBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.12);
+  }
+}
+
+/* ── page shell ── */
 .front-page {
   position: relative;
   min-height: 100vh;
@@ -6,6 +69,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 }
 
 .front-page-bg {
@@ -13,9 +77,9 @@
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(ellipse 70% 60% at 75% 40%, rgba(180, 150, 230, 0.45) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 50% at 20% 70%, rgba(200, 170, 240, 0.35) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 60% 80%, rgba(255, 200, 220, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 75% 40%, rgba(180, 150, 230, 0.5) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 50% at 20% 70%, rgba(200, 170, 240, 0.38) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 60% 80%, rgba(255, 200, 220, 0.28) 0%, transparent 55%),
     linear-gradient(145deg, #f0ecff 0%, #e8e4ff 35%, #f5f0ff 70%, #ede8ff 100%);
 }
 
@@ -27,13 +91,67 @@
   right: 8%;
   top: 18%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(160, 120, 220, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(160, 120, 220, 0.35) 0%, transparent 70%);
   filter: blur(40px);
+  animation: frontPulseGlow 8s ease-in-out infinite;
+}
+
+/* floating blobs */
+.front-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.front-blob-1 {
+  width: 320px;
+  height: 320px;
+  left: -5%;
+  bottom: 10%;
+  background: rgba(180, 140, 255, 0.35);
+  animation: frontFloat 14s ease-in-out infinite;
+}
+
+.front-blob-2 {
+  width: 260px;
+  height: 260px;
+  right: 15%;
+  bottom: 5%;
+  background: rgba(255, 180, 210, 0.3);
+  animation: frontFloatAlt 11s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.front-blob-3 {
+  width: 200px;
+  height: 200px;
+  left: 40%;
+  top: 5%;
+  background: rgba(140, 220, 200, 0.25);
+  animation: frontFloat 16s ease-in-out infinite;
+  animation-delay: -6s;
 }
 
 .front-page > *:not(.front-page-bg) {
   position: relative;
   z-index: 1;
+}
+
+/* entrance animations */
+.front-animate {
+  opacity: 0;
+}
+
+.front-page--ready .front-animate {
+  animation: frontFadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+.front-page--ready .front-focus-item {
+  opacity: 0;
+  animation: frontFadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--delay, 0s);
 }
 
 /* top bar */
@@ -53,6 +171,11 @@
   font-weight: 700;
   color: #2d2640;
   letter-spacing: 0.02em;
+  transition: letter-spacing 0.3s ease;
+}
+
+.front-page--ready .front-logo:hover {
+  letter-spacing: 0.06em;
 }
 
 .front-topbar-icons {
@@ -73,6 +196,13 @@
   font-size: 14px;
   color: #5a4d72;
   cursor: default;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.front-topbar-icon:hover {
+  transform: rotate(12deg) scale(1.08);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 16px rgba(120, 90, 180, 0.15);
 }
 
 /* main split */
@@ -97,6 +227,7 @@
 
 .front-badge {
   display: inline-block;
+  width: fit-content;
   padding: 6px 14px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.5);
@@ -105,6 +236,12 @@
   font-size: 12px;
   color: #6b6080;
   margin-bottom: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.front-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(120, 90, 180, 0.12);
 }
 
 .front-title {
@@ -112,9 +249,18 @@
   font-size: clamp(56px, 8vw, 88px);
   font-weight: 700;
   line-height: 1.05;
-  color: #1e1830;
   margin: 0 0 12px;
   letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #1a1428 0%, #3d2d5c 45%, #7c5cbf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% auto;
+  transition: background-position 0.6s ease;
+}
+
+.front-page--ready .front-title:hover {
+  background-position: right center;
 }
 
 .front-tagline {
@@ -123,6 +269,24 @@
   color: #7c5cbf;
   margin: 0 0 20px;
   font-style: italic;
+  position: relative;
+  display: inline-block;
+}
+
+.front-tagline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #7c5cbf, transparent);
+  border-radius: 1px;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.front-page--ready .front-tagline:hover::after {
+  width: 100%;
 }
 
 .front-desc {
@@ -146,20 +310,47 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   border: none;
   font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .front-btn-primary {
   background: #2d2640;
   color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.front-btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.front-btn-primary:hover::before {
+  transform: translateX(100%);
 }
 
 .front-btn-primary:hover {
   background: #3d3455;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(45, 38, 64, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 38, 64, 0.3);
+}
+
+.front-btn-arrow {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.front-btn-primary:hover .front-btn-arrow {
+  transform: translate(3px, -3px);
 }
 
 .front-btn-secondary {
@@ -170,7 +361,9 @@
 }
 
 .front-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(120, 90, 180, 0.12);
 }
 
 /* right grid */
@@ -202,12 +395,22 @@
   gap: 3px;
   padding: 6px;
   box-sizing: border-box;
+  transition: transform 0.3s ease;
+}
+
+.front-grid-header:hover .front-grid-header-icon {
+  transform: rotate(90deg);
 }
 
 .front-grid-header-icon i {
   display: block;
   background: #9a8ab0;
   border-radius: 1px;
+  transition: background 0.3s ease;
+}
+
+.front-grid-header:hover .front-grid-header-icon i {
+  background: #7c5cbf;
 }
 
 .front-grid {
@@ -223,22 +426,51 @@
 }
 
 .front-glass-card {
+  position: relative;
   padding: 20px 18px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
   min-height: 130px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.front-glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.front-glass-card:hover::before {
+  transform: translateX(120%);
 }
 
 .front-glass-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(120, 90, 180, 0.15);
-  border-color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(120, 90, 180, 0.2);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.front-glass-card:active {
+  transform: translateY(-2px) scale(1.01);
+  transition-duration: 0.1s;
 }
 
 .front-glass-card.tint-purple {
@@ -261,6 +493,12 @@
   font-size: 22px;
   margin-bottom: 12px;
   line-height: 1;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+}
+
+.front-glass-card:hover .front-glass-card-icon {
+  animation: frontIconBounce 0.5s ease;
 }
 
 .front-glass-card-title {
@@ -268,6 +506,11 @@
   font-weight: 700;
   color: #2d2640;
   margin: 0 0 6px;
+  transition: color 0.25s ease;
+}
+
+.front-glass-card:hover .front-glass-card-title {
+  color: #5a3d8a;
 }
 
 .front-glass-card-desc {
@@ -275,9 +518,27 @@
   line-height: 1.6;
   color: #6b6080;
   margin: 0;
+  flex: 1;
 }
 
-/* focus strip — lives in left column */
+.front-glass-card-go {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  font-size: 18px;
+  color: #9a8ab0;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.front-glass-card:hover .front-glass-card-go {
+  opacity: 1;
+  transform: translateX(0);
+  color: #7c5cbf;
+}
+
+/* focus strip */
 .front-focus-strip {
   margin-top: auto;
   padding: 16px 18px;
@@ -286,6 +547,12 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.45);
   max-width: 380px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.front-focus-strip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(120, 90, 180, 0.1);
 }
 
 .front-focus-strip-title {
@@ -301,18 +568,32 @@
   gap: 6px;
 }
 
-.front-focus-strip-items span {
+.front-focus-item {
   font-size: 13px;
   color: #5a5070;
   line-height: 1.5;
+  transition: transform 0.25s ease, color 0.25s ease;
+  cursor: default;
 }
 
-.front-focus-strip-items span::before {
+.front-focus-item::before {
   content: "→ ";
   color: #b0a0c8;
+  transition: transform 0.25s ease;
+  display: inline-block;
 }
 
-/* bottom pills — normal flow, no overlap */
+.front-focus-item:hover {
+  color: #4a3568;
+  transform: translateX(4px);
+}
+
+.front-focus-item:hover::before {
+  transform: translateX(2px);
+  color: #7c5cbf;
+}
+
+/* bottom pills */
 .front-pills {
   display: flex;
   flex-wrap: wrap;
@@ -327,6 +608,11 @@
   box-shadow: 0 4px 24px rgba(120, 90, 180, 0.1);
   max-width: fit-content;
   flex-shrink: 0;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.front-pills:hover {
+  box-shadow: 0 8px 32px rgba(120, 90, 180, 0.16);
 }
 
 .front-pill {
@@ -337,15 +623,20 @@
   font-weight: 500;
   color: #4a4060;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   white-space: nowrap;
   font-family: inherit;
   background: transparent;
 }
 
 .front-pill:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(120, 90, 180, 0.12);
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 6px 16px rgba(120, 90, 180, 0.18);
+}
+
+.front-pill:active {
+  transform: translateY(-1px) scale(1.02);
+  transition-duration: 0.1s;
 }
 
 .front-pill.tint-purple {
@@ -362,6 +653,27 @@
 
 .front-pill.tint-peach {
   background: rgba(255, 230, 190, 0.6);
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .front-animate,
+  .front-focus-item {
+    opacity: 1;
+    animation: none !important;
+  }
+
+  .front-blob,
+  .front-page-bg::after {
+    animation: none !important;
+  }
+
+  .front-glass-card,
+  .front-btn,
+  .front-pill,
+  .front-topbar-icon {
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media (max-width: 900px) {
@@ -397,5 +709,9 @@
 
   .front-title {
     font-size: 52px;
+  }
+
+  .front-glass-card:hover {
+    transform: translateY(-3px);
   }
 }
