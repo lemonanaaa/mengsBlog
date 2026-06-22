@@ -15,8 +15,9 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 28px;
-  width: 100%;
-  max-width: var(--todo-card-width);
+  width: var(--todo-card-width);
+  max-width: 100%;
+  flex-shrink: 0;
 }
 
 .todo-page h1 {
@@ -59,25 +60,30 @@
 .todo-heatmap-wrap {
   position: relative;
   margin-bottom: 32px;
-  width: 100%;
-  max-width: var(--todo-card-width);
-  transition: max-width 0.25s ease;
+  width: var(--todo-card-width);
+  max-width: 100%;
+  flex-shrink: 0;
+  transition:
+    width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+    max-width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .todo-heatmap-wrap.is-open {
-  max-width: var(--todo-heatmap-width);
+  width: var(--todo-heatmap-width);
 }
 
 .todo-heatmap-section {
+  width: 100%;
+  box-sizing: border-box;
   margin-bottom: 0;
-  padding: 16px 24px;
+  padding: 20px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.65);
   border: 1px solid #e8ecf4;
 }
 
 .todo-heatmap-section.is-open {
-  padding: 16px 24px;
+  padding: 20px;
 }
 
 .todo-heatmap-toggle {
@@ -443,8 +449,10 @@
 
 /* workspace */
 .todo-workspace {
-  width: 100%;
-  max-width: var(--todo-card-width);
+  width: var(--todo-card-width);
+  max-width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
   padding: 20px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.6);
@@ -461,8 +469,9 @@
 }
 
 .todo-loading {
-  width: 100%;
-  max-width: var(--todo-card-width);
+  width: var(--todo-card-width);
+  max-width: 100%;
+  flex-shrink: 0;
   text-align: center;
   padding: 40px 0;
 }
