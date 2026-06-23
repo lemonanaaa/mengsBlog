@@ -251,28 +251,31 @@ const SortableRow = ({
           />
         ) : (
           <span className="todo-text-wrap">
-            <span
-              className="todo-text"
-              onDoubleClick={() => {
-                if (!readonly) onStartEdit(item);
-              }}
-            >
-              {item.text}
-            </span>
-            {!readonly && (
-              <button
-                type="button"
-                className="todo-add-child-btn"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onStartAddChild(item._id);
+            <span className="todo-text-line">
+              <span
+                className="todo-text"
+                title={item.text}
+                onDoubleClick={() => {
+                  if (!readonly) onStartEdit(item);
                 }}
-                disabled={isBusy}
               >
-                子任务
-              </button>
-            )}
+                {item.text}
+              </span>
+              {!readonly && (
+                <button
+                  type="button"
+                  className="todo-add-child-btn"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onStartAddChild(item._id);
+                  }}
+                  disabled={isBusy}
+                >
+                  子任务
+                </button>
+              )}
+            </span>
           </span>
         )}
 
@@ -340,7 +343,7 @@ const StaticRow = ({
     >
       {item.completed ? "✓" : ""}
     </button>
-    <span className="todo-text">{item.text}</span>
+    <span className="todo-text" title={item.text}>{item.text}</span>
   </li>
 );
 
@@ -357,7 +360,7 @@ const DragOverlayRow = ({ item }: { item: FlatTodoItem }) => (
     <span className={`todo-checkbox${item.completed ? " checked" : ""}`}>
       {item.completed ? "✓" : ""}
     </span>
-    <span className="todo-text">{item.text}</span>
+    <span className="todo-text" title={item.text}>{item.text}</span>
   </li>
 );
 
