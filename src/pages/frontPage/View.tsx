@@ -33,13 +33,14 @@ const guideCards = [
     tint: "tint-mint",
   },
   {
-    key: "photography",
-    icon: "📸",
-    title: "摄影师 Meng",
-    pillLabel: "摄影",
-    desc: "浏览拍摄作品、时间线记录与摄影相关内容",
-    path: "/photography",
-    tint: "tint-peach",
+    key: "workflow",
+    icon: "🔄",
+    title: "代码修改工作流",
+    pillLabel: "工作流",
+    desc: "清晰、安全、测试优先的代码修改流程，适合演示或导出 PDF",
+    path: "/code-change-workflow-presentation.html",
+    tint: "tint-blue",
+    staticPage: true,
   },
 ];
 
@@ -62,6 +63,14 @@ const FrontPage = () => {
 
   const scrollToGrid = () => {
     document.getElementById("front-grid")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const openGuideCard = (card: (typeof guideCards)[number]) => {
+    if (card.staticPage) {
+      window.location.href = card.path;
+      return;
+    }
+    navigateWithMeng(card.path);
   };
 
   return (
@@ -143,12 +152,12 @@ const FrontPage = () => {
                   key={card.key}
                   className={`front-glass-card ${card.tint} front-animate`}
                   style={{ "--delay": `${0.38 + index * 0.1}s` } as React.CSSProperties}
-                  onClick={() => navigateWithMeng(card.path)}
+                  onClick={() => openGuideCard(card)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
-                      navigateWithMeng(card.path);
+                      openGuideCard(card);
                     }
                   }}
                 >
@@ -168,7 +177,7 @@ const FrontPage = () => {
               key={card.key}
               type="button"
               className={`front-pill ${card.tint}`}
-              onClick={() => navigateWithMeng(card.path)}
+              onClick={() => openGuideCard(card)}
             >
               {card.pillLabel}
             </button>
