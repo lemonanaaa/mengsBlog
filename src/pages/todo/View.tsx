@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { Spin, message } from "antd";
 import Layout from "../common/Layout";
 import {
@@ -6,13 +7,15 @@ import {
   TodoWeek,
   DailyStat,
   CompletedTaskItem,
+  CreatedTaskItem,
+  DayActivity,
   FlatTodoItem,
   flattenTodoTree,
   fetchActiveTodos,
   fetchWeeks,
   fetchWeekDetail,
   fetchDailyStats,
-  fetchCompletedByDate,
+  fetchDayActivity,
   createTodoNode,
   updateTodoNode,
   moveTodoNode,
@@ -41,34 +44,64 @@ const formatDateLabel = (dateKey: string) => {
   return `${year}年${month}月${day}日`;
 };
 
-const DayHoverPanel = ({
-  date,
-  tasks,
+const DayPanelBody = ({
+  activity,
   loading,
-  onMouseEnter,
-  onMouseLeave,
+  interactive,
+  isBusy,
+  activeNodes,
+  onToggleTask,
 }: {
-  date: string;
-  tasks: CompletedTaskItem[];
+  activity: DayActivity;
   loading: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-}) => (
-  <aside
-    className="todo-day-panel todo-day-panel-side"
-    onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}
-  >
-    <h3 className="todo-day-panel-title">{formatDateLabel(date)} 完成</h3>
-    {loading ? (
-      <p className="todo-day-panel-empty">加载中…</p>
-    ) : tasks.length === 0 ? (
-      <p className="todo-day-panel-empty">当天没有完成任务</p>
-    ) : (
+  interactive: boolean;
+  isBusy: boolean;
+  activeNodes: Map<string, TodoNode>;
+  onToggleTask: (taskId: string) => void;
+}) => {
+  const { completed, created } = activity;
+  const isEmpty = !loading && completed.length === 0 && created.length === 0;
+
+  const renderLeading = (taskId: string, kind: "completed" | "created") => {
+    const node = activeNodes.get(taskId);
+    if (interactive && node) {
+      return (
+        <button
+          type="button"
+          className={`todo-day-panel-toggle${node.completed ? " is-checked" : ""}`}
+          onClick={() => onToggleTask(taskId)}
+          disabled={isBusy}
+          aria-label={node.completed ? "标记未完成" : "标记完成"}
+        >
+          {node.completed ? "✓" : ""}
+        </button>
+      );
+    }
+
+    return (
+      <span
+        className={`todo-day-panel-badge${
+          kind === "completed" ? " is-completed" : " is-created"
+        }`}
+      >
+        {kind === "completed" ? "✓" : "+"}
+      </span>
+    );
+  };
+
+  const renderTaskList = (
+    tasks: CompletedTaskItem[] | CreatedTaskItem[],
+    kind: "completed" | "created"
+  ) => {
+    if (tasks.length === 0) {
+      return <p className="todo-day-panel-empty">无</p>;
+    }
+
+    return (
       <ul className="todo-day-panel-list">
         {tasks.map((task) => (
-          <li key={task._id} className="todo-day-panel-item">
-            <span className="todo-day-panel-check">✓</span>
+          <li key={`${kind}-${task._id}`} className="todo-day-panel-item">
+            {renderLeading(task._id, kind)}
             <span className="todo-day-panel-text">
               {task.parentText && (
                 <span className="todo-day-panel-parent">{task.parentText} / </span>
@@ -78,26 +111,169 @@ const DayHoverPanel = ({
           </li>
         ))}
       </ul>
-    )}
-  </aside>
-);
+    );
+  };
+
+  if (loading) {
+    return <p className="todo-day-panel-empty">加载中…</p>;
+  }
+
+  if (isEmpty) {
+    return <p className="todo-day-panel-empty">当天没有任务动态</p>;
+  }
+
+  return (
+    <>
+      <section className="todo-day-panel-section">
+        <h4 className="todo-day-panel-section-title">
+          完成
+          <span className="todo-day-panel-count">{completed.length}</span>
+        </h4>
+        {renderTaskList(completed, "completed")}
+      </section>
+      <section className="todo-day-panel-section">
+        <h4 className="todo-day-panel-section-title">
+          新增
+          <span className="todo-day-panel-count">{created.length}</span>
+        </h4>
+        {renderTaskList(created, "created")}
+      </section>
+    </>
+  );
+};
+
+const POPOVER_WIDTH = 240;
+const POPOVER_GAP = 6;
+
+const DayPopover = ({
+  anchorRef,
+  date,
+  activity,
+  loading,
+  pinned,
+  readonly,
+  isBusy,
+  activeNodes,
+  onClose,
+  onToggleTask,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  anchorRef: React.RefObject<HTMLButtonElement | null>;
+  date: string;
+  activity: DayActivity;
+  loading: boolean;
+  pinned: boolean;
+  readonly: boolean;
+  isBusy: boolean;
+  activeNodes: Map<string, TodoNode>;
+  onClose: () => void;
+  onToggleTask: (taskId: string) => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}) => {
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+
+  const updatePosition = useCallback(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+
+    const rect = anchor.getBoundingClientRect();
+    const popoverHeight = popoverRef.current?.offsetHeight ?? 280;
+
+    let left = rect.right + POPOVER_GAP;
+    if (left + POPOVER_WIDTH > window.innerWidth - 8) {
+      left = rect.left - POPOVER_GAP - POPOVER_WIDTH;
+    }
+
+    let top = rect.top + rect.height / 2;
+    const halfHeight = popoverHeight / 2;
+    top = Math.max(8 + halfHeight, Math.min(top, window.innerHeight - 8 - halfHeight));
+
+    setPosition({ top, left });
+  }, [anchorRef]);
+
+  useLayoutEffect(() => {
+    updatePosition();
+    const raf = requestAnimationFrame(updatePosition);
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [updatePosition, date, activity, loading, pinned]);
+
+  if (!position) return null;
+
+  return createPortal(
+    <div
+      ref={popoverRef}
+      className={`todo-day-popover${pinned ? " is-pinned" : ""}`}
+      style={{ top: position.top, left: position.left }}
+      onClick={(e) => e.stopPropagation()}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      <div className="todo-day-panel-header">
+        <h3 className="todo-day-panel-title">{formatDateLabel(date)}</h3>
+        {pinned && (
+          <button type="button" className="todo-day-panel-close" onClick={onClose} aria-label="关闭">
+            ×
+          </button>
+        )}
+      </div>
+      <DayPanelBody
+        activity={activity}
+        loading={loading}
+        interactive={!readonly}
+        isBusy={isBusy}
+        activeNodes={activeNodes}
+        onToggleTask={onToggleTask}
+      />
+    </div>,
+    document.body
+  );
+};
 
 const Heatmap = ({
   stats,
   statsYear,
   availableYears,
   onYearChange,
-  hoveredDate,
+  displayDate,
+  pinnedDate,
+  activity,
+  activityLoading,
+  readonly,
+  isBusy,
+  activeNodes,
   onHoverDate,
+  onSelectDate,
   onLeaveHeatmap,
+  onClosePinned,
+  onToggleTask,
+  onKeepHover,
 }: {
   stats: DailyStat[];
   statsYear: number;
   availableYears: number[];
   onYearChange: (year: number) => void;
-  hoveredDate: string | null;
+  displayDate: string | null;
+  pinnedDate: string | null;
+  activity: DayActivity;
+  activityLoading: boolean;
+  readonly: boolean;
+  isBusy: boolean;
+  activeNodes: Map<string, TodoNode>;
   onHoverDate: (date: string) => void;
+  onSelectDate: (date: string) => void;
   onLeaveHeatmap: () => void;
+  onClosePinned: () => void;
+  onToggleTask: (taskId: string) => void;
+  onKeepHover: () => void;
 }) => {
   const pages = useMemo(() => getHeatmapPagesForYear(statsYear), [statsYear]);
   const [pageIndex, setPageIndex] = useState(() => getDefaultHeatmapPageIndex(statsYear));
@@ -125,6 +301,7 @@ const Heatmap = ({
     [currentPage, countMap]
   );
   const weekCount = columns.length;
+  const cellAnchorRef = useRef<HTMLButtonElement>(null);
 
   const yearIndex = availableYears.indexOf(statsYear);
   const canGoPrevYear = yearIndex > 0;
@@ -224,16 +401,20 @@ const Heatmap = ({
                   <div key={colIdx} className="todo-heatmap-column">
                     {col.map((cell, rowIdx) =>
                       cell ? (
-                        <button
-                          key={cell.date}
-                          type="button"
-                          className={`todo-heatmap-cell level-${cell.level}${
-                            hoveredDate === cell.date ? " is-hovered" : ""
-                          }`}
-                          title={`${cell.date}：完成 ${cell.count} 项`}
-                          aria-label={`${cell.date}，完成 ${cell.count} 项`}
-                          onMouseEnter={() => onHoverDate(cell.date)}
-                        />
+                        <span key={cell.date} className="todo-heatmap-cell-wrap">
+                          <button
+                            ref={displayDate === cell.date ? cellAnchorRef : undefined}
+                            type="button"
+                            className={`todo-heatmap-cell level-${cell.level}${
+                              displayDate === cell.date ? " is-hovered" : ""
+                            }${pinnedDate === cell.date ? " is-selected" : ""}`}
+                            title={`${cell.date}：完成 ${cell.count} 项`}
+                            aria-label={`${cell.date}，完成 ${cell.count} 项`}
+                            aria-pressed={pinnedDate === cell.date}
+                            onMouseEnter={() => onHoverDate(cell.date)}
+                            onClick={() => onSelectDate(cell.date)}
+                          />
+                        </span>
                       ) : (
                         <span
                           key={`empty-${colIdx}-${rowIdx}`}
@@ -247,28 +428,45 @@ const Heatmap = ({
               </div>
             </div>
           </div>
-
-          <div className="todo-heatmap-legend">
-            <span className="todo-heatmap-legend-edge">少</span>
-            {[
-              { level: 0, label: "0" },
-              { level: 1, label: "1" },
-              { level: 2, label: "2-3" },
-              { level: 3, label: "4-5" },
-              { level: 4, label: "6+" },
-            ].map(({ level, label }) => (
-              <span key={level} className="todo-heatmap-legend-item">
-                <span className={`todo-heatmap-cell level-${level}`} />
-                <span className="todo-heatmap-legend-label">{label}</span>
-              </span>
-            ))}
-            <span className="todo-heatmap-legend-edge">多</span>
-          </div>
-
-          {totalCompleted === 0 && (
-            <p className="todo-heatmap-hint">标记任务完成后，格子颜色会按每日完成数量加深</p>
-          )}
       </div>
+
+      {displayDate && (
+        <DayPopover
+          anchorRef={cellAnchorRef}
+          date={displayDate}
+          activity={activity}
+          loading={activityLoading}
+          pinned={pinnedDate === displayDate}
+          readonly={readonly}
+          isBusy={isBusy}
+          activeNodes={activeNodes}
+          onClose={onClosePinned}
+          onToggleTask={onToggleTask}
+          onMouseEnter={onKeepHover}
+          onMouseLeave={onLeaveHeatmap}
+        />
+      )}
+
+      <div className="todo-heatmap-legend">
+        <span className="todo-heatmap-legend-edge">少</span>
+        {[
+          { level: 0, label: "0" },
+          { level: 1, label: "1" },
+          { level: 2, label: "2-3" },
+          { level: 3, label: "4-5" },
+          { level: 4, label: "6+" },
+        ].map(({ level, label }) => (
+          <span key={level} className="todo-heatmap-legend-item">
+            <span className={`todo-heatmap-cell level-${level}`} />
+            <span className="todo-heatmap-legend-label">{label}</span>
+          </span>
+        ))}
+        <span className="todo-heatmap-legend-edge">多</span>
+      </div>
+
+      {totalCompleted === 0 && (
+        <p className="todo-heatmap-hint">标记任务完成后，格子颜色会按每日完成数量加深；点击格子查看详情</p>
+      )}
     </div>
   );
 };
@@ -291,31 +489,63 @@ const TodoView = () => {
   const [statsYear, setStatsYear] = useState(() => getStatsYear());
   const [collapsedIds, setCollapsedIds] = useState<Set<string>>(() => new Set());
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
-  const [dayTasks, setDayTasks] = useState<CompletedTaskItem[]>([]);
-  const [dayTasksLoading, setDayTasksLoading] = useState(false);
+  const [pinnedDate, setPinnedDate] = useState<string | null>(null);
+  const [dayActivity, setDayActivity] = useState<DayActivity>({ completed: [], created: [] });
+  const [dayActivityLoading, setDayActivityLoading] = useState(false);
   const hoverHideTimer = useRef<number>();
-  const dayTasksCache = useRef<Map<string, CompletedTaskItem[]>>(new Map());
+  const dayActivityCache = useRef<Map<string, DayActivity>>(new Map());
+  const displayDateRef = useRef<string | null>(null);
 
-  const clearHoverTimer = () => {
-    window.clearTimeout(hoverHideTimer.current);
-  };
+  const displayDate = pinnedDate ?? hoveredDate;
+  displayDateRef.current = displayDate;
+
+  const activeNodeMap = useMemo(
+    () => new Map(nodes.map((node) => [node._id, node])),
+    [nodes]
+  );
+
+  const clearHoverTimer = useCallback(() => {
+    if (hoverHideTimer.current) {
+      window.clearTimeout(hoverHideTimer.current);
+      hoverHideTimer.current = undefined;
+    }
+  }, []);
 
   const scheduleClearHover = useCallback(() => {
+    if (pinnedDate) return;
     clearHoverTimer();
     hoverHideTimer.current = window.setTimeout(() => setHoveredDate(null), 150);
-  }, []);
+  }, [pinnedDate, clearHoverTimer]);
 
   const handleHoverDate = useCallback(
     (date: string) => {
+      if (pinnedDate) return;
       clearHoverTimer();
       setHoveredDate(date);
     },
-    []
+    [pinnedDate, clearHoverTimer]
   );
+
+  const handleSelectDate = useCallback(
+    (date: string) => {
+      clearHoverTimer();
+      setPinnedDate((prev) => {
+        const next = prev === date ? null : date;
+        setHoveredDate(next);
+        return next;
+      });
+    },
+    [clearHoverTimer]
+  );
+
+  const handleClosePinned = useCallback(() => {
+    setPinnedDate(null);
+    setHoveredDate(null);
+  }, []);
 
   const keepHover = useCallback(() => {
     clearHoverTimer();
-  }, []);
+  }, [clearHoverTimer]);
 
   const flatItems = useMemo(
     () => flattenTodoTree(nodes, collapsedIds),
@@ -337,11 +567,22 @@ const TodoView = () => {
   const handleStatsYearChange = useCallback((year: number) => {
     setStatsYear(year);
     setHoveredDate(null);
-    dayTasksCache.current.clear();
+    setPinnedDate(null);
+    dayActivityCache.current.clear();
+  }, []);
+
+  const resetWorkspaceDraft = useCallback(() => {
+    setInput("");
+    setAddingChildOfId(null);
+    setChildInput("");
+    setEditingId(null);
+    setEditingText("");
+    setCollapsedIds(new Set());
   }, []);
 
   const loadWeekData = useCallback(async (weekKey?: string | null) => {
     setLoading(true);
+    resetWorkspaceDraft();
     try {
       if (!weekKey) {
         const data = await fetchActiveTodos();
@@ -362,7 +603,7 @@ const TodoView = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [resetWorkspaceDraft]);
 
   const loadMeta = useCallback(async () => {
     try {
@@ -385,49 +626,61 @@ const TodoView = () => {
   }, [statsYear, loadDailyStats]);
 
   useEffect(() => {
-    if (!hoveredDate) {
-      setDayTasks([]);
-      setDayTasksLoading(false);
+    if (!displayDate) {
+      setDayActivity({ completed: [], created: [] });
+      setDayActivityLoading(false);
       return;
     }
 
-    const cached = dayTasksCache.current.get(hoveredDate);
+    const cached = dayActivityCache.current.get(displayDate);
     if (cached) {
-      setDayTasks(cached);
-      setDayTasksLoading(false);
+      setDayActivity(cached);
+      setDayActivityLoading(false);
       return;
     }
 
     let cancelled = false;
-    setDayTasksLoading(true);
+    setDayActivityLoading(true);
 
-    fetchCompletedByDate(hoveredDate)
-      .then((tasks) => {
+    fetchDayActivity(displayDate)
+      .then((activity) => {
         if (!cancelled) {
-          dayTasksCache.current.set(hoveredDate, tasks);
-          setDayTasks(tasks);
+          dayActivityCache.current.set(displayDate, activity);
+          setDayActivity(activity);
         }
       })
       .catch((error) => {
-        console.error("加载当日完成任务失败:", error);
-        if (!cancelled) setDayTasks([]);
+        console.error("加载当日任务动态失败:", error);
+        if (!cancelled) setDayActivity({ completed: [], created: [] });
       })
       .finally(() => {
-        if (!cancelled) setDayTasksLoading(false);
+        if (!cancelled) setDayActivityLoading(false);
       });
 
     return () => {
       cancelled = true;
     };
-  }, [hoveredDate]);
+  }, [displayDate]);
+
+  const refreshDayActivity = useCallback(async (date: string) => {
+    try {
+      const activity = await fetchDayActivity(date);
+      dayActivityCache.current.set(date, activity);
+      if (displayDateRef.current === date) setDayActivity(activity);
+    } catch (error) {
+      console.error("刷新当日任务动态失败:", error);
+    }
+  }, []);
 
   const runAction = async (action: () => Promise<void>) => {
     setActionLoading(true);
     try {
       await action();
       await loadMeta();
-      dayTasksCache.current.clear();
+      dayActivityCache.current.clear();
       await loadDailyStats(statsYear);
+      const date = displayDateRef.current;
+      if (date) await refreshDayActivity(date);
     } catch (error) {
       console.error("操作失败:", error);
       message.error("操作失败，请稍后重试");
@@ -539,6 +792,32 @@ const TodoView = () => {
     });
   };
 
+  const handleToggleFromPanel = async (taskId: string) => {
+    if (actionLoading || readonly) return;
+
+    const node = nodes.find((n) => n._id === taskId);
+    if (!node) return;
+
+    const date = displayDateRef.current;
+    if (date) {
+      clearHoverTimer();
+      setPinnedDate(date);
+      setHoveredDate(date);
+    }
+
+    const flatItem =
+      flatItems.find((item) => item._id === taskId) ??
+      ({
+        ...node,
+        displayIndex: 0,
+        depth: 0,
+        hasChildren: false,
+        childCount: 0,
+      } as FlatTodoItem);
+
+    await handleToggle(flatItem);
+  };
+
   const handleWeekChange = (weekKey: string) => {
     const target = weeks.find((w) => w.weekKey === weekKey);
     if (!target) return;
@@ -600,22 +879,22 @@ const TodoView = () => {
                 statsYear={statsYear}
                 availableYears={availableYears}
                 onYearChange={handleStatsYearChange}
-                hoveredDate={hoveredDate}
+                displayDate={displayDate}
+                pinnedDate={pinnedDate}
+                activity={dayActivity}
+                activityLoading={dayActivityLoading}
+                readonly={readonly}
+                isBusy={isBusy}
+                activeNodes={activeNodeMap}
                 onHoverDate={handleHoverDate}
+                onSelectDate={handleSelectDate}
                 onLeaveHeatmap={scheduleClearHover}
+                onClosePinned={handleClosePinned}
+                onToggleTask={handleToggleFromPanel}
+                onKeepHover={keepHover}
               />
             )}
           </section>
-
-          {heatmapOpen && hoveredDate && (
-            <DayHoverPanel
-              date={hoveredDate}
-              tasks={dayTasks}
-              loading={dayTasksLoading}
-              onMouseEnter={keepHover}
-              onMouseLeave={scheduleClearHover}
-            />
-          )}
         </div>
 
         {loading ? (

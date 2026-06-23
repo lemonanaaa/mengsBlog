@@ -52,6 +52,19 @@ export interface CompletedTaskItem {
   parentText: string | null;
 }
 
+export interface CreatedTaskItem {
+  _id: string;
+  text: string;
+  createdAt: string;
+  parentId: string | null;
+  parentText: string | null;
+}
+
+export interface DayActivity {
+  completed: CompletedTaskItem[];
+  created: CreatedTaskItem[];
+}
+
 export interface FlatTodoItem extends TodoNode {
   displayIndex: number;
   depth: number;
@@ -166,6 +179,11 @@ export async function fetchDailyStats(from?: string, to?: string): Promise<Daily
 export async function fetchCompletedByDate(date: string): Promise<CompletedTaskItem[]> {
   const result = await apiRequest(`/todo/completed?date=${encodeURIComponent(date)}`);
   return result.data || [];
+}
+
+export async function fetchDayActivity(date: string): Promise<DayActivity> {
+  const result = await apiRequest(`/todo/day?date=${encodeURIComponent(date)}`);
+  return result.data || { completed: [], created: [] };
 }
 
 export async function createTodoNode(text: string, parentId?: string | null): Promise<TodoNode> {
