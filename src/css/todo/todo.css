@@ -210,17 +210,26 @@
 }
 
 .todo-heatmap-months {
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--week-count, 1), minmax(14px, 1fr));
+  gap: 4px;
   height: 18px;
   margin-bottom: 8px;
-  margin-left: 34px;
-  width: calc(100% - 34px);
   font-size: 12px;
   color: #9aa8b8;
+  width: 100%;
 }
 
-.todo-heatmap-months span {
-  position: absolute;
+.todo-heatmap-month-label {
+  white-space: nowrap;
+  line-height: 18px;
+}
+
+.todo-heatmap-scroll {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .todo-heatmap-body {
@@ -247,10 +256,10 @@
 }
 
 .todo-heatmap-columns {
-  flex: 1;
   display: grid;
   grid-template-columns: repeat(var(--week-count, 1), minmax(14px, 1fr));
   gap: 4px;
+  width: 100%;
   min-width: 0;
 }
 
@@ -832,17 +841,20 @@
     font-size: 12px;
   }
 
-  .todo-heatmap-grid-wrap {
+  .todo-heatmap-scroll {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
   }
 
+  .todo-heatmap-months,
   .todo-heatmap-columns {
     grid-template-columns: repeat(var(--week-count, 1), 12px);
     gap: 3px;
-    flex: none;
     width: max-content;
+    min-width: 100%;
+  }
+
+  .todo-heatmap-month-label {
+    font-size: 10px;
   }
 
   .todo-heatmap-column {

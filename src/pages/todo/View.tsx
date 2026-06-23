@@ -191,17 +191,6 @@ const Heatmap = ({
 
       <div className="todo-heatmap-main" onMouseLeave={onLeaveHeatmap}>
         <div className="todo-heatmap-grid-wrap">
-            <div className="todo-heatmap-months">
-              {monthLabels.map((m) => (
-                <span
-                  key={`${m.label}-${m.index}`}
-                  style={{ left: weekCount > 0 ? `${(m.index / weekCount) * 100}%` : "0" }}
-                >
-                  {m.label}
-                </span>
-              ))}
-            </div>
-
             <div className="todo-heatmap-body">
               <div className="todo-heatmap-day-labels">
                 <span />
@@ -212,10 +201,25 @@ const Heatmap = ({
                 <span>五</span>
                 <span />
               </div>
-              <div
-                className="todo-heatmap-columns"
-                style={{ "--week-count": weekCount } as React.CSSProperties}
-              >
+              <div className="todo-heatmap-scroll">
+                <div
+                  className="todo-heatmap-months"
+                  style={{ "--week-count": weekCount } as React.CSSProperties}
+                >
+                  {monthLabels.map((m) => (
+                    <span
+                      key={`${m.label}-${m.index}`}
+                      className="todo-heatmap-month-label"
+                      style={{ gridColumnStart: m.index + 1 }}
+                    >
+                      {m.label}
+                    </span>
+                  ))}
+                </div>
+                <div
+                  className="todo-heatmap-columns"
+                  style={{ "--week-count": weekCount } as React.CSSProperties}
+                >
                 {columns.map((col, colIdx) => (
                   <div key={colIdx} className="todo-heatmap-column">
                     {col.map((cell, rowIdx) =>
@@ -239,6 +243,7 @@ const Heatmap = ({
                     )}
                   </div>
                 ))}
+                </div>
               </div>
             </div>
           </div>
