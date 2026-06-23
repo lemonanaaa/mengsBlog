@@ -1,0 +1,88 @@
+src/css/todo/todo.css
+  s_e55680a20acdf3::t_86389c18ac1d97 4
+  s_e55680a20acdf3::t_0a7e536848ccd6 422-448
+  s_e55680a20acdf3::t_0771c5ff58b19a 271-283
+  s_e55680a20acdf3::t_cf67839cdf4753 125
+  s_e55680a20acdf3::t_c43e5e65e9d5b2 493,498-505,508-513
+  s_e55680a20acdf3::t_98fa0654bda47d 401-402
+  s_e55680a20acdf3::t_a4abedab744f98 308-310
+  s_93e4cdd885fa86::t_a6494aa98d6f69 421
+  s_93e4cdd885fa86::t_a76b11a23a1b80 66
+  s_93e4cdd885fa86::t_6b76777cfd0de1 408
+  s_e55680a20acdf3::t_20cf1bc509ce47 175
+  s_e55680a20acdf3::t_75ea71bbc5780c 231
+  s_e55680a20acdf3::t_46f530ba5afdf7 367,375-376,378
+  s_e55680a20acdf3::t_4477774fff4d48 403-407,409-412
+  s_e55680a20acdf3::t_65429268a23714 366,368-372,374,381-400
+  s_93e4cdd885fa86::t_4f1f96e6e51dd5 379-380
+  s_e55680a20acdf3::t_20ac7262ef0727 516-523,529-545
+src/pages/todo/api.ts
+  s_e55680a20acdf3::t_7c7411852f5391 184-188
+  s_e55680a20acdf3::t_9ba4e6afa7db48 55-67
+src/pages/todo/View.tsx
+  s_e55680a20acdf3::t_9d4d8e52248747 431
+  s_e55680a20acdf3::t_baf545dfe77586 493-494,497,499-500
+  s_e55680a20acdf3::t_bdad1c78940262 682-683
+  s_e55680a20acdf3::t_93cd95df8fde3a 506,512
+  s_93e4cdd885fa86::t_bafcadf5fb63c5 153-155,157-158
+  s_e55680a20acdf3::t_22b8b9f0c82561 231
+  s_e55680a20acdf3::t_04c64158834ac8 450-464,466-469
+  s_e55680a20acdf3::t_ea74469bf0ffb7 492,507-511,527-531,537-538,541-542,545,548
+  s_e55680a20acdf3::t_e239fb3207ccd4 665-668,670-673
+  s_e55680a20acdf3::t_cfe4920d623a86 680
+  s_e55680a20acdf3::t_b5c0580b4481d8 409
+  s_e55680a20acdf3::t_59f2e25ae5da0b 801-807
+  s_e55680a20acdf3::t_9da5d6a06b352d 1-2
+  s_e55680a20acdf3::t_2428f006e8fd92 148,166-168,170-173
+  s_e55680a20acdf3::t_a1d1943c9b1580 48,55,61-64,92-96,98-100,103,114-116,125,142-143
+  s_e55680a20acdf3::t_79842a1f7ca2cd 433-448
+  s_e55680a20acdf3::t_0602538fc6a9c4 533-535,543
+  s_e55680a20acdf3::t_10d69beaac8b80 501-505
+  s_e55680a20acdf3::t_4cd6f6c1ecc6d0 145-147,149,162,174-198,200-202,204-230,232-239
+  s_e55680a20acdf3::t_392274e420b3d7 629-631,635,637-638,643,645,648-649,654,657,663,669
+  s_e55680a20acdf3::t_f13bdd7080a849 246,248-252,256-258,264,266-270,274-276
+  s_e55680a20acdf3::t_00dc3a16d0d2ab 646,653
+  s_e55680a20acdf3::t_0f3ccc1395f7d8 606
+  s_e55680a20acdf3::t_776fdf09627c43 50,57,67,97,126,141,144,150-152,156,159-161,163-165,169
+  s_e55680a20acdf3::t_377876700f150b 247,254,265,272
+  s_e55680a20acdf3::t_3a5b268819e6e1 664
+  s_e55680a20acdf3::t_2923f58b69a95c 882,884-888,892-894
+  s_e55680a20acdf3::t_56b8323135a460 199,203
+  s_e55680a20acdf3::t_0941c4544a5a40 10-11
+  s_e55680a20acdf3::t_a3ddf39f9a75fc 515,518,522,526,532,536
+  s_e55680a20acdf3::t_9eed214b293ef7 570
+  s_e55680a20acdf3::t_3cd0f57e70429c 571-580,585
+  s_e55680a20acdf3::t_e3c78f8ee700a0 883,890
+  s_e55680a20acdf3::t_e698c91eb03fa2 47,117-124,127-140
+  s_e55680a20acdf3::t_30ecd5b8b448fc 18
+  s_e55680a20acdf3::t_73d03276baaa8f 404-405,407-408,410-417
+  s_e55680a20acdf3::t_1560ee37cef20a 406
+  s_e55680a20acdf3::t_63d423b66336f7 304
+  s_e55680a20acdf3::t_d4ae1a5893b411 795-800,808-820
+  s_e55680a20acdf3::t_abe2cff43868cf 51-53,58-60,65-66,68-91,104
+  s_e55680a20acdf3::t_8aa071fa9c8332 496
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.18-trip",
+  "base_commit_sha": "8ad0e8af7f7222eb1980dce48aed9e8fb315fcb4",
+  "prompts": {},
+  "sessions": {
+    "s_93e4cdd885fa86": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ceedfd74-c4ed-431d-9582-ef2ffb71714a",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    },
+    "s_e55680a20acdf3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "68576061-72d8-4340-b8f1-0f8df90ac167",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
