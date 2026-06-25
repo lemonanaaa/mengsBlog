@@ -493,6 +493,10 @@
   background: rgba(195, 220, 255, 0.45);
 }
 
+.front-glass-card.tint-lavender {
+  background: rgba(221, 214, 254, 0.45);
+}
+
 .front-glass-card-icon {
   font-size: 22px;
   margin-bottom: 12px;
@@ -661,6 +665,10 @@
 
 .front-pill.tint-blue {
   background: rgba(195, 220, 255, 0.6);
+}
+
+.front-pill.tint-lavender {
+  background: rgba(221, 214, 254, 0.6);
 }
 
 /* reduced motion */

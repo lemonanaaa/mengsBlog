@@ -21,7 +21,7 @@ const BatchView = React.lazy(() => import("../pages/photography/batchView/View")
 const PhotographyForGusetView = React.lazy(() => import("../pages/photographyForGuset/View"));
 
 // 写作模块
-const WritingView = React.lazy(() => import("../pages/writings/View"));
+const WritingView = React.lazy(() => import("../pages/writing/View"));
 const EditBlogsView = React.lazy(() => import("../pages/editBlogs/View"));
 
 // 待办模块

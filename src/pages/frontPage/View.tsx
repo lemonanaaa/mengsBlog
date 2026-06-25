@@ -4,7 +4,18 @@ import Layout from "../common/Layout";
 import { createNavigateWithMeng } from "../../utils/navigation";
 import "../../css/frontPage/frontPage.css";
 
-const guideCards = [
+type GuideCard = {
+  key: string;
+  icon: string;
+  title: string;
+  pillLabel: string;
+  desc: string;
+  path: string;
+  tint: string;
+  staticPage?: boolean;
+};
+
+const guideCards: GuideCard[] = [
   {
     key: "resume",
     icon: "📄",
@@ -44,6 +55,18 @@ const guideCards = [
   },
 ];
 
+const mengGuideCards: GuideCard[] = [
+  {
+    key: "journal",
+    icon: "✍️",
+    title: "Meng's 碎碎念",
+    pillLabel: "碎碎念",
+    desc: "私人日记，记录一些不想对外公开的小想法",
+    path: "/writing",
+    tint: "tint-lavender",
+  },
+];
+
 const focusItems = [
   "复杂业务场景下的前端架构与可维护性",
   "跨端复用与工程链路优化",
@@ -54,6 +77,7 @@ const FrontPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const navigateWithMeng = createNavigateWithMeng(navigate, searchParams);
+  const isMeng = searchParams.get('meng') === 'true';
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -65,13 +89,15 @@ const FrontPage = () => {
     document.getElementById("front-grid")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const openGuideCard = (card: (typeof guideCards)[number]) => {
+  const openGuideCard = (card: GuideCard) => {
     if (card.staticPage) {
       window.location.href = card.path;
       return;
     }
     navigateWithMeng(card.path);
   };
+
+  const visibleCards = isMeng ? [...guideCards, ...mengGuideCards] : guideCards;
 
   return (
     <Layout>
@@ -147,7 +173,7 @@ const FrontPage = () => {
               </div>
             </div>
             <div className="front-grid" id="front-grid">
-              {guideCards.map((card, index) => (
+              {visibleCards.map((card, index) => (
                 <div
                   key={card.key}
                   className={`front-glass-card ${card.tint} front-animate`}
@@ -172,7 +198,7 @@ const FrontPage = () => {
         </div>
 
         <nav className="front-pills front-animate" aria-label="快捷导航" style={{ "--delay": "0.72s" } as React.CSSProperties}>
-          {guideCards.map((card) => (
+          {visibleCards.map((card) => (
             <button
               key={card.key}
               type="button"

@@ -434,15 +434,17 @@ const LeftMarks = () => {
           </>
         )}
 
-        {/* 个人日记等 */}
-        <a 
-          href={searchParams.get('meng') === 'true' ? '/writing?meng=true' : '/writing'} 
-          className="nav-link writing-link"
-        >
-          <span className="nav-icon">✍️</span>
-          <span className="nav-text">Meng's碎碎念</span>
-          {location.pathname === '/writing' && <span className="active-indicator">●</span>}
-        </a>
+        {/* 个人日记 — 仅 meng 模式 */}
+        {searchParams.get('meng') === 'true' && (
+          <a
+            href="/writing?meng=true"
+            className="nav-link writing-link"
+          >
+            <span className="nav-icon">✍️</span>
+            <span className="nav-text">Meng&apos;s碎碎念</span>
+            {location.pathname === '/writing' && <span className="active-indicator">●</span>}
+          </a>
+        )}
 
         {/* 每日待办 */}
         <a

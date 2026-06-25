@@ -1,0 +1,549 @@
+.journal-page {
+  --journal-card-width: 864px;
+  max-width: calc(var(--journal-card-width) + 48px);
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+}
+
+.journal-page--locked {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.journal-lock-card {
+  width: 360px;
+  max-width: 100%;
+  padding: 36px 32px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #e8ecf4;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+.journal-lock-icon {
+  font-size: 36px;
+  color: #94a3b8;
+}
+
+.journal-lock-card h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #2c3e50;
+}
+
+.journal-lock-card p {
+  margin: 0;
+  color: #7a8aa0;
+  font-size: 14px;
+}
+
+.journal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  max-width: var(--journal-card-width);
+}
+
+.journal-header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.journal-subtitle {
+  margin: 0;
+  color: #7a8aa0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.journal-loading {
+  display: flex;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.journal-section {
+  max-width: var(--journal-card-width);
+  margin-bottom: 28px;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid #e8ecf4;
+}
+
+.journal-calendar-section.is-open {
+  max-width: 1026px;
+  transition: max-width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.journal-calendar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.journal-calendar-section.is-open .journal-calendar-toggle {
+  margin-bottom: 16px;
+}
+
+.journal-calendar-toggle-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.journal-calendar-toggle:hover .journal-calendar-toggle-title {
+  color: #7c3aed;
+}
+
+.journal-calendar-toggle-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #9aa8b8;
+  flex-shrink: 0;
+}
+
+.journal-calendar-toggle-icon {
+  color: #b0bac5;
+  font-size: 11px;
+}
+
+.journal-search-section {
+  max-width: var(--journal-card-width);
+  margin-bottom: 0;
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.journal-search-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid #e8ecf4;
+}
+
+.journal-search-empty,
+.journal-search-summary {
+  margin: 0;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.journal-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.journal-search-result {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: 8px 12px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: rgba(248, 250, 252, 0.9);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.journal-search-result:hover {
+  border-color: #ddd6fe;
+  background: #faf5ff;
+  transform: translateY(-1px);
+}
+
+.journal-search-result-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.journal-search-result-time {
+  font-size: 12px;
+  color: #a78bfa;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.journal-search-result-snippet {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+.journal-search-mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.journal-stream-item.is-highlighted .journal-stream-note {
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin: -8px -10px;
+  animation: journal-entry-flash 2.2s ease;
+}
+
+@keyframes journal-entry-flash {
+  0% {
+    background: rgba(237, 233, 254, 0.95);
+    box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.35);
+  }
+  100% {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+.journal-section-title {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* heatmap — purple tone */
+.journal-heatmap-summary {
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #6b7c93;
+}
+
+.journal-heatmap-summary strong {
+  color: #6d28d9;
+}
+
+.journal-heatmap-range {
+  margin-left: 6px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.journal-heatmap-body {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.journal-heatmap-day-labels {
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  gap: 4px;
+  width: 26px;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #9aa8b8;
+}
+
+.journal-heatmap-day-labels span {
+  display: flex;
+  align-items: center;
+}
+
+.journal-heatmap-scroll {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.journal-heatmap-months {
+  display: grid;
+  grid-template-columns: repeat(var(--week-count, 1), minmax(14px, 1fr));
+  gap: 4px;
+  height: 18px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #9aa8b8;
+}
+
+.journal-heatmap-month-label {
+  white-space: nowrap;
+  line-height: 18px;
+}
+
+.journal-heatmap-columns {
+  display: grid;
+  grid-template-columns: repeat(var(--week-count, 1), minmax(14px, 1fr));
+  gap: 4px;
+}
+
+.journal-heatmap-column {
+  display: grid;
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.journal-heatmap-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: #e2e8f0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: outline 0.1s ease, box-shadow 0.1s ease;
+}
+
+.journal-heatmap-cell:not(.empty):hover {
+  outline: 1px solid rgba(109, 40, 217, 0.45);
+  outline-offset: 1px;
+}
+
+.journal-heatmap-cell.is-selected {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px #7c3aed;
+}
+
+.journal-heatmap-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.journal-heatmap-cell.level-1 { background: #ddd6fe; }
+.journal-heatmap-cell.level-2 { background: #c4b5fd; }
+.journal-heatmap-cell.level-3 { background: #a78bfa; }
+.journal-heatmap-cell.level-4 { background: #7c3aed; }
+
+.journal-heatmap-legend {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: #9aa8b8;
+}
+
+.journal-heatmap-legend-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.journal-heatmap-legend-label {
+  font-size: 10px;
+}
+
+.journal-heatmap-legend .journal-heatmap-cell {
+  width: 15px;
+  height: 15px;
+  aspect-ratio: unset;
+}
+
+/* editor */
+.journal-editor-wrap {
+  border: 1px solid #e8ecf4;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.journal-editor-toolbar {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.journal-editor-content {
+  min-height: 220px;
+}
+
+.journal-editor-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.journal-today-stream {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px dashed #e8ecf4;
+}
+
+.journal-today-stream-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
+
+.journal-today-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: #f3e8ff;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+.journal-list-loading {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.journal-stream {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.journal-stream::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: linear-gradient(180deg, #ddd6fe 0%, #e9d5ff 50%, transparent 100%);
+}
+
+.journal-stream-item {
+  display: flex;
+  gap: 14px;
+  padding-bottom: 20px;
+}
+
+.journal-stream-item:last-child {
+  padding-bottom: 0;
+}
+
+.journal-stream-rail {
+  flex-shrink: 0;
+  width: 12px;
+  padding-top: 6px;
+  display: flex;
+  justify-content: center;
+}
+
+.journal-stream-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.journal-stream-note {
+  flex: 1;
+  min-width: 0;
+}
+
+.journal-stream-note-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.journal-stream-note-head time {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #a78bfa;
+  font-weight: 500;
+}
+
+.journal-stream-delete {
+  border: none;
+  background: none;
+  color: #cbd5e1;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+
+.journal-stream-item:hover .journal-stream-delete,
+.journal-stream-delete:focus-visible {
+  opacity: 1;
+}
+
+.journal-stream-delete:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.journal-stream-content {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #475569;
+  word-break: break-word;
+}
+
+.journal-stream-content p {
+  margin: 0;
+}
+
+.journal-stream-content p + p {
+  margin-top: 0.6em;
+}
+
+.journal-stream-content blockquote {
+  margin: 0.5em 0 0;
+  padding-left: 12px;
+  border-left: 2px solid #ddd6fe;
+  color: #64748b;
+}
+
+.journal-stream-content pre {
+  margin-top: 0.5em;
+  overflow-x: auto;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
