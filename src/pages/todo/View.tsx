@@ -672,13 +672,18 @@ const TodoView = () => {
     }
   }, []);
 
-  const runAction = async (action: () => Promise<void>) => {
+  const runAction = async (
+    action: () => Promise<void>,
+    options: { refreshStats?: boolean } = {}
+  ) => {
     setActionLoading(true);
     try {
       await action();
       await loadMeta();
       dayActivityCache.current.clear();
-      await loadDailyStats(statsYear);
+      if (options.refreshStats) {
+        await loadDailyStats(statsYear);
+      }
       const date = displayDateRef.current;
       if (date) await refreshDayActivity(date);
     } catch (error) {
@@ -735,7 +740,7 @@ const TodoView = () => {
     await runAction(async () => {
       const updated = await updateTodoNode(item._id, { completed: !item.completed });
       setNodes((prev) => prev.map((n) => (n._id === item._id ? updated : n)));
-    });
+    }, { refreshStats: true });
   };
 
   const handleDelete = async (id: string) => {
@@ -754,7 +759,7 @@ const TodoView = () => {
         setAddingChildOfId(null);
         setChildInput("");
       }
-    });
+    }, { refreshStats: true });
   };
 
   const handleSaveEdit = async (id: string) => {
