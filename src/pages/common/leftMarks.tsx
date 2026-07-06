@@ -327,7 +327,7 @@ const LeftMarks = () => {
               data-path="/career/resume"
             >
               <span className="sub-nav-icon">📄</span>
-              <span className="sub-nav-text">简历页面</span>
+              <span className="sub-nav-text">简历</span>
               {location.pathname === '/career/resume' && <span className="active-indicator">●</span>}
             </div>
             <div 
@@ -336,7 +336,7 @@ const LeftMarks = () => {
               data-path="/career/detail"
             >
               <span className="sub-nav-icon">🧭</span>
-              <span className="sub-nav-text">前端详情页</span>
+              <span className="sub-nav-text">项目介绍</span>
               {location.pathname === '/career/detail' && <span className="active-indicator">●</span>}
             </div>
             <div 
@@ -345,7 +345,7 @@ const LeftMarks = () => {
               data-path="/career/blogsTree"
             >
               <span className="sub-nav-icon">🌳</span>
-              <span className="sub-nav-text">前端知识树</span>
+              <span className="sub-nav-text">知识树</span>
               {location.pathname === '/career/blogsTree' && <span className="active-indicator">●</span>}
             </div>
             <div 
@@ -354,7 +354,7 @@ const LeftMarks = () => {
               data-path="/career/blogsWithTimeline"
             >
               <span className="sub-nav-icon">📅</span>
-              <span className="sub-nav-text">Blogs with timeLine</span>
+              <span className="sub-nav-text">博客</span>
               {location.pathname === '/career/blogsWithTimeline' && <span className="active-indicator">●</span>}
             </div>
           </>

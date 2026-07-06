@@ -5,7 +5,7 @@ const BlogsTreeView = () => {
   return (
     <Layout>
       <div style={{ maxWidth: "860px", lineHeight: 1.8 }}>
-        <h1>前端知识树</h1>
+        <h1>知识树</h1>
         <p>
           这个页面用于整理我在实际工作中长期沉淀的前端知识地图。它不是教材目录，而是以
           真实业务问题为导向的能力结构。

@@ -19,7 +19,7 @@ const guideCards: GuideCard[] = [
   {
     key: "resume",
     icon: "📄",
-    title: "简历页面",
+    title: "简历",
     pillLabel: "简历",
     desc: "完整工作经历、项目背景与成果指标，适合投递或面试前快速了解",
     path: "/career/resume",
@@ -28,8 +28,8 @@ const guideCards: GuideCard[] = [
   {
     key: "detail",
     icon: "🧭",
-    title: "前端详情页",
-    pillLabel: "项目详情",
+    title: "项目介绍",
+    pillLabel: "项目介绍",
     desc: "技能栈、工作经历、项目实践与技术内容的完整展示",
     path: "/career/detail",
     tint: "tint-pink",
@@ -37,7 +37,7 @@ const guideCards: GuideCard[] = [
   {
     key: "tree",
     icon: "🌳",
-    title: "前端知识树",
+    title: "知识树",
     pillLabel: "知识树",
     desc: "按主题整理的能力地图，展示业务、工程化与稳定性方向的结构",
     path: "/career/blogsTree",
@@ -67,11 +67,11 @@ const mengGuideCards: GuideCard[] = [
   },
 ];
 
-const focusItems = [
-  "复杂业务场景下的前端架构与可维护性",
-  "跨端复用与工程链路优化",
-  "性能优化、监控建设与研发提效",
-];
+const profileSnapshot = {
+  title: "背景速览",
+  summary: "携程 4 年 Web 前端 · 复杂 C 端 · 工程化与性能优化",
+  tags: ["复杂业务", "性能 & 稳定性", "AI 应用探索"],
+};
 
 const FrontPage = () => {
   const navigate = useNavigate();
@@ -110,10 +110,10 @@ const FrontPage = () => {
 
         <header className="front-topbar front-animate" style={{ "--delay": "0.05s" } as React.CSSProperties}>
           <span className="front-logo">Meng</span>
-          <div className="front-topbar-icons">
-            <span className="front-topbar-icon" title="作品集入口">▦</span>
-            <span className="front-topbar-icon" title="个人站点">✦</span>
-          </div>
+          <p className="front-topbar-note">
+            <span className="front-topbar-dot" aria-hidden="true" />
+            前端作品集
+          </p>
         </header>
 
         <div className="front-main">
@@ -128,8 +128,8 @@ const FrontPage = () => {
               Build things that work.
             </p>
             <p className="front-desc front-animate" style={{ "--delay": "0.36s" } as React.CSSProperties}>
-              你好，我是李萌。这个站点是我的前端作品集，
-              集中展示工作经历、项目实践与能力结构，方便快速了解我的背景。
+              你好，我是李萌。这是个人作品集，展示工作经历、项目实践与技术思考。
+              建议从「简历」开始，快速了解我的背景。
             </p>
             <div className="front-actions front-animate" style={{ "--delay": "0.44s" } as React.CSSProperties}>
               <button
@@ -137,7 +137,7 @@ const FrontPage = () => {
                 className="front-btn front-btn-primary"
                 onClick={() => navigateWithMeng("/career/resume")}
               >
-                <span>查看简历</span>
+                <span>简历</span>
                 <span className="front-btn-arrow" aria-hidden="true">↗</span>
               </button>
               <button
@@ -149,16 +149,17 @@ const FrontPage = () => {
               </button>
             </div>
 
-            <div className="front-focus-strip front-animate" style={{ "--delay": "0.52s" } as React.CSSProperties}>
-              <div className="front-focus-strip-title">当前关注方向</div>
-              <div className="front-focus-strip-items">
-                {focusItems.map((item, index) => (
+            <div className="front-profile-strip front-animate" style={{ "--delay": "0.52s" } as React.CSSProperties}>
+              <div className="front-profile-strip-title">{profileSnapshot.title}</div>
+              <p className="front-profile-summary">{profileSnapshot.summary}</p>
+              <div className="front-profile-tags">
+                {profileSnapshot.tags.map((tag, index) => (
                   <span
-                    key={item}
-                    className="front-focus-item"
+                    key={tag}
+                    className="front-profile-tag"
                     style={{ "--delay": `${0.58 + index * 0.08}s` } as React.CSSProperties}
                   >
-                    {item}
+                    {tag}
                   </span>
                 ))}
               </div>
@@ -167,9 +168,14 @@ const FrontPage = () => {
 
           <section className="front-right">
             <div className="front-grid-header front-animate" style={{ "--delay": "0.3s" } as React.CSSProperties}>
-              <span>作品集入口</span>
-              <div className="front-grid-header-icon" aria-hidden="true">
-                <i /><i /><i /><i />
+              <div className="front-grid-header-text">
+                <span className="front-grid-header-label">作品集入口</span>
+                <span className="front-grid-header-hint">{visibleCards.length} 个模块 · 点击进入</span>
+              </div>
+              <div className="front-grid-header-legend" aria-hidden="true">
+                {visibleCards.map((card) => (
+                  <span key={card.key} className={`front-grid-header-dot ${card.tint}`} />
+                ))}
               </div>
             </div>
             <div className="front-grid" id="front-grid">
@@ -187,6 +193,9 @@ const FrontPage = () => {
                     }
                   }}
                 >
+                  <span className="front-glass-card-index" aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                   <span className="front-glass-card-icon">{card.icon}</span>
                   <h3 className="front-glass-card-title">{card.title}</h3>
                   <p className="front-glass-card-desc">{card.desc}</p>

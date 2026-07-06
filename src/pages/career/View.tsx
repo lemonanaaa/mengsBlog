@@ -23,7 +23,7 @@ const CareerView: React.FC = () => {
     {
       key: "resume",
       icon: <ProfileOutlined style={{ fontSize: 28 }} />,
-      title: "简历页面",
+      title: "简历",
       desc: "查看完整的工作经历、项目背景与成果指标，适合投递或面试前快速了解。",
       path: "/career/resume",
       badge: "必看",
@@ -32,7 +32,7 @@ const CareerView: React.FC = () => {
     {
       key: "detail",
       icon: <ProjectOutlined style={{ fontSize: 28 }} />,
-      title: "前端详情页",
+      title: "项目介绍",
       desc: "查看完整的技能、工作经历、项目经历与技术内容，支持 Tab 导航与滚动浏览。",
       path: "/career/detail",
       badge: "详细版",
@@ -41,7 +41,7 @@ const CareerView: React.FC = () => {
     {
       key: "tree",
       icon: <ApartmentOutlined style={{ fontSize: 28 }} />,
-      title: "前端知识树",
+      title: "知识树",
       desc: "按主题整理能力地图，快速了解我在业务、工程化和稳定性方向的知识结构。",
       path: "/career/blogsTree",
       badge: "结构化",
@@ -50,7 +50,7 @@ const CareerView: React.FC = () => {
     {
       key: "timeline",
       icon: <BookOutlined style={{ fontSize: 28 }} />,
-      title: "技术时间线",
+      title: "博客",
       desc: "按时间查看输出内容与实践记录，当前持续建设中。",
       path: "/career/blogsWithTimeline",
       badge: "持续更新",

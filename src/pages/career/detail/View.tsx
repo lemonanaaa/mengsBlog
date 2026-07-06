@@ -204,7 +204,7 @@ const DetailView: React.FC = () => {
           <TeamOutlined /> 工作经历
         </Title>
         <Paragraph type="secondary" style={{ marginBottom: 16 }}>
-          概览仅保留当前岗位的核心信息，详细版本请查看「简历页面」。
+          概览仅保留当前岗位的核心信息，详细版本请查看「简历」。
         </Paragraph>
 
         <Card className="experience-card" bordered={false}>
@@ -277,7 +277,7 @@ const DetailView: React.FC = () => {
           <ProjectOutlined /> 项目经历
         </Title>
         <Paragraph type="secondary" style={{ marginBottom: 16 }}>
-          这里展示完整项目内容；如需按面试视角查看更完整叙述，可进入「简历页面」。
+          这里展示完整项目内容；如需按面试视角查看更完整叙述，可进入「简历」。
         </Paragraph>
 
         <Row gutter={[16, 24]}>
@@ -461,7 +461,7 @@ const DetailView: React.FC = () => {
     <Layout>
       <div className="career-page">
         <div className="career-header">
-          <Title level={2}>前端详情页</Title>
+          <Title level={2}>项目介绍</Title>
           <Paragraph>
             这里保留完整的技能、工作经历、项目经历与技术输出，支持 Tab 导航和滚动浏览。
           </Paragraph>

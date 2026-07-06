@@ -141,7 +141,7 @@ const BlogsWithTimeline = () => {
       <div className="blogs-timeline-header-container">
         {/* 标题部分 - 始终居中 */}
         <div className="blogs-timeline-title-section">
-          <Title level={2} className="blogs-timeline-title">博客时间线</Title>
+          <Title level={2} className="blogs-timeline-title">博客</Title>
           <Text type="secondary" className="blogs-timeline-subtitle">按时间顺序展示所有博客文章</Text>
           {isMeng && (
             <div className="blogs-timeline-meng-tag">
