@@ -137,6 +137,216 @@
   border-top: 1px solid #dfe3eb;
 }
 
+/* ── 项目介绍详情页：克制但有层次 ── */
+.career-page--detail {
+  --detail-ink: #1e293b;
+  --detail-muted: #64748b;
+  --detail-line: #e2e8f0;
+  --detail-accent: #6366f1;
+  --detail-accent-deep: #4f46e5;
+  --detail-accent-soft: #eef2ff;
+  --detail-surface: #ffffff;
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 28px 32px 36px;
+  border-radius: 12px;
+  background: linear-gradient(165deg, #fafbff 0%, #f8fafc 100%);
+  border: 1px solid #e8ecf4;
+  box-shadow: 0 2px 16px rgba(99, 102, 241, 0.06);
+}
+
+.career-page--detail .career-header--detail {
+  text-align: left;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8ecf4;
+}
+
+.career-page--detail .career-header--detail h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 0;
+  padding-left: 12px;
+  border-left: 4px solid var(--detail-accent);
+  color: var(--detail-ink);
+}
+
+.career-page--detail .career-tabs--detail {
+  position: static;
+  background: transparent;
+  padding-top: 0;
+  border-bottom: none;
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-content-holder {
+  display: block;
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-nav {
+  margin-bottom: 22px;
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-nav::before {
+  border-bottom: none !important;
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-nav-list {
+  gap: 6px;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #e8ecf4;
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-tab {
+  margin: 0 !important;
+  padding: 8px 16px !important;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--detail-muted);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-tab:hover {
+  color: var(--detail-accent-deep);
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-tab-active {
+  background: var(--detail-accent-soft);
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--detail-accent-deep) !important;
+  font-weight: 600;
+}
+
+.career-page--detail .career-tabs--detail .ant-tabs-ink-bar {
+  display: none !important;
+}
+
+.career-page--detail .career-detail-tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.career-page--detail .experience-card,
+.career-page--detail .project-card {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0 !important;
+  background: var(--detail-surface) !important;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.career-page--detail .project-card {
+  border-left: 3px solid var(--detail-accent) !important;
+}
+
+.career-page--detail .experience-card {
+  border-left: 3px solid #818cf8 !important;
+}
+
+.career-page--detail .experience-card:hover,
+.career-page--detail .project-card:hover {
+  transform: none;
+  border-color: #c7d2fe !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.08) !important;
+}
+
+.career-page--detail .experience-card .experience-header {
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.career-page--detail .experience-card .experience-header .experience-title-section h4 {
+  color: var(--detail-accent-deep) !important;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.career-page--detail .project-card .project-header h4 {
+  color: var(--detail-ink) !important;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.career-page--detail .experience-card .experience-header .experience-title-section .company-name,
+.career-page--detail .project-card .project-header .project-date {
+  color: var(--detail-muted);
+}
+
+.career-page--detail .experience-section-item h5,
+.career-page--detail .project-section h5 {
+  color: var(--detail-accent-deep);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.career-page--detail .experience-section-item ul li,
+.career-page--detail .project-section ul li,
+.career-page--detail .project-description {
+  color: #475569;
+  line-height: 1.65;
+}
+
+.career-page--detail .achievements-list li,
+.career-page--detail .project-achievements li {
+  color: #047857 !important;
+  font-weight: 500;
+}
+
+.career-page--detail .project-highlights {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  background: var(--detail-accent-soft);
+  border-radius: 8px;
+  border: 1px solid #e0e7ff;
+}
+
+.career-page--detail .project-tech-stack {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.career-page--detail .career-tag-soft {
+  margin: 0;
+  color: #4338ca;
+  background: var(--detail-accent-soft);
+  border: 1px solid #c7d2fe;
+}
+
+.career-page--detail .career-tag-neutral {
+  margin: 0;
+  color: #5b21b6;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+}
+
+.career-page--detail .career-tag-current {
+  margin-left: 8px;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+
+@media (max-width: 768px) {
+  .career-page--detail {
+    padding: 20px 16px 28px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .career-page--detail .career-header--detail h2 {
+    font-size: 22px;
+  }
+}
+
 .career-loading,
 .career-empty {
   display: flex;

@@ -30,7 +30,7 @@ const guideCards: GuideCard[] = [
     icon: "🧭",
     title: "项目介绍",
     pillLabel: "项目介绍",
-    desc: "技能栈、工作经历、项目实践与技术内容的完整展示",
+    desc: "工作经历与项目实践的完整展示，支持 Tab 导航与滚动浏览",
     path: "/career/detail",
     tint: "tint-pink",
   },
