@@ -1,15 +1,55 @@
 .layout {
   display: flex;
   box-sizing: border-box;
+  min-height: 100vh;
 }
+
 .layout-left {
-  width: 24%;
   height: 100vh;
-  background: linear-gradient(135deg, #fafaff 0%, #f5f5ff 25%, #f0f0ff 50%, #ebebff 75%, #e6e6ff 100%);
   position: sticky;
   top: 0;
 }
+
 .layout-right {
-  width: 76%;
-  background: linear-gradient(135deg, #f8f8ff 0%, #f3f3ff 50%, #eeeeff 100%);
+  min-height: 100vh;
+}
+
+/* ── 首页：和 front-page 同一套薰衣草底 + 侧栏磨砂玻璃 ── */
+.layout--home {
+  background:
+    radial-gradient(ellipse 70% 60% at 75% 40%, rgba(180, 150, 230, 0.5) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 50% at 20% 70%, rgba(200, 170, 240, 0.38) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 60% 80%, rgba(255, 200, 220, 0.28) 0%, transparent 55%),
+    linear-gradient(145deg, #f0ecff 0%, #e8e4ff 35%, #f5f0ff 70%, #ede8ff 100%);
+}
+
+.layout--home .layout-left {
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(22px) saturate(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.25);
+}
+
+.layout--home .layout-right {
+  background: transparent;
+}
+
+/* ── 内页：淡紫灰 ambient，白文档卡片浮在上面 ── */
+.layout--inner {
+  background: linear-gradient(160deg, #f3f1f8 0%, #ebe8f2 100%);
+}
+
+.layout--inner .layout-left {
+  background:
+    radial-gradient(ellipse 80% 35% at 50% 0%, rgba(124, 92, 191, 0.08) 0%, transparent 70%),
+    linear-gradient(180deg, #eeeaf4 0%, #e6e2ec 100%);
+  border-right: 1px solid #dcd6e4;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.45);
+}
+
+.layout--inner .layout-right {
+  background:
+    radial-gradient(ellipse 55% 40% at 88% 12%, rgba(124, 92, 191, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 10% 88%, rgba(91, 110, 174, 0.05) 0%, transparent 50%);
 }

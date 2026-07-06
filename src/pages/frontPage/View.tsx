@@ -28,9 +28,9 @@ const guideCards: GuideCard[] = [
   {
     key: "detail",
     icon: "🧭",
-    title: "项目介绍",
-    pillLabel: "项目介绍",
-    desc: "工作经历与项目实践的完整展示，支持 Tab 导航与滚动浏览",
+    title: "工作介绍",
+    pillLabel: "工作介绍",
+    desc: "工作与项目经历的完整展示，支持 Tab 导航与滚动浏览",
     path: "/career/detail",
     tint: "tint-pink",
   },

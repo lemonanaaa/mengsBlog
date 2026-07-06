@@ -76,11 +76,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 75% 40%, rgba(180, 150, 230, 0.5) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 50% at 20% 70%, rgba(200, 170, 240, 0.38) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 60% 80%, rgba(255, 200, 220, 0.28) 0%, transparent 55%),
-    linear-gradient(145deg, #f0ecff 0%, #e8e4ff 35%, #f5f0ff 70%, #ede8ff 100%);
+  background: transparent;
 }
 
 .front-page-bg::after {

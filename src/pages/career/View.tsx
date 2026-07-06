@@ -32,8 +32,8 @@ const CareerView: React.FC = () => {
     {
       key: "detail",
       icon: <ProjectOutlined style={{ fontSize: 28 }} />,
-      title: "项目介绍",
-      desc: "查看工作经历与项目实践的完整展示，支持 Tab 导航与滚动浏览。",
+      title: "工作介绍",
+      desc: "查看工作与项目经历的完整展示，支持 Tab 导航与滚动浏览。",
       path: "/career/detail",
       badge: "详细版",
       color: "purple",
@@ -104,4 +104,3 @@ const CareerView: React.FC = () => {
 };
 
 export default CareerView;
-

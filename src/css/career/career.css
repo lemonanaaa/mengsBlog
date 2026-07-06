@@ -137,7 +137,7 @@
   border-top: 1px solid #dfe3eb;
 }
 
-/* ── 项目介绍详情页：克制但有层次 ── */
+/* ── 工作介绍详情页：克制但有层次 ── */
 .career-page--detail {
   --detail-ink: #1e293b;
   --detail-muted: #64748b;
@@ -229,6 +229,118 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.career-page--detail .detail-experience {
+  padding: 22px 24px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #818cf8;
+  background: var(--detail-surface);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+}
+
+.career-page--detail .detail-experience-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.career-page--detail .detail-experience-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--detail-accent-deep);
+  line-height: 1.4;
+}
+
+.career-page--detail .detail-experience-company {
+  margin: 0;
+  font-size: 14px;
+  color: var(--detail-muted);
+}
+
+.career-page--detail .detail-experience-meta {
+  margin: 0;
+  font-size: 13px;
+  color: var(--detail-muted);
+  text-align: right;
+  white-space: nowrap;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+
+.career-page--detail .detail-experience-meta-sep {
+  margin: 0 6px;
+  color: #cbd5e1;
+}
+
+.career-page--detail .detail-experience-status {
+  color: #047857;
+  font-weight: 500;
+}
+
+.career-page--detail .detail-experience-block {
+  margin-bottom: 20px;
+}
+
+.career-page--detail .detail-experience-block-last {
+  margin-bottom: 0;
+}
+
+.career-page--detail .detail-experience-block h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--detail-accent-deep);
+  letter-spacing: 0.02em;
+}
+
+.career-page--detail .detail-experience-block ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.career-page--detail .detail-experience-block li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #475569;
+}
+
+.career-page--detail .detail-experience-block li:last-child {
+  margin-bottom: 0;
+}
+
+.career-page--detail .detail-experience-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.career-page--detail .detail-experience-tag {
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #4338ca;
+  background: var(--detail-accent-soft);
+  border: 1px solid #c7d2fe;
+}
+
+@media (max-width: 768px) {
+  .career-page--detail .detail-experience-head {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .career-page--detail .detail-experience-meta {
+    text-align: left;
+    white-space: normal;
+  }
 }
 
 .career-page--detail .experience-card,
@@ -598,6 +710,63 @@
 .blogs-section .view-all-blogs {
   text-align: center;
   margin-top: 40px;
+}
+
+/* 详情页项目卡片：覆盖全局 .projects-section 样式 */
+.career-page--detail .projects-section .project-card {
+  border-radius: 10px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 3px solid var(--detail-accent) !important;
+  background: var(--detail-surface) !important;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.career-page--detail .projects-section .project-card:hover {
+  transform: none !important;
+  border-color: #c7d2fe !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.08) !important;
+}
+
+.career-page--detail .projects-section .project-card .project-header h4 {
+  color: var(--detail-ink) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+.career-page--detail .projects-section .project-card .project-header .project-date {
+  color: var(--detail-muted) !important;
+}
+
+.career-page--detail .projects-section .project-card .project-section h5 {
+  color: var(--detail-accent-deep) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.career-page--detail .projects-section .project-card .project-section ul li,
+.career-page--detail .projects-section .project-card .project-description {
+  color: #475569 !important;
+  line-height: 1.65 !important;
+}
+
+.career-page--detail .projects-section .project-card .project-achievements li {
+  color: #047857 !important;
+  font-weight: 500 !important;
+}
+
+.career-page--detail .projects-section .project-card .project-highlights {
+  margin: 14px 0 0 !important;
+  padding: 10px 12px !important;
+  background: var(--detail-accent-soft) !important;
+  border-radius: 8px !important;
+  border: 1px solid #e0e7ff !important;
+}
+
+.career-page--detail .projects-section .project-card .project-tech-stack {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
 }
 
 @media (max-width: 768px) {

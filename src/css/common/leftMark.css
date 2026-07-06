@@ -1,218 +1,369 @@
 @charset "UTF-8";
+
+/* ── 与简历 / 工作介绍页统一的导航 tokens ── */
+.left-marks,
+.left-marks-collapsed {
+  --nav-accent: #5b6eae;
+  --nav-accent-soft: #eef1f8;
+  --nav-ink: #1e293b;
+  --nav-muted: #64748b;
+  --nav-line: #e8ecf2;
+  --nav-surface: #ffffff;
+}
+
+/* ── 展开侧栏 ── */
 .left-marks {
   box-sizing: border-box;
   height: 100%;
-  padding: 40px 20px;
+  padding: 24px 16px 20px;
   position: relative;
-}
-.left-marks .img-box {
-  height: 40%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.left-marks .img-box img {
-  border-radius: 12px;
-}
-.left-marks .desc-box {
-  height: 60%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-.left-marks .desc-box a {
-  color: #333 !important;
-  text-decoration: none !important;
-  padding: 10px 20px !important;
-  margin: 6px 0 !important;
-  border-radius: 20px !important;
-  transition: all 0.3s ease !important;
-  position: relative !important;
-  overflow: hidden !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-}
-.left-marks .desc-box a .nav-icon {
-  font-size: 18px !important;
-  opacity: 0.8 !important;
-  transition: all 0.3s ease !important;
-}
-.left-marks .desc-box a .nav-text {
-  flex: 1 !important;
-}
-.left-marks .desc-box a .active-indicator {
-  color: #1890ff !important;
-  font-size: 12px !important;
-  animation: pulse 2s infinite !important;
-}
-.left-marks .desc-box a:hover {
-  color: #1890ff !important;
-  background: linear-gradient(135deg, rgba(24, 144, 255, 0.1) 0%, rgba(24, 144, 255, 0.05) 100%) !important;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2) !important;
-}
-.left-marks .desc-box a:hover .nav-icon {
-  opacity: 1 !important;
-  transform: scale(1.1) !important;
-}
-.left-marks .desc-box a:active {
-  transform: scale(0.98) !important;
-}
-.left-marks .desc-box a::after {
-  content: "" !important;
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 50% !important;
-  width: 0 !important;
-  height: 2px !important;
-  background: linear-gradient(90deg, #1890ff, #40a9ff) !important;
-  transition: all 0.3s ease !important;
-  transform: translateX(-50%) !important;
-}
-.left-marks .desc-box a:hover::after {
-  width: 80% !important;
-}
-.left-marks .desc-box div {
-  color: #666 !important;
-  padding: 6px 12px !important;
-  margin: 2px 0 !important;
-  border-radius: 15px !important;
-  transition: all 0.3s ease !important;
-  cursor: pointer !important;
-  font-size: 14px !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
-  position: relative !important;
-  text-align: left !important;
-  width: 60% !important;
-  margin-left: 40% !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-.left-marks .desc-box div .sub-nav-icon {
-  font-size: 14px !important;
-  opacity: 0.7 !important;
-  transition: all 0.3s ease !important;
-}
-.left-marks .desc-box div .sub-nav-text {
-  flex: 1 !important;
-}
-.left-marks .desc-box div:hover {
-  color: #1890ff !important;
-  background: linear-gradient(135deg, rgba(24, 144, 255, 0.08) 0%, rgba(24, 144, 255, 0.03) 100%) !important;
-  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15) !important;
-}
-.left-marks .desc-box div:hover .sub-nav-icon {
-  opacity: 1 !important;
-  transform: scale(1.1) !important;
-}
-.left-marks .desc-box div:active {
-  transform: scale(0.98) !important;
-}
-.left-marks .desc-box div::before {
-  content: "•" !important;
-  color: #1890ff !important;
-  margin-right: 8px !important;
-  font-weight: bold !important;
-}
-.left-marks .desc-box div.active {
-  color: #1890ff !important;
-  background: linear-gradient(135deg, rgba(24, 144, 255, 0.15) 0%, rgba(24, 144, 255, 0.08) 100%) !important;
-  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2) !important;
-}
-.left-marks .desc-box div.active .sub-nav-icon {
-  opacity: 1 !important;
-  transform: scale(1.1) !important;
-}
-.left-marks .desc-box div .active-indicator {
-  color: #1890ff !important;
-  font-size: 12px !important;
-  animation: pulse 2s infinite !important;
-  margin-left: auto !important;
-}
-@keyframes pulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
+  overflow: visible;
 }
 
-.left-marks-collapsed {
-  width: 20px;
-  height: 100%;
+/* 个人区 */
+.left-marks .nav-profile {
+  flex-shrink: 0;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  position: relative;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px 18px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(91, 110, 174, 0.12);
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.left-marks .nav-profile-avatar {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--nav-line);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.left-marks .nav-profile-avatar:hover {
+  border-color: #cfd8e8;
+  box-shadow: 0 2px 8px rgba(91, 110, 174, 0.12);
+}
+
+.left-marks .nav-profile-avatar .ant-image,
+.left-marks .nav-profile-avatar img {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.left-marks .nav-profile-info {
+  min-width: 0;
+}
+
+.left-marks .nav-profile-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--nav-ink);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.left-marks .nav-profile-role {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--nav-muted);
+  line-height: 1.4;
+}
+
+/* 菜单区 */
+.left-marks .nav-menu {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.left-marks .nav-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.left-marks .nav-menu::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 2px;
+}
+
+/* 一级链接 */
+.left-marks .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  margin: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--nav-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
   cursor: pointer;
-  padding-top: 20px;
-}
-.left-marks-collapsed .collapse-arrow {
-  width: 40px;
-  height: 80px;
-  background: #1890ff;
-  border-radius: 0 40px 40px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  position: relative;
+  box-sizing: border-box;
 }
 
-.resize-handle {
+.left-marks .nav-link .nav-icon {
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+  font-size: 15px;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.left-marks .nav-link .nav-text {
+  flex: 1;
+  text-align: left;
+}
+
+.left-marks .nav-link:hover {
+  color: var(--nav-ink);
+  background: rgba(91, 110, 174, 0.06);
+  transform: translateX(2px);
+}
+
+.left-marks .nav-link:hover .nav-icon {
+  opacity: 1;
+}
+
+.left-marks .nav-link.is-active {
+  color: var(--nav-accent);
+  background: var(--nav-accent-soft);
+  font-weight: 600;
+}
+
+.left-marks .nav-link.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background: var(--nav-accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.left-marks .nav-link.is-active .nav-icon {
+  opacity: 1;
+}
+
+/* 子菜单组 */
+.left-marks .nav-group-items {
+  margin: 0 0 4px 0;
+  padding: 2px 0 2px 12px;
+  border-left: 2px solid var(--nav-line);
+  margin-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  animation: navGroupIn 0.22s ease;
+}
+
+@keyframes navGroupIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.left-marks .sub-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  margin: 0;
+  border-radius: 6px;
+  color: var(--nav-muted);
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  position: relative;
+}
+
+.left-marks .sub-nav-item .sub-nav-icon {
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.65;
+  transition: opacity 0.2s ease;
+}
+
+.left-marks .sub-nav-item .sub-nav-text {
+  flex: 1;
+}
+
+.left-marks .sub-nav-item:hover {
+  color: var(--nav-ink);
+  background: rgba(91, 110, 174, 0.05);
+  transform: translateX(2px);
+}
+
+.left-marks .sub-nav-item:hover .sub-nav-icon {
+  opacity: 1;
+}
+
+.left-marks .sub-nav-item.active {
+  color: var(--nav-accent);
+  background: var(--nav-accent-soft);
+  font-weight: 500;
+}
+
+.left-marks .sub-nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 12px;
+  background: var(--nav-accent);
+  border-radius: 0 1px 1px 0;
+}
+
+.left-marks .sub-nav-item.active .sub-nav-icon {
+  opacity: 1;
+}
+
+/* 拖拽手柄 */
+.left-marks .resize-handle {
   position: absolute;
   top: 0;
   right: 0;
-  width: 6px;
+  width: 4px;
   height: 100%;
   cursor: col-resize;
-  background: rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  border: none;
-  border-radius: 0 3px 3px 0;
+  background: transparent;
+  z-index: 100;
   transition: background 0.2s ease;
 }
-.resize-handle.resizing {
-  background: #1890ff;
-  box-shadow: 0 0 12px rgba(24, 144, 255, 0.3);
-}
-.resize-handle:hover {
-  background: rgba(0, 0, 0, 0.2);
+
+.left-marks .resize-handle:hover,
+.left-marks .resize-handle.resizing {
+  background: rgba(91, 110, 174, 0.25);
 }
 
-.collapse-button {
+/* 收起按钮 */
+.left-marks .collapse-button {
   position: absolute;
-  top: 20px;
-  right: 0px;
-  width: 40px;
-  height: 80px;
-  background: #1890ff;
-  border-radius: 40px 0 0 40px;
-  cursor: col-resize;
+  top: 50%;
+  right: -1px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  border: 1px solid #d5deeb;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
-  z-index: 1001;
-  transition: all 0.2s ease;
+  color: var(--nav-muted);
+  font-size: 14px;
+  line-height: 1;
+  z-index: 101;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: -2px 0 10px rgba(91, 110, 174, 0.08);
 }
-.collapse-button:hover {
-  background: #40a9ff;
-  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.6);
+
+.left-marks .collapse-button:hover {
+  color: var(--nav-accent);
+  border-color: #cfd8e8;
+  box-shadow: -2px 0 12px rgba(91, 110, 174, 0.1);
 }
-.collapse-button:active {
-  transform: scale(0.95);
+
+/* ── 收起态 ── */
+.left-marks-collapsed {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.left-marks-collapsed .collapse-arrow {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  border: 1px solid #d5deeb;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-muted);
+  font-size: 14px;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: -2px 0 10px rgba(91, 110, 174, 0.08);
+}
+
+.left-marks-collapsed:hover .collapse-arrow {
+  color: var(--nav-accent);
+  border-color: #cfd8e8;
+  box-shadow: -2px 0 12px rgba(91, 110, 174, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .left-marks .nav-link,
+  .left-marks .sub-nav-item,
+  .left-marks .nav-group-items {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* 首页磨砂侧栏上的导航微调 */
+.layout--home .left-marks .nav-profile {
+  background: rgba(255, 255, 255, 0.42);
+  border-bottom-color: rgba(255, 255, 255, 0.35);
+}
+
+.layout--home .left-marks .nav-link:hover,
+.layout--home .left-marks .sub-nav-item:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.layout--home .left-marks .nav-link.is-active,
+.layout--home .left-marks .sub-nav-item.active {
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.layout--home .left-marks .collapse-button,
+.layout--home .left-marks-collapsed .collapse-arrow {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.6);
 }

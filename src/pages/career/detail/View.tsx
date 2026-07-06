@@ -12,8 +12,6 @@ import {
 } from "antd";
 import {
   ProjectOutlined,
-  CalendarOutlined,
-  EnvironmentOutlined,
   TeamOutlined
 } from "@ant-design/icons";
 import Layout from "../../common/Layout";
@@ -80,65 +78,52 @@ const DetailView: React.FC = () => {
       children: !currentExp ? (
         <Empty description="工作经历建设中" />
       ) : (
-        <div className="experience-section">
-          <Card className="experience-card" bordered={false}>
-            <div className="experience-header">
-              <div className="experience-title-section">
-                <Title level={4}>{currentExp.position}</Title>
-                <Text className="company-name">
-                  <EnvironmentOutlined /> {currentExp.company}
-                </Text>
-              </div>
-              <div className="experience-date-section">
-                <Text strong>
-                  {CareerController.formatDate(currentExp.startDate)} - {CareerController.formatDate(currentExp.endDate)}
-                </Text>
-                <br />
-                <Text type="secondary">{expDuration}</Text>
-                {currentExp.isCurrent && (
-                  <Tag className="career-tag-current">在职</Tag>
-                )}
-              </div>
+        <article className="detail-experience">
+          <header className="detail-experience-head">
+            <div>
+              <h3 className="detail-experience-title">{currentExp.position}</h3>
+              <p className="detail-experience-company">{currentExp.company}</p>
             </div>
+            <p className="detail-experience-meta">
+              {CareerController.formatDate(currentExp.startDate)} - {CareerController.formatDate(currentExp.endDate)}
+              <span className="detail-experience-meta-sep"> · </span>
+              {expDuration}
+              {currentExp.isCurrent && (
+                <>
+                  <span className="detail-experience-meta-sep"> · </span>
+                  <span className="detail-experience-status">在职</span>
+                </>
+              )}
+            </p>
+          </header>
 
-            <div className="experience-content">
-              <Row gutter={[24, 24]}>
-                <Col xs={24} md={12}>
-                  <div className="experience-section-item">
-                    <Title level={5}>核心职责</Title>
-                    <ul>
-                      {currentExp.responsibilities.slice(0, 2).map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </Col>
+          <section className="detail-experience-block">
+            <h4>业务职责</h4>
+            <ul>
+              {currentExp.responsibilities.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </section>
 
-                <Col xs={24} md={12}>
-                  <div className="experience-section-item">
-                    <Title level={5}>
-                      关键结果
-                    </Title>
-                    <ul className="achievements-list">
-                      {currentExp.achievements.slice(0, 2).map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </Col>
-              </Row>
+          <section className="detail-experience-block">
+            <h4>技术改革 & 产出</h4>
+            <ul>
+              {currentExp.achievements.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </section>
 
-              <div className="experience-section-item">
-                <Title level={5}>技术关键词</Title>
-                <Space wrap>
-                  {currentExp.techStack.slice(0, 6).map((tech) => (
-                    <Tag className="career-tag-soft" key={tech}>{tech}</Tag>
-                  ))}
-                </Space>
-              </div>
+          <section className="detail-experience-block detail-experience-block-last">
+            <h4>技术关键词</h4>
+            <div className="detail-experience-tags">
+              {currentExp.techStack.map((tech) => (
+                <span className="detail-experience-tag" key={tech}>{tech}</span>
+              ))}
             </div>
-          </Card>
-        </div>
+          </section>
+        </article>
       ),
     },
     {
@@ -151,23 +136,13 @@ const DetailView: React.FC = () => {
       children: (
         <div className="projects-section">
           <Row gutter={[16, 16]}>
-            {careerData.projects.map((project) => {
-              const duration = CareerController.calculateDuration(project.startDate, project.endDate);
-
-              return (
+            {careerData.projects.map((project) => (
                 <Col xs={24} key={project.id}>
                   <Card className="project-card" bordered={false}>
                     <div className="project-header">
                       <div>
                         <Title level={4}>{project.name}</Title>
                         <Text type="secondary">{project.role}</Text>
-                      </div>
-                      <div className="project-date">
-                        <CalendarOutlined />
-                        <Text>
-                          {CareerController.formatDate(project.startDate)} - {CareerController.formatDate(project.endDate)}
-                        </Text>
-                        <Text type="secondary"> ({duration})</Text>
                       </div>
                     </div>
 
@@ -221,8 +196,7 @@ const DetailView: React.FC = () => {
                     </div>
                   </Card>
                 </Col>
-              );
-            })}
+              ))}
           </Row>
         </div>
       ),
@@ -233,7 +207,7 @@ const DetailView: React.FC = () => {
     <Layout>
       <div className="career-page career-page--detail">
         <div className="career-header career-header--detail">
-          <Title level={2}>项目介绍</Title>
+          <Title level={2}>工作介绍</Title>
         </div>
 
         <Tabs

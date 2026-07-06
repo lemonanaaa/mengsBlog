@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "../../css/common/layout.css";
 
 import LeftMarks from "./leftMarks";
@@ -9,6 +10,8 @@ export const mengsBlogContext = createContext({});
 
 const Layout = (props) => {
   const { children, leftType = 'normal' } = props;
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const [blogCommonStore, setBlogCommonStore] = useState({})
   
   // 使用 LeftMarksStorage 获取初始宽度
@@ -18,7 +21,7 @@ const Layout = (props) => {
       return state.width;
     } catch (error) {
       console.warn('Failed to get initial left width:', error);
-      return 280; // 默认宽度
+      return 240; // 默认宽度
     }
   };
 
@@ -65,7 +68,7 @@ const Layout = (props) => {
 
   return (
     <mengsBlogContext.Provider value={contextValue}>
-      <div className="layout">
+      <div className={`layout${isHome ? " layout--home" : " layout--inner"}`}>
         <div 
           className="layout-left"
           style={{ width: leftWidth }}

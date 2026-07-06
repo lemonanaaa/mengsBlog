@@ -18,6 +18,57 @@
   font-size: 13.5px;
   line-height: 1.6;
   color: #334155;
+  position: relative;
+}
+
+.resume-zoom-toolbar {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid var(--resume-line);
+  box-shadow: 0 1px 3px rgba(30, 41, 59, 0.06);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.resume-zoom-btn {
+  min-width: 32px;
+  height: 28px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.resume-zoom-btn:hover:not(:disabled) {
+  background: #fff;
+  color: var(--resume-accent);
+}
+
+.resume-zoom-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.resume-zoom-label {
+  min-width: 40px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--resume-muted);
+  user-select: none;
 }
 
 /* ── 头部 ── */
@@ -25,26 +76,27 @@
   padding-bottom: 16px;
   border-bottom: 1.5px solid var(--resume-ink);
   margin-bottom: 4px;
+  padding-right: 112px;
 }
 
 .resume-doc-head h1 {
   margin: 0 0 8px;
-  font-size: 22px;
+  font-size: 1.63em;
   font-weight: 700;
   color: var(--resume-ink);
   letter-spacing: 0.02em;
 }
 
 .resume-doc-title {
-  margin-left: 12px;
-  font-size: 15px;
-  font-weight: 500;
+  margin-left: 10px;
+  font-size: 0.68em;
+  font-weight: 400;
   color: var(--resume-muted);
 }
 
 .resume-doc-meta {
   margin: 0 0 3px;
-  font-size: 13px;
+  font-size: 0.96em;
   color: var(--resume-muted);
 }
 
@@ -65,7 +117,7 @@
 
 .resume-doc-section h2 {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: 1.04em;
   font-weight: 700;
   color: var(--resume-ink);
   letter-spacing: 0.04em;
@@ -95,7 +147,7 @@
 }
 
 .resume-section-hint {
-  font-size: 10px;
+  font-size: 0.74em;
   font-weight: 400;
   color: #b0bac7;
   white-space: nowrap;
@@ -109,7 +161,7 @@
   align-items: baseline;
   gap: 12px;
   margin-bottom: 6px;
-  font-size: 13.5px;
+  font-size: 1em;
 }
 
 .resume-entry-head strong {
@@ -119,7 +171,7 @@
 .resume-entry-head span {
   color: #94a3b8;
   white-space: nowrap;
-  font-size: 13px;
+  font-size: 0.96em;
 }
 
 /* ── 列表 ── */
@@ -145,12 +197,12 @@
 .resume-list-ordered li {
   margin-bottom: 3px;
   color: var(--resume-muted);
-  font-size: 13px;
+  font-size: 0.96em;
 }
 
 .resume-plain {
   margin: 0;
-  font-size: 13px;
+  font-size: 0.96em;
   line-height: 1.55;
   color: #475569;
 }
@@ -202,7 +254,7 @@
 }
 
 .resume-project-index {
-  font-size: 12px;
+  font-size: 0.89em;
   font-weight: 700;
   color: #cbd5e1;
   font-family: Georgia, "Times New Roman", serif;
@@ -214,13 +266,13 @@
 
 .resume-project-name {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 1.04em;
   color: var(--resume-ink);
   line-height: 1.35;
 }
 
 .resume-project-highlight {
-  font-size: 12px;
+  font-size: 0.89em;
   color: var(--resume-muted);
   text-align: right;
   line-height: 1.35;
@@ -250,7 +302,7 @@
 .resume-project-intro,
 .resume-project-result {
   margin: 0 0 6px;
-  font-size: 13px;
+  font-size: 0.96em;
   line-height: 1.55;
   color: #475569;
 }
@@ -270,7 +322,7 @@
 
 .resume-label {
   margin: 6px 0 4px;
-  font-size: 13px;
+  font-size: 0.96em;
   font-weight: 600;
   color: #475569;
 }
@@ -284,7 +336,7 @@
   border: 1px solid #dce3f0;
   border-left: 3px solid var(--resume-accent);
   color: #3d4f72;
-  font-size: 12.5px;
+  font-size: 0.93em;
 }
 
 @media (max-width: 768px) {
@@ -293,14 +345,20 @@
     padding: 22px 18px 20px;
   }
 
+  .resume-zoom-toolbar {
+    top: 18px;
+    right: 16px;
+  }
+
   .resume-doc-head h1 {
-    font-size: 19px;
+    font-size: 1.41em;
+    padding-right: 100px;
   }
 
   .resume-doc-title {
     display: block;
-    margin: 4px 0 0;
-    font-size: 14px;
+    margin: 3px 0 0;
+    font-size: 0.75em;
   }
 
   .resume-entry-head,
@@ -339,6 +397,11 @@
     border: none;
     box-shadow: none;
     max-width: none;
+    font-size: 13.5px !important;
+  }
+
+  .resume-zoom-toolbar {
+    display: none;
   }
 
   .resume-project-item {

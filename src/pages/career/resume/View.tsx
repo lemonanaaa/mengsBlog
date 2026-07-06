@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Layout from "../../common/Layout";
 
 import "../../../css/career/resume.css";
+
+const RESUME_BASE_FONT = 13.5;
+const ZOOM_STEPS = [0.9, 1, 1.1, 1.25, 1.5] as const;
+const ZOOM_STORAGE_KEY = "resume-font-scale";
 
 type Project = {
   name: string;
@@ -63,14 +67,62 @@ const projects: Project[] = [
       "对接 testhub 与公共流水线，覆盖提测到发布全流程。",
       "完成 UI、数据结构设计与使用文档。",
     ],
-    result: "提升研发自测效率；已接入多组日常开发发布流程。",
+    result: "提升研发自测效率；已接入10+组日常开发发布流程。",
   },
 ];
 
 const ResumeView = () => {
+  const [zoomIndex, setZoomIndex] = useState(1);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(ZOOM_STORAGE_KEY);
+    if (!saved) return;
+
+    const parsed = Number(saved);
+    const index = ZOOM_STEPS.findIndex((step) => step === parsed);
+    if (index >= 0) setZoomIndex(index);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(ZOOM_STORAGE_KEY, String(ZOOM_STEPS[zoomIndex]));
+  }, [zoomIndex]);
+
+  const fontScale = ZOOM_STEPS[zoomIndex];
+  const canZoomOut = zoomIndex > 0;
+  const canZoomIn = zoomIndex < ZOOM_STEPS.length - 1;
+
   return (
     <Layout>
-      <article className="resume-doc">
+      <article
+        className="resume-doc"
+        style={{ fontSize: `${RESUME_BASE_FONT * fontScale}px` }}
+      >
+        <div className="resume-zoom-toolbar" aria-label="字号调节">
+          <button
+            type="button"
+            className="resume-zoom-btn"
+            onClick={() => setZoomIndex((index) => Math.max(0, index - 1))}
+            disabled={!canZoomOut}
+            aria-label="缩小字号"
+            title="缩小"
+          >
+            A−
+          </button>
+          <span className="resume-zoom-label">{Math.round(fontScale * 100)}%</span>
+          <button
+            type="button"
+            className="resume-zoom-btn"
+            onClick={() =>
+              setZoomIndex((index) => Math.min(ZOOM_STEPS.length - 1, index + 1))
+            }
+            disabled={!canZoomIn}
+            aria-label="放大字号"
+            title="放大"
+          >
+            A+
+          </button>
+        </div>
+
         <header className="resume-doc-head">
           <h1>
             李萌
