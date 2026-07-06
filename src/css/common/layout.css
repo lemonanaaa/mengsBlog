@@ -8,6 +8,8 @@
   height: 100vh;
   position: sticky;
   top: 0;
+  overflow: visible;
+  z-index: 200;
 }
 
 .layout-right {

@@ -22,59 +22,49 @@
   overflow: visible;
 }
 
-/* 个人区 */
+/* 个人区 — 与导航同风格，不额外套卡片 */
 .left-marks .nav-profile {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 10px 18px;
+  gap: 10px;
+  padding: 2px 12px 16px;
   margin-bottom: 6px;
-  border-bottom: 1px solid rgba(91, 110, 174, 0.12);
-  background: rgba(255, 255, 255, 0.35);
-  border-radius: 10px;
-  margin-left: 4px;
-  margin-right: 4px;
+  border-bottom: 1px solid var(--nav-line);
 }
 
 .left-marks .nav-profile-avatar {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid var(--nav-line);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.left-marks .nav-profile-avatar:hover {
-  border-color: #cfd8e8;
-  box-shadow: 0 2px 8px rgba(91, 110, 174, 0.12);
 }
 
 .left-marks .nav-profile-avatar .ant-image,
 .left-marks .nav-profile-avatar img {
-  width: 48px !important;
-  height: 48px !important;
+  width: 40px !important;
+  height: 40px !important;
   object-fit: cover;
   border-radius: 50%;
+  display: block;
 }
 
 .left-marks .nav-profile-info {
   min-width: 0;
+  flex: 1;
 }
 
 .left-marks .nav-profile-name {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--nav-ink);
-  letter-spacing: 0.02em;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .left-marks .nav-profile-role {
-  margin: 2px 0 0;
+  margin: 1px 0 0;
   font-size: 12px;
   color: var(--nav-muted);
   line-height: 1.4;
@@ -192,9 +182,10 @@
 }
 
 .left-marks .sub-nav-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 14px 16px 1fr;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 7px 10px;
   margin: 0;
   border-radius: 6px;
@@ -206,7 +197,19 @@
   position: relative;
 }
 
+.left-marks .sub-nav-item::before {
+  content: "•";
+  grid-column: 1;
+  justify-self: center;
+  color: #b0bac7;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
 .left-marks .sub-nav-item .sub-nav-icon {
+  grid-column: 2;
   flex-shrink: 0;
   width: 16px;
   text-align: center;
@@ -216,6 +219,7 @@
 }
 
 .left-marks .sub-nav-item .sub-nav-text {
+  grid-column: 3;
   flex: 1;
 }
 
@@ -229,6 +233,10 @@
   opacity: 1;
 }
 
+.left-marks .sub-nav-item:hover::before {
+  color: #94a3b8;
+}
+
 .left-marks .sub-nav-item.active {
   color: var(--nav-accent);
   background: var(--nav-accent-soft);
@@ -236,15 +244,7 @@
 }
 
 .left-marks .sub-nav-item.active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 12px;
-  background: var(--nav-accent);
-  border-radius: 0 1px 1px 0;
+  color: var(--nav-accent);
 }
 
 .left-marks .sub-nav-item.active .sub-nav-icon {
@@ -270,37 +270,200 @@
 }
 
 /* 收起按钮 */
-.left-marks .collapse-button {
+.left-marks .collapse-button,
+.left-marks-collapsed .collapse-arrow {
   position: absolute;
   top: 50%;
-  right: -1px;
+  right: 0;
   transform: translateY(-50%);
-  width: 20px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(6px);
-  border: 1px solid #d5deeb;
+  width: 22px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   border-right: none;
-  border-radius: 8px 0 0 8px;
+  border-radius: 14px 0 0 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--nav-muted);
-  font-size: 14px;
-  line-height: 1;
   z-index: 101;
-  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: -2px 0 10px rgba(91, 110, 174, 0.08);
+  overflow: visible;
+  box-shadow:
+    -3px 0 14px rgba(91, 110, 174, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition:
+    width 0.32s cubic-bezier(0.34, 1.35, 0.64, 1),
+    transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1),
+    color 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.28s ease,
+    background 0.22s ease;
 }
 
-.left-marks .collapse-button:hover {
+.left-marks .collapse-button::before,
+.left-marks-collapsed .collapse-arrow::before {
+  content: "";
+  position: absolute;
+  inset: -6px -4px -6px -10px;
+  border-radius: 18px 0 0 18px;
+  background: radial-gradient(ellipse 80% 70% at 85% 50%, rgba(91, 110, 174, 0.18) 0%, transparent 72%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.left-marks .collapse-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  transition: transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
+}
+
+.left-marks .collapse-button-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.left-marks .collapse-button:hover,
+.left-marks-collapsed:hover .collapse-arrow {
+  width: 28px;
+  transform: translateY(-50%) translateX(-4px);
   color: var(--nav-accent);
-  border-color: #cfd8e8;
-  box-shadow: -2px 0 12px rgba(91, 110, 174, 0.1);
+  border-color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    -6px 0 20px rgba(91, 110, 174, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
-/* ── 收起态 ── */
+.left-marks .collapse-button:hover::before,
+.left-marks-collapsed:hover .collapse-arrow::before {
+  opacity: 1;
+}
+
+.left-marks .collapse-button:hover .collapse-button-icon--collapse {
+  transform: translateX(-3px);
+}
+
+.left-marks-collapsed:hover .collapse-button-icon--expand {
+  transform: translateX(3px);
+}
+
+.left-marks .collapse-button:active,
+.left-marks-collapsed:active .collapse-arrow {
+  transform: translateY(-50%) translateX(-2px) scale(0.96);
+  transition-duration: 0.12s;
+}
+
+/* ── 悬停展开模式 ── */
+.left-marks-shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.left-marks-shell--auto-hide {
+  overflow: visible;
+}
+
+.left-marks-trigger {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 100vh;
+  z-index: 302;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.left-marks-trigger-line {
+  width: 2px;
+  height: 52px;
+  border-radius: 2px;
+  background: rgba(91, 110, 174, 0.22);
+  transition: height 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+}
+
+.left-marks-trigger-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--nav-muted);
+  opacity: 0;
+  transform: translateX(-2px);
+  transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
+}
+
+.left-marks-trigger-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.left-marks-shell--auto-hide.is-open .left-marks-trigger {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.left-marks-shell--auto-hide:not(.is-open):hover .left-marks-trigger-icon {
+  opacity: 0.75;
+  transform: translateX(0);
+}
+
+.left-marks-shell--auto-hide:not(.is-open):hover .left-marks-trigger-line {
+  height: 72px;
+  background: rgba(91, 110, 174, 0.42);
+}
+
+.left-marks--flyout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 301;
+  transform: translateX(-100%);
+  transition: transform 0.34s cubic-bezier(0.34, 1.28, 0.64, 1);
+  box-shadow: 6px 0 32px rgba(91, 110, 174, 0.14);
+  will-change: transform;
+}
+
+.left-marks-shell--auto-hide.is-open .left-marks--flyout {
+  transform: translateX(0);
+}
+
+.layout--home .left-marks--flyout {
+  background: rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(22px) saturate(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.layout--inner .left-marks--flyout {
+  background:
+    radial-gradient(ellipse 80% 35% at 50% 0%, rgba(124, 92, 191, 0.08) 0%, transparent 70%),
+    linear-gradient(180deg, #eeeaf4 0%, #e6e2ec 100%);
+  border-right: 1px solid #dcd6e4;
+}
+
+.left-marks .collapse-button--pin {
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+
+/* ── 收起态（兼容） ── */
 .left-marks-collapsed {
   height: 100%;
   display: flex;
@@ -310,37 +473,13 @@
   position: relative;
 }
 
-.left-marks-collapsed .collapse-arrow {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(6px);
-  border: 1px solid #d5deeb;
-  border-right: none;
-  border-radius: 8px 0 0 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--nav-muted);
-  font-size: 14px;
-  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: -2px 0 10px rgba(91, 110, 174, 0.08);
-}
-
-.left-marks-collapsed:hover .collapse-arrow {
-  color: var(--nav-accent);
-  border-color: #cfd8e8;
-  box-shadow: -2px 0 12px rgba(91, 110, 174, 0.1);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .left-marks .nav-link,
   .left-marks .sub-nav-item,
-  .left-marks .nav-group-items {
+  .left-marks .nav-group-items,
+  .left-marks .collapse-button,
+  .left-marks .collapse-button-icon,
+  .left-marks-collapsed .collapse-arrow {
     animation: none;
     transition: none;
   }
@@ -348,7 +487,6 @@
 
 /* 首页磨砂侧栏上的导航微调 */
 .layout--home .left-marks .nav-profile {
-  background: rgba(255, 255, 255, 0.42);
   border-bottom-color: rgba(255, 255, 255, 0.35);
 }
 

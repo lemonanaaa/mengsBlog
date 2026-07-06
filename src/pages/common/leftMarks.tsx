@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Image } from 'antd';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { mengsBlogContext } from "../common/Layout";
@@ -41,7 +41,7 @@ export class LeftMarksStorage {
     // 返回默认状态
     return {
       width: 240,
-      isCollapsed: false,
+      isCollapsed: true,
       previousWidth: 240
     };
   }
@@ -110,31 +110,61 @@ const LeftMarks = () => {
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(config.defaultWidth);
   const leftMarksRef = useRef<HTMLDivElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const hoverCloseTimer = useRef<number>();
   
   // 从存储获取初始状态
   const initialState = LeftMarksStorage.getState();
-  const [isCollapsed, setIsCollapsed] = useState(initialState.isCollapsed);
+  const [autoHide, setAutoHide] = useState(initialState.isCollapsed);
+  const [flyoutHovered, setFlyoutHovered] = useState(false);
+  const [flyoutPinned, setFlyoutPinned] = useState(false);
   const [width, setWidth] = useState(initialState.width);
 
   // 确保组件初始化后正确应用样式
   useEffect(() => {
-    console.log('LeftMarks initialized with:', { isCollapsed, width, initialState });
-    
-    // 如果初始状态是收起状态，确保宽度正确
     if (initialState.isCollapsed && width !== config.collapsedWidth) {
       setWidth(config.collapsedWidth);
       notifyWidthChange(config.collapsedWidth);
     }
-    
-    // 如果初始状态是展开状态，确保宽度正确
+
     if (!initialState.isCollapsed && width !== initialState.width) {
       setWidth(initialState.width);
       notifyWidthChange(initialState.width);
     }
-    
-    // 确保Layout组件知道当前宽度
-    notifyWidthChange(width);
+
+    notifyWidthChange(autoHide ? config.collapsedWidth : width);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hoverCloseTimer.current) {
+        window.clearTimeout(hoverCloseTimer.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!autoHide || !flyoutPinned) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (shellRef.current?.contains(target)) return;
+      dismissFlyout();
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dismissFlyout();
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [autoHide, flyoutPinned]);
 
   // 通知 Layout 组件宽度变化
   const notifyWidthChange = (newWidth: number) => {
@@ -143,30 +173,50 @@ const LeftMarks = () => {
     }));
   };
 
-  // 收起/展开侧边栏
-  const toggleCollapse = () => {
-    // 如果正在拖拽，不执行收起/展开操作
-    if (isResizing) {
-      return;
+  const panelWidth = autoHide ? LeftMarksStorage.getPreviousWidth() : width;
+  const isFlyoutVisible = flyoutHovered || flyoutPinned;
+
+  const openFlyout = () => {
+    if (!autoHide) return;
+    if (hoverCloseTimer.current) {
+      window.clearTimeout(hoverCloseTimer.current);
     }
-    
-    const newCollapsed = !isCollapsed;
-    
-    if (newCollapsed) {
-      // 收起时，保存当前宽度并设置为最小宽度
-      LeftMarksStorage.savePreviousWidth(width);
-      setWidth(config.collapsedWidth);
-      setIsCollapsed(true); // 设置收起状态
-      notifyWidthChange(config.collapsedWidth);
-      LeftMarksStorage.saveState({ width: config.collapsedWidth, isCollapsed: newCollapsed });
-    } else {
-      // 展开时，恢复之前的宽度
-      const restoredWidth = LeftMarksStorage.getPreviousWidth();
-      setWidth(restoredWidth);
-      setIsCollapsed(false); // 设置展开状态
-      notifyWidthChange(restoredWidth);
-      LeftMarksStorage.saveState({ width: restoredWidth, isCollapsed: newCollapsed });
+    setFlyoutHovered(true);
+  };
+
+  const closeFlyoutOnLeave = () => {
+    if (!autoHide || flyoutPinned) return;
+    hoverCloseTimer.current = window.setTimeout(() => {
+      setFlyoutHovered(false);
+    }, 160);
+  };
+
+  const pinFlyout = () => {
+    if (!autoHide) return;
+    if (hoverCloseTimer.current) {
+      window.clearTimeout(hoverCloseTimer.current);
     }
+    setFlyoutPinned(true);
+    setFlyoutHovered(true);
+  };
+
+  const dismissFlyout = () => {
+    if (hoverCloseTimer.current) {
+      window.clearTimeout(hoverCloseTimer.current);
+    }
+    setFlyoutPinned(false);
+    setFlyoutHovered(false);
+  };
+
+  const enableAutoHide = () => {
+    if (isResizing) return;
+
+    LeftMarksStorage.savePreviousWidth(width);
+    setAutoHide(true);
+    dismissFlyout();
+    setWidth(config.collapsedWidth);
+    notifyWidthChange(config.collapsedWidth);
+    LeftMarksStorage.saveState({ width: config.collapsedWidth, isCollapsed: true });
   };
 
   // 开始调整宽度
@@ -203,88 +253,8 @@ const LeftMarks = () => {
     document.addEventListener('mouseup', handleMouseUp);
   };
 
-  // 收起状态下显示一个向右箭头，整个区域可点击
-  if (isCollapsed) {
-    return (
-      <div 
-        className="left-marks-collapsed"
-        onClick={toggleCollapse}
-        title="点击展开侧边栏"
-        style={{ width: `${config.collapsedWidth}px` }}
-      >
-        {/* 向右箭头 - 放在上方 */}
-        <div className="collapse-arrow">
-          ›
-        </div>
-      </div>
-    );
-  }
-
-  // 展开状态下显示完整的侧边栏
-  return (
-    <div 
-      ref={leftMarksRef}
-      className="left-marks"
-      style={{
-        width: width
-      }}
-    >
-      {/* 拖拽调整区域 */}
-      <div
-        className={`resize-handle ${isResizing ? 'resizing' : ''}`}
-        onMouseDown={handleResizeStart}
-        title="拖拽调整宽度"
-      />
-
-            {/* 收起按钮 */}
-      <div
-        className="collapse-button"
-        onMouseDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          // 判断是点击还是拖拽
-          let isDragging = false;
-          let startX = e.clientX;
-          let startWidth = width;
-          
-          const handleMouseMove = (e: MouseEvent) => {
-            const deltaX = e.clientX - startX;
-            if (Math.abs(deltaX) > 5) { // 如果移动超过5px，认为是拖拽
-              isDragging = true;
-              setIsResizing(true);
-              
-              const newWidth = Math.max(config.minWidth, Math.min(config.maxWidth, startWidth + deltaX));
-              setWidth(newWidth);
-              notifyWidthChange(newWidth);
-            }
-          };
-          
-          const handleMouseUp = (mouseUpEvent: MouseEvent) => {
-            if (isDragging) {
-              // 如果是拖拽，保存宽度
-              setIsResizing(false);
-              // 使用当前计算出的宽度，而不是可能未更新的state
-              const finalWidth = Math.max(config.minWidth, Math.min(config.maxWidth, startWidth + (mouseUpEvent.clientX - startX)));
-              LeftMarksStorage.saveState({ width: finalWidth, isCollapsed: false });
-            } else {
-              // 如果是点击，收起侧边栏
-              toggleCollapse();
-            }
-            
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-          };
-          
-          document.addEventListener('mousemove', handleMouseMove);
-          document.addEventListener('mouseup', handleMouseUp);
-        }}
-        title="拖拽调整宽度，点击收起侧边栏"
-      >
-        ‹
-      </div>
-
-      {/* 个人信息 */}
+  const renderNav = () => (
+    <>
       <div className="nav-profile">
         <div className="nav-profile-avatar">
           <Image src={mengsPhoto} preview={false} alt="李萌" />
@@ -295,7 +265,6 @@ const LeftMarks = () => {
         </div>
       </div>
 
-      {/* 导航菜单 */}
       <nav className="nav-menu" aria-label="站点导航">
         <a
           href="#"
@@ -432,6 +401,106 @@ const LeftMarks = () => {
           <span className="nav-text">每日待办</span>
         </a>
       </nav>
+    </>
+  );
+
+  if (autoHide) {
+    return (
+      <div
+        ref={shellRef}
+        className={`left-marks-shell left-marks-shell--auto-hide${isFlyoutVisible ? " is-open" : ""}${flyoutPinned ? " is-pinned" : ""}`}
+      >
+        <div
+          className="left-marks-trigger"
+          title="悬停或点击展开导航"
+          onMouseEnter={openFlyout}
+          onMouseLeave={closeFlyoutOnLeave}
+          onClick={pinFlyout}
+        >
+          <span className="left-marks-trigger-line" aria-hidden="true" />
+          <span className="left-marks-trigger-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </div>
+
+        <div
+          ref={leftMarksRef}
+          className="left-marks left-marks--flyout"
+          style={{ width: panelWidth }}
+          onMouseEnter={openFlyout}
+          onMouseLeave={closeFlyoutOnLeave}
+          onMouseDown={pinFlyout}
+        >
+          {renderNav()}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="left-marks-shell">
+      <div
+        ref={leftMarksRef}
+        className="left-marks"
+        style={{ width: panelWidth }}
+      >
+        <div
+          className={`resize-handle ${isResizing ? 'resizing' : ''}`}
+          onMouseDown={handleResizeStart}
+          title="拖拽调整宽度"
+        />
+
+        <div
+          className="collapse-button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            let isDragging = false;
+            let startX = e.clientX;
+            let startWidth = width;
+
+            const handleMouseMove = (e: MouseEvent) => {
+              const deltaX = e.clientX - startX;
+              if (Math.abs(deltaX) > 5) {
+                isDragging = true;
+                setIsResizing(true);
+
+                const newWidth = Math.max(config.minWidth, Math.min(config.maxWidth, startWidth + deltaX));
+                setWidth(newWidth);
+                notifyWidthChange(newWidth);
+              }
+            };
+
+            const handleMouseUp = (mouseUpEvent: MouseEvent) => {
+              if (isDragging) {
+                setIsResizing(false);
+                const finalWidth = Math.max(config.minWidth, Math.min(config.maxWidth, startWidth + (mouseUpEvent.clientX - startX)));
+                LeftMarksStorage.saveState({ width: finalWidth, isCollapsed: false });
+              } else {
+                enableAutoHide();
+              }
+
+              document.removeEventListener('mousemove', handleMouseMove);
+              document.removeEventListener('mouseup', handleMouseUp);
+            };
+
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+          }}
+          title="悬停模式：点击收起为左侧悬停展开"
+        >
+          <span className="collapse-button-icon collapse-button-icon--collapse">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 4L6 8l4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </div>
+
+        {renderNav()}
+      </div>
     </div>
   );
 };
