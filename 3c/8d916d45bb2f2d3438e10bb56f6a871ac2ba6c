@@ -1,0 +1,82 @@
+src/css/common/leftMark.css
+  s_d81971ce8676a3::t_88ff82d2adda72 22
+  s_d81971ce8676a3::t_3b52bb4171f314 2-14,18,20-21,24-27,30,39-64,66-88,91-105,107-122,124-186,188,190,194,196-203,205-206,208-235,238-240,242-243,246,248-255,259,262-263,266-279,283-292,296-300,302-310,313,315-319,323-324,328-330,332-347
+  s_d81971ce8676a3::t_6f9ee35d62612a 348-369
+  s_d81971ce8676a3::t_1aedf858d90dcd 320-322,331
+  s_d81971ce8676a3::t_9ceb9b81586fd0 241,244-245,247
+  s_d81971ce8676a3::t_1f46a7c225113b 280-282,293-294
+  s_d81971ce8676a3::t_2e89e9a855304b 31-37
+src/pages/common/Layout.tsx
+  s_d81971ce8676a3::t_eada5fc6932922 24
+  s_d81971ce8676a3::t_c56df03b1b7afd 13-14
+  s_d81971ce8676a3::t_d3efe80f11775f 2
+src/pages/career/Controller.ts
+  s_d81971ce8676a3::t_bcd9cb6c68df6b 67-68,71-72
+src/css/frontPage/frontPage.css
+  s_d81971ce8676a3::t_6532b986fdac16 79
+src/pages/common/leftMarks.tsx
+  s_d81971ce8676a3::t_b36e11ecd29dfe 287-295,297-301,306,309,311-313,318,321,323,325-328,333-335,340-342,347-349,354,356,360,363-365,370,373,375,377-380,385-387,392-394,400-401,403-404,410,416,419,429,434
+  s_d81971ce8676a3::t_9b8736fc2e3b67 67
+  s_d81971ce8676a3::t_aa3f278de1299c 102-104
+  s_d81971ce8676a3::t_79bcb0b74d7ad5 43,45
+  s_d81971ce8676a3::t_9b8d06cfbc8aef 338
+src/css/career/resume.css
+  s_d81971ce8676a3::t_4d58d019962a96 150
+  s_d81971ce8676a3::t_a6755069a5cc5f 400-404
+  s_d81971ce8676a3::t_fb56b7ff37b599 164,174
+  s_d81971ce8676a3::t_f893016f6e3636 91-93
+  s_d81971ce8676a3::t_74c62faa47d17b 360-361
+  s_d81971ce8676a3::t_a026d3cfce9b2f 348,351-352,354
+  s_d81971ce8676a3::t_42bbb226233c08 355
+  s_d81971ce8676a3::t_8b8d7b245efd76 26-27,30-36,41-43,45,47-48,61,66,68,70
+  s_d81971ce8676a3::t_e2e7f27fd67142 120
+  s_d81971ce8676a3::t_de69a4b3b6ef9b 200,205
+  s_d81971ce8676a3::t_17a42783f13068 21-25,28-29,38-40,44,46,49-60,62-65,67,69,71
+  s_d81971ce8676a3::t_ca2a88ebe401d1 305
+  s_d81971ce8676a3::t_6eb499ca77055c 325,339
+  s_d81971ce8676a3::t_70f3e28ecaf3e2 37
+  s_d81971ce8676a3::t_f849d6955bd428 257
+  s_d81971ce8676a3::t_98c955622d588f 84,99
+  s_d81971ce8676a3::t_e7e60fe9e9d9c2 269,275
+  s_d81971ce8676a3::t_aae56bf1c83cbd 79
+  s_d81971ce8676a3::t_47db17c0ee43e4 349-350
+src/pages/career/View.tsx
+  s_d81971ce8676a3::t_7678670ba503e9 35-36
+src/pages/frontPage/View.tsx
+  s_d81971ce8676a3::t_6c789d9210937a 31-33
+src/css/common/layout.css
+  s_d81971ce8676a3::t_e2af458a1f0d34 55
+  s_d81971ce8676a3::t_4efd0aa22e6e48 4,6,12,14
+  s_d81971ce8676a3::t_fe86d189fb5ea0 38-54
+src/pages/career/resume/View.tsx
+  s_d81971ce8676a3::t_8c9fa75d0800fe 1,7-9
+  s_d81971ce8676a3::t_274daf446a321c 109,122
+  s_d81971ce8676a3::t_4e3232d2cf9568 75-93,96-108,110-121,123-125
+src/css/career/career.css
+  s_d81971ce8676a3::t_060ff58df08b82 715-771
+  s_d81971ce8676a3::t_b6630d2dbf2c49 234-345
+  s_d81971ce8676a3::t_2449ad191e7acb 140
+src/pages/career/detail/View.tsx
+  s_d81971ce8676a3::t_09c85688bfdca6 210
+  s_d81971ce8676a3::t_b0d1bad2f33567 199
+  s_d81971ce8676a3::t_38b4d5d8e5dc8f 139
+  s_d81971ce8676a3::t_26ecc4e6916eca 81-82,87-88,90-92,94-123,125-126
+  s_d81971ce8676a3::t_7bccdbc6d84bef 89,93
+  s_d81971ce8676a3::t_244b7f3fc7cea3 83-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.28-trip",
+  "base_commit_sha": "3c8d916d45bb2f2d3438e10bb56f6a871ac2ba6c",
+  "prompts": {},
+  "sessions": {
+    "s_d81971ce8676a3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "6fc675fe-4d8c-450e-b184-99d25a1bdafd",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
