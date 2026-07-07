@@ -1,0 +1,23 @@
+src/css/common/leftMark.css
+  s_224124f92ea5cc::t_25045247c1d750 755
+src/pages/common/leftMarks.tsx
+  s_224124f92ea5cc::t_dea16a01fc746f 12
+src/pages/common/Layout.tsx
+  s_224124f92ea5cc::t_1e007f384f862a 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.28-trip",
+  "base_commit_sha": "fdddedb1fb88b3806240cdad7016c28b5504991a",
+  "prompts": {},
+  "sessions": {
+    "s_224124f92ea5cc": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "dbef28a4-4dd6-4f1c-a75a-2b201c05e405",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
