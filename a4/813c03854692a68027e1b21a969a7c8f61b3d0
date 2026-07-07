@@ -1,0 +1,26 @@
+public/manifest.json
+  s_224124f92ea5cc::t_77ac8ff1659d6c 7,10
+  s_224124f92ea5cc::t_55701f682486f6 2-3,11-14,28-29
+public/favicon.svg
+  s_224124f92ea5cc::t_22c92cf0b4bc8d 2-12
+  s_224124f92ea5cc::t_5e45c85e2b8915 1,13
+public/index.html
+  s_224124f92ea5cc::t_6c62fdfa5e7524 2,8,11,15
+  s_224124f92ea5cc::t_089fa4cd309aac 5-6,13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.28-trip",
+  "base_commit_sha": "a4813c03854692a68027e1b21a969a7c8f61b3d0",
+  "prompts": {},
+  "sessions": {
+    "s_224124f92ea5cc": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "dbef28a4-4dd6-4f1c-a75a-2b201c05e405",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
