@@ -8,7 +8,7 @@ import LeftMarksForGuest from "./LeftMarksForGuest"
 export const mengsBlogContext = createContext({});
 
 const LEFT_SLOT_WIDTH = 20;
-const MOBILE_RAIL_WIDTH = 44;
+const MOBILE_RAIL_WIDTH = 40;
 
 const isMobileLayout = () =>
   typeof window !== "undefined" &&

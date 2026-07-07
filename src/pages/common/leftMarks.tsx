@@ -9,7 +9,7 @@ import mengsPhoto from "../../assets/mengsPhoto.jpg";
 import "../../css/common/leftMark.css";
 import SidebarOnboarding from "./SidebarOnboarding";
 
-const MOBILE_RAIL_WIDTH = 44;
+const MOBILE_RAIL_WIDTH = 40;
 
 type MobileLayoutMode = "icon-rail" | "expanded" | "collapsed";
 type MobileSubmenuKey = "career" | "photography";

@@ -752,7 +752,7 @@
   z-index: 302;
   width: max-content;
   min-width: 128px;
-  max-width: min(168px, calc(100vw - 56px));
+  max-width: min(168px, calc(100vw - 52px));
   padding: 4px;
   box-sizing: border-box;
   transform: translateY(-50%);
