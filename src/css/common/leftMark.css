@@ -694,15 +694,15 @@
 }
 
 .left-marks-shell--mobile-rail .nav-profile-avatar {
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
   cursor: pointer;
 }
 
 .left-marks-shell--mobile-rail .nav-profile-avatar .ant-image,
 .left-marks-shell--mobile-rail .nav-profile-avatar img {
-  width: 30px !important;
-  height: 30px !important;
+  width: 27px !important;
+  height: 27px !important;
 }
 
 .left-marks-shell--mobile-rail .nav-link,
@@ -727,13 +727,13 @@
 }
 
 .left-marks-shell--mobile-rail .nav-link {
-  min-height: 40px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  min-height: 36px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .left-marks-shell--mobile-rail .nav-link .nav-icon {
-  font-size: 17px;
+  font-size: 15px;
   line-height: 1;
   opacity: 1;
 }
