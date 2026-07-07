@@ -1,0 +1,20 @@
+src/css/common/leftMark.css
+  s_224124f92ea5cc::t_19a29e6b368d9a 697-698,704-705
+  s_224124f92ea5cc::t_afe3c23d5ec81c 730-732,736
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.28-trip",
+  "base_commit_sha": "05207b237481a83deb94c6b2e3ff110321156a8b",
+  "prompts": {},
+  "sessions": {
+    "s_224124f92ea5cc": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "dbef28a4-4dd6-4f1c-a75a-2b201c05e405",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
