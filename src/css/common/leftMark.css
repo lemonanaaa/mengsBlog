@@ -26,7 +26,7 @@
 .left-marks .nav-profile {
   flex-shrink: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 2px 8px 16px 12px;
@@ -46,7 +46,6 @@
   flex-shrink: 0;
   width: 30px;
   height: 30px;
-  margin-top: 4px;
   border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.55);
@@ -56,12 +55,16 @@
   align-items: center;
   justify-content: center;
   padding: 0;
+  line-height: 0;
   transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .left-marks-pin-btn svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+  shape-rendering: geometricPrecision;
 }
 
 .left-marks-pin-btn:hover {
@@ -75,6 +78,33 @@
   background: var(--nav-accent-soft);
   border-color: rgba(91, 110, 174, 0.35);
   box-shadow: inset 0 0 0 1px rgba(91, 110, 174, 0.08);
+}
+
+.left-marks-pin-btn.is-onboarding-target {
+  position: relative;
+  z-index: 3;
+  background: #ffffff;
+  color: #475569;
+  border-color: rgba(91, 110, 174, 0.5);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  filter: none;
+  outline: 2px solid rgba(91, 110, 174, 0.85);
+  outline-offset: 3px;
+  animation: leftMarksPinGuidePulse 1.6s ease-in-out infinite;
+}
+
+.left-marks-shell.is-guide-pin .nav-profile {
+  isolation: isolate;
+}
+
+@keyframes leftMarksPinGuidePulse {
+  0%, 100% {
+    outline-color: rgba(91, 110, 174, 0.85);
+  }
+  50% {
+    outline-color: rgba(91, 110, 174, 0.42);
+  }
 }
 
 .left-marks-pin-btn:focus-visible {
@@ -595,8 +625,324 @@
   color: #5b6eae;
 }
 
+.layout--home .left-marks-pin-btn.is-onboarding-target {
+  background: #ffffff;
+  border-color: rgba(91, 110, 174, 0.5);
+  color: #5b6eae;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 .layout--home .left-marks .collapse-button,
 .layout--home .left-marks-collapsed .collapse-arrow {
   background: rgba(247, 243, 255, 0.72);
   border-color: rgba(176, 154, 220, 0.28);
+}
+
+/* ── H5 触摸分支（不影响 PC hover 逻辑） ── */
+.left-marks-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(15, 23, 42, 0.45);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.left-marks-shell.is-touch .left-marks-trigger {
+  width: 44px;
+}
+
+.left-marks-shell.is-touch:not(.is-open) .left-marks-trigger-icon {
+  opacity: 0.75;
+  transform: translateX(0);
+}
+
+.left-marks-shell--mobile-rail.left-marks-shell--docked .left-marks--flyout {
+  position: relative;
+  top: auto;
+  left: auto;
+  height: 100%;
+  min-height: 100vh;
+  transform: none !important;
+  z-index: auto;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.left-marks-shell--mobile-rail .left-marks {
+  padding: 12px 0 10px;
+}
+
+.left-marks-shell--mobile-rail .nav-profile {
+  justify-content: center;
+  padding: 6px 0 8px;
+  margin-bottom: 2px;
+}
+
+.left-marks-shell--mobile-rail .nav-profile-main {
+  justify-content: center;
+}
+
+.left-marks-shell--mobile-rail .nav-profile-info,
+.left-marks-shell--mobile-rail .nav-text,
+.left-marks-shell--mobile-rail .sub-nav-text {
+  display: none;
+}
+
+.left-marks-shell--mobile-rail .nav-profile-avatar {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.left-marks-shell--mobile-rail .nav-profile-avatar .ant-image,
+.left-marks-shell--mobile-rail .nav-profile-avatar img {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.left-marks-shell--mobile-rail .nav-link,
+.left-marks-shell--mobile-rail .sub-nav-item {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.left-marks-shell--mobile-rail .nav-link .nav-icon,
+.left-marks-shell--mobile-rail .sub-nav-item .sub-nav-icon {
+  margin: 0;
+}
+
+.left-marks-shell--mobile-rail .nav-group-items {
+  display: none;
+}
+
+.left-marks-shell--mobile-rail .nav-menu {
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.left-marks-shell--mobile-rail .nav-link {
+  min-height: 40px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.left-marks-shell--mobile-rail .nav-link .nav-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.left-marks-shell--mobile-rail .nav-link.is-submenu-open {
+  background: var(--nav-accent-soft);
+  color: var(--nav-accent);
+}
+
+.left-marks-shell--mobile-rail .nav-link.is-active::before {
+  display: none;
+}
+
+.left-marks-mobile-submenu {
+  position: fixed;
+  z-index: 302;
+  width: max-content;
+  min-width: 128px;
+  max-width: min(168px, calc(100vw - 56px));
+  padding: 4px;
+  box-sizing: border-box;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 4px 2px 16px rgba(91, 110, 174, 0.1);
+}
+
+.left-marks-mobile-submenu::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 7px 7px 7px 0;
+  border-style: solid;
+  border-color: transparent rgba(255, 255, 255, 0.97) transparent transparent;
+  filter: drop-shadow(-1px 0 0 rgba(226, 232, 240, 0.92));
+}
+
+.left-marks-mobile-submenu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.left-marks-mobile-submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 10px;
+  background: transparent;
+  color: #64748b;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-align: left;
+  cursor: pointer;
+}
+
+.left-marks-mobile-submenu-item.is-active {
+  background: var(--nav-accent-soft);
+  color: var(--nav-accent);
+  font-weight: 600;
+}
+
+.left-marks-mobile-submenu-icon {
+  width: 16px;
+  font-size: 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.left-marks-backdrop--submenu {
+  z-index: 301;
+  background: rgba(15, 23, 42, 0.1);
+}
+
+.left-marks-shell--mobile-rail .nav-group-items {
+  padding-left: 0;
+}
+
+.left-marks-shell--mobile-rail .sub-nav-item::before {
+  display: none;
+}
+
+.nav-profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.left-marks-mobile-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 36px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(100, 116, 139, 0.68);
+  cursor: pointer;
+  padding: 8px 18px 2px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.18s ease, opacity 0.18s ease;
+}
+
+.left-marks-mobile-collapse-btn:hover,
+.left-marks-mobile-collapse-btn:active {
+  color: var(--nav-muted);
+  background: transparent;
+}
+
+.left-marks-mobile-collapse-btn svg {
+  width: 11px;
+  height: 11px;
+  display: block;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+.left-marks-mobile-footer {
+  margin-top: auto;
+  padding: 6px 0 14px;
+  flex-shrink: 0;
+}
+
+.layout--home .left-marks-mobile-collapse-btn {
+  color: rgba(91, 110, 174, 0.55);
+}
+
+.layout--home .left-marks-mobile-collapse-btn:hover,
+.layout--home .left-marks-mobile-collapse-btn:active {
+  color: rgba(91, 110, 174, 0.78);
+}
+
+.left-marks-mobile-expanded {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 303;
+  width: min(260px, 82vw);
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.left-marks-mobile-expanded .left-marks {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100% !important;
+  min-height: 100%;
+  height: auto;
+  transform: none !important;
+  box-shadow: none;
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+
+.left-marks-mobile-expanded .nav-menu {
+  flex: 1 1 auto;
+}
+
+.left-marks-mobile-expanded .nav-profile {
+  padding-right: 14px;
+}
+
+.left-marks-backdrop--mobile-nav {
+  z-index: 302;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.left-marks-shell--mobile-collapsed .left-marks--flyout {
+  display: none;
+}
+
+.left-marks-shell--mobile-collapsed .left-marks-trigger--mobile-collapsed {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.left-marks-shell--mobile-expanded-open .left-marks--flyout {
+  pointer-events: none;
+}
+
+
+@media (pointer: coarse), (max-width: 768px) {
+  .left-marks-shell.is-touch .left-marks-trigger {
+    width: 44px;
+  }
+
+  .left-marks-shell.is-touch:not(.is-open) .left-marks-trigger-icon {
+    opacity: 0.75;
+    transform: translateX(0);
+  }
 }

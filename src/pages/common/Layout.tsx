@@ -8,8 +8,17 @@ import LeftMarksForGuest from "./LeftMarksForGuest"
 export const mengsBlogContext = createContext({});
 
 const LEFT_SLOT_WIDTH = 20;
+const MOBILE_RAIL_WIDTH = 44;
+
+const isMobileLayout = () =>
+  typeof window !== "undefined" &&
+  (window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 768);
 
 const getInitialLeftWidth = () => {
+  if (isMobileLayout()) {
+    return MOBILE_RAIL_WIDTH;
+  }
+
   try {
     const state = LeftMarksStorage.getState();
     if (!state.isCollapsed && state.width > LEFT_SLOT_WIDTH) {

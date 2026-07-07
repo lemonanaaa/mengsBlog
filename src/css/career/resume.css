@@ -341,52 +341,109 @@
 
 @media (max-width: 768px) {
   .resume-doc {
-    margin: 12px 10px 24px;
-    padding: 22px 18px 20px;
+    margin: 8px 6px 20px;
+    padding: 18px 14px 16px;
+    border-radius: 8px;
+    max-width: none;
+    width: auto;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .resume-zoom-toolbar {
-    top: 18px;
-    right: 16px;
+    top: 12px;
+    right: 10px;
+    padding: 3px 4px;
+  }
+
+  .resume-zoom-btn {
+    min-width: 36px;
+    height: 32px;
+  }
+
+  .resume-doc-head {
+    padding-right: 0;
+    padding-bottom: 14px;
   }
 
   .resume-doc-head h1 {
-    font-size: 1.41em;
-    padding-right: 100px;
+    font-size: 1.35em;
+    padding-right: 108px;
+    line-height: 1.35;
   }
 
   .resume-doc-title {
     display: block;
-    margin: 3px 0 0;
-    font-size: 0.75em;
+    margin: 4px 0 0;
+    font-size: 0.78em;
+  }
+
+  .resume-doc-meta {
+    font-size: 0.9em;
+    line-height: 1.5;
   }
 
   .resume-entry-head,
   .resume-section-head {
     flex-direction: column;
+    align-items: flex-start;
     gap: 4px;
   }
 
+  .resume-entry-head span,
+  .resume-section-hint {
+    white-space: normal;
+  }
+
   .resume-project-summary {
-    grid-template-columns: 24px 1fr;
-    grid-template-rows: auto auto;
-    gap: 4px 8px;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 20px;
+    grid-template-areas:
+      "index name toggle"
+      "index highlight highlight";
+    align-items: start;
+    gap: 6px 8px;
+    padding: 12px 12px 10px;
+  }
+
+  .resume-project-index {
+    grid-area: index;
+    padding-top: 2px;
+  }
+
+  .resume-project-name {
+    grid-area: name;
+    min-width: 0;
+    font-size: 1em;
+    line-height: 1.45;
+    word-break: break-word;
   }
 
   .resume-project-highlight {
-    grid-column: 2;
+    grid-area: highlight;
     text-align: left;
+    font-size: 0.86em;
+    line-height: 1.45;
   }
 
   .resume-project-toggle {
-    grid-column: 2;
-    grid-row: 1;
+    grid-area: toggle;
     justify-self: end;
     align-self: start;
+    width: 10px;
+    height: 10px;
+    margin-top: 2px;
+    padding: 12px;
+    box-sizing: content-box;
   }
 
   .resume-project-body {
-    padding-left: 14px;
+    padding: 0 12px 12px;
+  }
+
+  .resume-list {
+    padding-left: 16px;
   }
 }
 

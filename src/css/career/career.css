@@ -448,10 +448,12 @@
 
 @media (max-width: 768px) {
   .career-page--detail {
-    padding: 20px 16px 28px;
+    padding: 12px 10px 24px;
     border-radius: 0;
     border-left: none;
     border-right: none;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .career-page--detail .career-header--detail h2 {
@@ -771,7 +773,9 @@
 
 @media (max-width: 768px) {
   .career-page {
-    padding: 20px 12px;
+    padding: 12px 10px 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
   .career-page .career-header h2 {
     font-size: 28px;
