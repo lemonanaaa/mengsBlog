@@ -30,18 +30,15 @@ import {
   getHeatmapRangeForYear,
   getDefaultHeatmapPageIndex,
   getStatsYear,
+  formatDateLabelWithWeekday,
+  formatShanghaiWeekday,
 } from "./dateUtils";
 import "../../css/todo/todo.css";
 
 const formatWeekLabel = (week: TodoWeek) => {
   const start = week.weekStart.slice(5).replace("-", "/");
   const end = week.weekEnd.slice(5).replace("-", "/");
-  return `${start} – ${end}`;
-};
-
-const formatDateLabel = (dateKey: string) => {
-  const [year, month, day] = dateKey.split("-").map(Number);
-  return `${year}年${month}月${day}日`;
+  return `${start} ${formatShanghaiWeekday(week.weekStart)} – ${end} ${formatShanghaiWeekday(week.weekEnd)}`;
 };
 
 const DayPanelBody = ({
@@ -218,7 +215,7 @@ const DayPopover = ({
       onMouseLeave={onMouseLeave}
     >
       <div className="todo-day-panel-header">
-        <h3 className="todo-day-panel-title">{formatDateLabel(date)}</h3>
+        <h3 className="todo-day-panel-title">{formatDateLabelWithWeekday(date)}</h3>
         {pinned && (
           <button type="button" className="todo-day-panel-close" onClick={onClose} aria-label="关闭">
             ×
@@ -408,8 +405,8 @@ const Heatmap = ({
                             className={`todo-heatmap-cell level-${cell.level}${
                               displayDate === cell.date ? " is-hovered" : ""
                             }${pinnedDate === cell.date ? " is-selected" : ""}`}
-                            title={`${cell.date}：完成 ${cell.count} 项`}
-                            aria-label={`${cell.date}，完成 ${cell.count} 项`}
+                            title={`${formatDateLabelWithWeekday(cell.date)}：完成 ${cell.count} 项`}
+                            aria-label={`${formatDateLabelWithWeekday(cell.date)}，完成 ${cell.count} 项`}
                             aria-pressed={pinnedDate === cell.date}
                             onMouseEnter={() => onHoverDate(cell.date)}
                             onClick={() => onSelectDate(cell.date)}
@@ -594,7 +591,7 @@ const TodoView = () => {
         const data = await fetchWeekDetail(weekKey);
         setWeek(data.week);
         setNodes(data.nodes);
-        setReadonly(data.readonly);
+        setReadonly(data.readonly || data.week.status === "archived");
         setViewWeekKey(weekKey);
       }
     } catch (error) {

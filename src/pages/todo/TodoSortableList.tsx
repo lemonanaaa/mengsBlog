@@ -9,6 +9,7 @@ import {
   closestCenter,
   useSensor,
   useSensors,
+  type CollisionDetection,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -18,37 +19,48 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FlatTodoItem } from "./api";
-import { computeVerticalDragMove } from "./dndUtils";
 
 const INDENT_WIDTH = 36;
 
 const TodoExpandToggle = ({
   expanded,
+  childCount,
   onClick,
 }: {
   expanded: boolean;
+  childCount?: number;
   onClick: (e: React.MouseEvent) => void;
-}) => (
-  <button
-    type="button"
-    className={`todo-expand-btn${expanded ? " is-expanded" : ""}`}
-    onClick={onClick}
-    aria-expanded={expanded}
-    aria-label={expanded ? "折叠子任务" : "展开子任务"}
-    title={expanded ? "折叠子任务" : "展开子任务"}
-  >
-    <svg className="todo-expand-chevron" viewBox="0 0 12 12" aria-hidden="true">
-      <path
-        d="M3 4.5 6 7.5 9 4.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  </button>
-);
+}) => {
+  const countHint = childCount ? `（${childCount} 项）` : "";
+  const actionLabel = expanded ? "折叠子任务" : "展开子任务";
+
+  return (
+    <button
+      type="button"
+      className={`todo-expand-btn${expanded ? " is-expanded" : " is-collapsed"}`}
+      onClick={onClick}
+      aria-expanded={expanded}
+      aria-label={`${actionLabel}${countHint}`}
+      title={`${actionLabel}${countHint}`}
+    >
+      <svg className="todo-expand-chevron" viewBox="0 0 16 16" aria-hidden="true">
+        <path
+          d="M6 4.5 10 8 6 11.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      {!expanded && childCount != null && childCount > 0 && (
+        <span className="todo-expand-badge" aria-hidden="true">
+          {childCount}
+        </span>
+      )}
+    </button>
+  );
+};
 
 interface SortableRowProps {
   item: FlatTodoItem;
@@ -158,7 +170,6 @@ const SortableRow = ({
   onSubmitChild,
   onCancelAddChild,
 }: SortableRowProps) => {
-  const isDraggable = item.depth === 0;
   const {
     attributes,
     listeners,
@@ -167,7 +178,7 @@ const SortableRow = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: item._id, disabled: readonly || isBusy || !isDraggable });
+  } = useSortable({ id: item._id, disabled: readonly || isBusy });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -186,26 +197,24 @@ const SortableRow = ({
         }${isDragging ? " dragging" : ""}`}
       >
         <div className="todo-item-leading">
-          {!readonly &&
-            (isDraggable ? (
-              <button
-                type="button"
-                className="todo-drag-handle"
-                ref={setActivatorNodeRef}
-                {...attributes}
-                {...listeners}
-                aria-label="拖动排序"
-                title="拖动排序"
-              >
-                ⠿
-              </button>
-            ) : (
-              <span className="todo-drag-handle placeholder" aria-hidden="true" />
-            ))}
+          {!readonly && (
+            <button
+              type="button"
+              className="todo-drag-handle"
+              ref={setActivatorNodeRef}
+              {...attributes}
+              {...listeners}
+              aria-label="拖动排序"
+              title="拖动排序"
+            >
+              ⠿
+            </button>
+          )}
 
           {item.hasChildren ? (
             <TodoExpandToggle
               expanded={!collapsedIds.has(item._id)}
+              childCount={item.childCount}
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleExpand(item._id);
@@ -311,23 +320,19 @@ const SortableRow = ({
 
 const StaticRow = ({
   item,
-  readonly,
-  isBusy,
   collapsedIds,
-  onToggle,
   onToggleExpand,
-}: Pick<
-  SortableRowProps,
-  "item" | "readonly" | "isBusy" | "collapsedIds" | "onToggle" | "onToggleExpand"
->) => (
+}: Pick<SortableRowProps, "item" | "collapsedIds" | "onToggleExpand">) => (
   <li
-    className={`todo-item${item.completed ? " completed" : ""}`}
+    className={`todo-item todo-item--readonly${item.completed ? " completed" : ""}`}
     style={{ paddingLeft: `${12 + item.depth * INDENT_WIDTH}px` }}
   >
     <div className="todo-item-leading">
+      <span className="todo-drag-handle placeholder" aria-hidden="true" />
       {item.hasChildren ? (
         <TodoExpandToggle
           expanded={!collapsedIds.has(item._id)}
+          childCount={item.childCount}
           onClick={() => onToggleExpand(item._id)}
         />
       ) : (
@@ -335,14 +340,7 @@ const StaticRow = ({
       )}
       <span className="todo-index">{item.displayIndex}.</span>
     </div>
-    <button
-      type="button"
-      className="todo-checkbox"
-      onClick={() => onToggle(item)}
-      disabled={isBusy || readonly}
-    >
-      {item.completed ? "✓" : ""}
-    </button>
+    <span className="todo-checkbox-placeholder" aria-hidden="true" />
     <span className="todo-text" title={item.text}>{item.text}</span>
   </li>
 );
@@ -416,9 +414,22 @@ const TodoSortableList = ({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
+  const canDragTogether = (active: FlatTodoItem, over: FlatTodoItem) =>
+    active.depth === over.depth && (active.parentId || null) === (over.parentId || null);
+
+  const siblingCollisionDetection: CollisionDetection = (args) => {
+    const activeItem = items.find((item) => item._id === args.active.id);
+    if (!activeItem) return closestCenter(args);
+
+    return closestCenter(args).filter((collision) => {
+      const overItem = items.find((item) => item._id === collision.id);
+      return overItem ? canDragTogether(activeItem, overItem) : false;
+    });
+  };
+
   const handleDragStart = (event: DragStartEvent) => {
     const item = items.find((i) => i._id === event.active.id);
-    if (!item || item.depth > 0) return;
+    if (!item) return;
     setDraggingItem(item);
   };
 
@@ -428,8 +439,8 @@ const TodoSortableList = ({
     if (!over || active.id === over.id) return;
     const activeItem = items.find((i) => i._id === active.id);
     const overItem = items.find((i) => i._id === over.id);
-    if (!activeItem || activeItem.depth > 0) return;
-    if (!overItem || overItem.depth > 0) return;
+    if (!activeItem || !overItem) return;
+    if (!canDragTogether(activeItem, overItem)) return;
     onDragMove(String(active.id), String(over.id));
   };
 
@@ -440,10 +451,7 @@ const TodoSortableList = ({
           <StaticRow
             key={item._id}
             item={item}
-            readonly
-            isBusy={isBusy}
             collapsedIds={collapsedIds}
-            onToggle={onToggle}
             onToggleExpand={onToggleExpand}
           />
         ))}
@@ -454,7 +462,7 @@ const TodoSortableList = ({
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={siblingCollisionDetection}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >

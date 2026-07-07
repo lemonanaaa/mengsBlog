@@ -25,6 +25,17 @@ export function shanghaiDayOfWeek(key: string): number {
   return new Date(shanghaiMs).getUTCDay();
 }
 
+const WEEKDAY_LABELS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+export function formatShanghaiWeekday(dateKey: string): string {
+  return WEEKDAY_LABELS[shanghaiDayOfWeek(dateKey)];
+}
+
+export function formatDateLabelWithWeekday(dateKey: string): string {
+  const [year, month, day] = dateKey.split('-').map(Number);
+  return `${year}年${month}月${day}日 ${formatShanghaiWeekday(dateKey)}`;
+}
+
 export function daysBetweenKeys(startKey: string, endKey: string): number {
   return Math.round(
     (shanghaiMidnightUtcMs(endKey) - shanghaiMidnightUtcMs(startKey)) / 86400000
