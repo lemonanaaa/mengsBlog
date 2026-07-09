@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 /* ── 与简历 / 工作介绍页统一的导航 tokens ── */
 .left-marks,
 .left-marks-collapsed {
@@ -106,7 +105,6 @@
     outline-color: rgba(91, 110, 174, 0.42);
   }
 }
-
 .left-marks-pin-btn:focus-visible {
   outline: 2px solid rgba(91, 110, 174, 0.35);
   outline-offset: 1px;
@@ -259,7 +257,6 @@
     transform: translateY(0);
   }
 }
-
 .left-marks .sub-nav-item {
   display: grid;
   grid-template-columns: 14px 17px 1fr;
@@ -370,16 +367,8 @@
   color: var(--nav-muted);
   z-index: 101;
   overflow: visible;
-  box-shadow:
-    -3px 0 14px rgba(91, 110, 174, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  transition:
-    width 0.32s cubic-bezier(0.34, 1.35, 0.64, 1),
-    transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1),
-    color 0.22s ease,
-    border-color 0.22s ease,
-    box-shadow 0.28s ease,
-    background 0.22s ease;
+  box-shadow: -3px 0 14px rgba(91, 110, 174, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: width 0.32s cubic-bezier(0.34, 1.35, 0.64, 1), transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1), color 0.22s ease, border-color 0.22s ease, box-shadow 0.28s ease, background 0.22s ease;
 }
 
 .left-marks .collapse-button::before,
@@ -416,9 +405,7 @@
   color: var(--nav-accent);
   border-color: rgba(255, 255, 255, 0.85);
   background: rgba(255, 255, 255, 0.92);
-  box-shadow:
-    -6px 0 20px rgba(91, 110, 174, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: -6px 0 20px rgba(91, 110, 174, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .left-marks .collapse-button:hover::before,
@@ -524,9 +511,7 @@
 }
 
 .left-marks-shell--auto-hide.is-pinned .left-marks--flyout {
-  box-shadow:
-    10px 0 40px rgba(91, 110, 174, 0.14),
-    inset -1px 0 0 rgba(255, 255, 255, 0.48);
+  box-shadow: 10px 0 40px rgba(91, 110, 174, 0.14), inset -1px 0 0 rgba(255, 255, 255, 0.48);
 }
 
 .left-marks-shell--docked {
@@ -545,30 +530,22 @@
 }
 
 .layout--home .left-marks-shell--docked .left-marks--flyout {
-  background:
-    radial-gradient(ellipse 90% 38% at 50% 0%, rgba(186, 158, 232, 0.24) 0%, transparent 70%),
-    linear-gradient(180deg, rgba(247, 243, 255, 0.9) 0%, rgba(236, 230, 252, 0.94) 100%);
+  background: radial-gradient(ellipse 90% 38% at 50% 0%, rgba(186, 158, 232, 0.24) 0%, transparent 70%), linear-gradient(180deg, rgba(247, 243, 255, 0.9) 0%, rgba(236, 230, 252, 0.94) 100%);
   backdrop-filter: blur(24px) saturate(1.18);
   -webkit-backdrop-filter: blur(24px) saturate(1.18);
   border-right: 1px solid rgba(176, 154, 220, 0.3);
 }
 
 .layout--home .left-marks--flyout {
-  background:
-    radial-gradient(ellipse 90% 38% at 50% 0%, rgba(186, 158, 232, 0.24) 0%, transparent 70%),
-    linear-gradient(180deg, rgba(247, 243, 255, 0.9) 0%, rgba(236, 230, 252, 0.94) 100%);
+  background: radial-gradient(ellipse 90% 38% at 50% 0%, rgba(186, 158, 232, 0.24) 0%, transparent 70%), linear-gradient(180deg, rgba(247, 243, 255, 0.9) 0%, rgba(236, 230, 252, 0.94) 100%);
   backdrop-filter: blur(24px) saturate(1.18);
   -webkit-backdrop-filter: blur(24px) saturate(1.18);
   border-right: 1px solid rgba(176, 154, 220, 0.3);
-  box-shadow:
-    8px 0 36px rgba(91, 110, 174, 0.1),
-    inset -1px 0 0 rgba(255, 255, 255, 0.48);
+  box-shadow: 8px 0 36px rgba(91, 110, 174, 0.1), inset -1px 0 0 rgba(255, 255, 255, 0.48);
 }
 
 .layout--inner .left-marks--flyout {
-  background:
-    radial-gradient(ellipse 80% 35% at 50% 0%, rgba(124, 92, 191, 0.08) 0%, transparent 70%),
-    linear-gradient(180deg, #eeeaf4 0%, #e6e2ec 100%);
+  background: radial-gradient(ellipse 80% 35% at 50% 0%, rgba(124, 92, 191, 0.08) 0%, transparent 70%), linear-gradient(180deg, #eeeaf4 0%, #e6e2ec 100%);
   border-right: 1px solid #dcd6e4;
 }
 
@@ -599,7 +576,6 @@
     transition: none;
   }
 }
-
 /* 首页磨砂侧栏上的导航微调 */
 .layout--home .left-marks .nav-profile {
   border-bottom-color: rgba(176, 154, 220, 0.22);
@@ -752,7 +728,7 @@
   z-index: 302;
   width: max-content;
   min-width: 128px;
-  max-width: min(168px, calc(100vw - 52px));
+  max-width: min(168px, 100vw - 52px);
   padding: 4px;
   box-sizing: border-box;
   transform: translateY(-50%);
@@ -936,12 +912,10 @@
   pointer-events: none;
 }
 
-
 @media (pointer: coarse), (max-width: 768px) {
   .left-marks-shell.is-touch .left-marks-trigger {
     width: 44px;
   }
-
   .left-marks-shell.is-touch:not(.is-open) .left-marks-trigger-icon {
     opacity: 0.75;
     transform: translateX(0);

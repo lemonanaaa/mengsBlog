@@ -1,0 +1,103 @@
+.reader-root[data-theme=light] {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #666666;
+  --accent: #1890ff;
+  --border: #e8e8e8;
+  --bg-secondary: #f5f5f5;
+  --code-bg: #f6f8fa;
+}
+
+.reader-root[data-theme=dark] {
+  --bg: #1a1a2e;
+  --fg: #e0e0e0;
+  --muted: #999999;
+  --accent: #4fc3f7;
+  --border: #333355;
+  --bg-secondary: #16213e;
+  --code-bg: #0f3460;
+}
+
+.reader-root {
+  background-color: var(--bg);
+  color: var(--fg);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+.reader-root[data-font-size=sm] .blog-article {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.reader-root[data-font-size=md] .blog-article {
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.reader-root[data-font-size=lg] .blog-article {
+  font-size: 19px;
+  line-height: 1.8;
+}
+
+.reader-root .blog-article {
+  color: var(--fg);
+}
+
+.reader-root .blog-article h1, .reader-root .blog-article h2, .reader-root .blog-article h3, .reader-root .blog-article h4, .reader-root .blog-article h5, .reader-root .blog-article h6 {
+  color: var(--fg);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.reader-root .blog-article p {
+  margin-bottom: 1em;
+}
+
+.reader-root .blog-article a {
+  color: var(--accent);
+}
+
+.reader-root .blog-article blockquote {
+  border-left: 4px solid var(--accent);
+  padding-left: 16px;
+  color: var(--muted);
+  background-color: var(--bg-secondary);
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 1em 0;
+}
+
+.reader-root .blog-article table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.reader-root .blog-article table th, .reader-root .blog-article table td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+}
+
+.reader-root .blog-article table th {
+  background-color: var(--bg-secondary);
+}
+
+.reader-root .blog-article img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.reader-root .blog-article code:not([class*=hljs]) {
+  background-color: var(--bg-secondary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.reader-root .blog-article pre {
+  overflow-x: auto;
+  border-radius: 6px;
+  margin: 1em 0;
+}

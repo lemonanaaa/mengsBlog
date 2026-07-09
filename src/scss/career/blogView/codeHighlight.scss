@@ -1,0 +1,158 @@
+// Light theme code highlighting
+.reader-root[data-theme="light"] {
+  .hljs {
+    background: #f6f8fa;
+    color: #24292e;
+    padding: 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .hljs-comment,
+  .hljs-quote {
+    color: #6a737d;
+    font-style: italic;
+  }
+
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-addition {
+    color: #d73a49;
+  }
+
+  .hljs-string,
+  .hljs-meta .hljs-string,
+  .hljs-regexp,
+  .hljs-doctag {
+    color: #032f62;
+  }
+
+  .hljs-number,
+  .hljs-literal,
+  .hljs-variable,
+  .hljs-template-variable,
+  .hljs-tag .hljs-attr {
+    color: #005cc5;
+  }
+
+  .hljs-title,
+  .hljs-section,
+  .hljs-selector-id {
+    color: #6f42c1;
+    font-weight: bold;
+  }
+
+  .hljs-subst {
+    color: #24292e;
+  }
+
+  .hljs-type,
+  .hljs-class .hljs-title {
+    color: #6f42c1;
+  }
+
+  .hljs-built_in,
+  .hljs-builtin-name {
+    color: #005cc5;
+  }
+
+  .hljs-attr,
+  .hljs-attribute {
+    color: #005cc5;
+  }
+
+  .hljs-name,
+  .hljs-tag {
+    color: #22863a;
+  }
+
+  .hljs-deletion {
+    color: #b31d28;
+    background: #ffeef0;
+  }
+
+  .hljs-addition {
+    color: #22863a;
+    background: #f0fff4;
+  }
+}
+
+// Dark theme code highlighting
+.reader-root[data-theme="dark"] {
+  .hljs {
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .hljs-comment,
+  .hljs-quote {
+    color: #8b949e;
+    font-style: italic;
+  }
+
+  .hljs-keyword,
+  .hljs-selector-tag {
+    color: #ff7b72;
+  }
+
+  .hljs-string,
+  .hljs-meta .hljs-string,
+  .hljs-regexp,
+  .hljs-doctag {
+    color: #a5d6ff;
+  }
+
+  .hljs-number,
+  .hljs-literal,
+  .hljs-variable,
+  .hljs-template-variable,
+  .hljs-tag .hljs-attr {
+    color: #79c0ff;
+  }
+
+  .hljs-title,
+  .hljs-section,
+  .hljs-selector-id {
+    color: #d2a8ff;
+    font-weight: bold;
+  }
+
+  .hljs-subst {
+    color: #c9d1d9;
+  }
+
+  .hljs-type,
+  .hljs-class .hljs-title {
+    color: #d2a8ff;
+  }
+
+  .hljs-built_in,
+  .hljs-builtin-name {
+    color: #79c0ff;
+  }
+
+  .hljs-attr,
+  .hljs-attribute {
+    color: #79c0ff;
+  }
+
+  .hljs-name,
+  .hljs-tag {
+    color: #7ee787;
+  }
+
+  .hljs-deletion {
+    color: #ffa198;
+    background: #490202;
+  }
+
+  .hljs-addition {
+    color: #7ee787;
+    background: #04260f;
+  }
+}

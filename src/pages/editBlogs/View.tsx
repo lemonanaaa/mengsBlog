@@ -8,7 +8,7 @@ import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
 
 import '@wangeditor/editor/dist/css/style.css'
 import '../../css/career/editBlogs.css'
-import { blogApiRequest, API_CONFIG } from '../../config/api';
+import { blogApiRequest, API_CONFIG, uploadBlogImage } from '../../config/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -41,11 +41,24 @@ const EditBlogs = () => {
   // 检查是否为 Meng 模式
   const isMeng = searchParams.get('meng') === 'true'
 
-  // 工具栏配置
+  // 工具栏配置 - 使用 wangEditor 默认全量工具栏（含颜色/背景色/下划线/字号等）
   const toolbarConfig: Partial<IToolbarConfig> = {}
-  // 编辑器配置
+  // 编辑器配置 - 含统一图片上传
   const editorConfig: Partial<IEditorConfig> = {
     placeholder: '请输入内容...',
+    MENU_CONF: {
+      uploadImage: {
+        // wangEditor 内部把按钮点击、粘贴、拖拽三种触发路径收敛到此 hook
+        customUpload: async (file: File, insertFn: (url: string) => void) => {
+          try {
+            const { url } = await uploadBlogImage(file);
+            insertFn(url);
+          } catch (err: any) {
+            message.error(err?.message || '图片上传失败');
+          }
+        },
+      },
+    },
   }
 
   // 获取博客详情（编辑模式）

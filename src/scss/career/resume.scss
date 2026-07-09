@@ -1,38 +1,485 @@
-.container {
-  padding: 40px;
-  overflow-y: auto;
+@charset "UTF-8";
+
+/* 整页一张「简历纸」— 克制配色，单 accent */
+.resume-doc {
+  --resume-accent: #5b6eae;
+  --resume-accent-soft: #eef1f8;
+  --resume-ink: #1e293b;
+  --resume-muted: #64748b;
+  --resume-line: #e8ecf2;
+
+  max-width: 820px;
+  margin: 24px auto 40px;
+  padding: 32px 36px 28px;
+  background: #fff;
+  border: 1px solid var(--resume-line);
+  border-radius: 6px;
+  box-shadow: 0 2px 16px rgba(30, 41, 59, 0.06);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #334155;
+  position: relative;
 }
 
-/* 删除原来的 pre:hover::after 规则 */
-pre {
-  position: relative;
-  max-width:90%;
-  overflow: auto; // 添加水平滚动条
-  background: #2d2d2d;
-  border-radius: 4px;
-  margin: 1em 0;
+.resume-zoom-toolbar {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid var(--resume-line);
+  box-shadow: 0 1px 3px rgba(30, 41, 59, 0.06);
+  font-size: 13px;
+  line-height: 1;
+}
 
-  code {
+.resume-zoom-btn {
+  min-width: 32px;
+  height: 28px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.resume-zoom-btn:hover:not(:disabled) {
+  background: #fff;
+  color: var(--resume-accent);
+}
+
+.resume-zoom-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.resume-zoom-label {
+  min-width: 40px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--resume-muted);
+  user-select: none;
+}
+
+/* ── 头部 ── */
+.resume-doc-head {
+  padding-bottom: 16px;
+  border-bottom: 1.5px solid var(--resume-ink);
+  margin-bottom: 4px;
+  padding-right: 112px;
+}
+
+.resume-doc-head h1 {
+  margin: 0 0 8px;
+  font-size: 1.63em;
+  font-weight: 700;
+  color: var(--resume-ink);
+  letter-spacing: 0.02em;
+}
+
+.resume-doc-title {
+  margin-left: 10px;
+  font-size: 0.68em;
+  font-weight: 400;
+  color: var(--resume-muted);
+}
+
+.resume-doc-meta {
+  margin: 0 0 3px;
+  font-size: 0.96em;
+  color: var(--resume-muted);
+}
+
+.resume-doc-meta:last-child {
+  margin-bottom: 0;
+}
+
+/* ── 通用 section ── */
+.resume-doc-section {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--resume-line);
+}
+
+.resume-doc-section-last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.resume-doc-section h2 {
+  margin: 0 0 12px;
+  font-size: 1.04em;
+  font-weight: 700;
+  color: var(--resume-ink);
+  letter-spacing: 0.04em;
+}
+
+.resume-doc-section h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 13px;
+  margin-right: 8px;
+  background: var(--resume-accent);
+  vertical-align: -1px;
+  border-radius: 1px;
+}
+
+.resume-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.resume-section-head h2 {
+  margin: 0;
+}
+
+.resume-section-hint {
+  font-size: 0.74em;
+  font-weight: 400;
+  color: #b0bac7;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+/* ── 工作经历 ── */
+.resume-entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 1em;
+}
+
+.resume-entry-head strong {
+  color: var(--resume-ink);
+}
+
+.resume-entry-head span {
+  color: #94a3b8;
+  white-space: nowrap;
+  font-size: 0.96em;
+}
+
+/* ── 列表 ── */
+.resume-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.resume-list li {
+  margin-bottom: 4px;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.resume-list li:last-child {
+  margin-bottom: 0;
+}
+
+.resume-list-ordered {
+  padding-left: 20px;
+}
+
+.resume-list-ordered li {
+  margin-bottom: 3px;
+  color: var(--resume-muted);
+  font-size: 0.96em;
+}
+
+.resume-plain {
+  margin: 0;
+  font-size: 0.96em;
+  line-height: 1.55;
+  color: #475569;
+}
+
+/* ── 可折叠项目列表 ── */
+.resume-project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resume-project-item {
+  border: 1px solid var(--resume-line);
+  border-radius: 8px;
+  background: #fafbfc;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.resume-project-item[open] {
+  background: #fff;
+  border-color: #cfd8e8;
+  box-shadow: 0 1px 6px rgba(30, 41, 59, 0.06);
+}
+
+.resume-project-item:not([open]):hover {
+  border-color: #d5dce6;
+  background: #f4f6f9;
+}
+
+.resume-project-summary {
+  display: grid;
+  grid-template-columns: 28px 1fr auto 16px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.resume-project-summary::-webkit-details-marker {
+  display: none;
+}
+
+.resume-project-summary::marker {
+  display: none;
+  content: "";
+}
+
+.resume-project-index {
+  font-size: 0.89em;
+  font-weight: 700;
+  color: #cbd5e1;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.resume-project-item[open] .resume-project-index {
+  color: var(--resume-accent);
+}
+
+.resume-project-name {
+  font-weight: 600;
+  font-size: 1.04em;
+  color: var(--resume-ink);
+  line-height: 1.35;
+}
+
+.resume-project-highlight {
+  font-size: 0.89em;
+  color: var(--resume-muted);
+  text-align: right;
+  line-height: 1.35;
+}
+
+.resume-project-toggle {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #94a3b8;
+  border-bottom: 2px solid #94a3b8;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  margin-top: -3px;
+}
+
+.resume-project-item[open] .resume-project-toggle {
+  transform: rotate(-135deg);
+  margin-top: 3px;
+  border-color: var(--resume-accent);
+}
+
+.resume-project-body {
+  padding: 0 14px 12px 50px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.resume-project-intro,
+.resume-project-result {
+  margin: 0 0 6px;
+  font-size: 0.96em;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.resume-project-intro {
+  margin-top: 10px;
+}
+
+.resume-project-intro em,
+.resume-project-result em,
+.resume-plain em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--resume-ink);
+  margin-right: 4px;
+}
+
+.resume-label {
+  margin: 6px 0 4px;
+  font-size: 0.96em;
+  font-weight: 600;
+  color: #475569;
+}
+
+.resume-project-result {
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--resume-accent-soft);
+  border: 1px solid #dce3f0;
+  border-left: 3px solid var(--resume-accent);
+  color: #3d4f72;
+  font-size: 0.93em;
+}
+
+@media (max-width: 768px) {
+  .resume-doc {
+    margin: 8px 6px 20px;
+    padding: 18px 14px 16px;
+    border-radius: 8px;
+    max-width: none;
+    width: auto;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .resume-zoom-toolbar {
+    top: 12px;
+    right: 10px;
+    padding: 3px 4px;
+  }
+
+  .resume-zoom-btn {
+    min-width: 36px;
+    height: 32px;
+  }
+
+  .resume-doc-head {
+    padding-right: 0;
+    padding-bottom: 14px;
+  }
+
+  .resume-doc-head h1 {
+    font-size: 1.35em;
+    padding-right: 108px;
+    line-height: 1.35;
+  }
+
+  .resume-doc-title {
     display: block;
-    white-space: pre;
-    padding: 1em;
+    margin: 4px 0 0;
+    font-size: 0.78em;
+  }
+
+  .resume-doc-meta {
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+
+  .resume-entry-head,
+  .resume-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .resume-entry-head span,
+  .resume-section-hint {
+    white-space: normal;
+  }
+
+  .resume-project-summary {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 20px;
+    grid-template-areas:
+      "index name toggle"
+      "index highlight highlight";
+    align-items: start;
+    gap: 6px 8px;
+    padding: 12px 12px 10px;
+  }
+
+  .resume-project-index {
+    grid-area: index;
+    padding-top: 2px;
+  }
+
+  .resume-project-name {
+    grid-area: name;
+    min-width: 0;
+    font-size: 1em;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+
+  .resume-project-highlight {
+    grid-area: highlight;
+    text-align: left;
+    font-size: 0.86em;
+    line-height: 1.45;
+  }
+
+  .resume-project-toggle {
+    grid-area: toggle;
+    justify-self: end;
+    align-self: start;
+    width: 10px;
+    height: 10px;
+    margin-top: 2px;
+    padding: 12px;
+    box-sizing: content-box;
+  }
+
+  .resume-project-body {
+    padding: 0 12px 12px;
+  }
+
+  .resume-list {
+    padding-left: 16px;
   }
 }
-.custom-copy-btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
-  border-radius: 4px;
-  padding: 2px 8px;
-  cursor: pointer;
-  z-index: 1; // 确保按钮在滚动条上方
+
+@media print {
+  .resume-doc {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    max-width: none;
+    font-size: 13.5px !important;
+  }
+
+  .resume-zoom-toolbar {
+    display: none;
+  }
+
+  .resume-project-item {
+    border: none;
+    background: none;
+    box-shadow: none;
+  }
+
+  .resume-project-summary {
+    display: none;
+  }
+
+  .resume-project-body {
+    padding: 0 0 12px;
+    border: none;
+  }
 }
-/* 可以添加以下样式增强视觉效果 */
-.copy-btn {
-  transition: all 0.2s;
-}
-.copy-btn:hover {
-  background: rgba(255, 255, 255, 0.5) !important;
+
+@media (prefers-reduced-motion: reduce) {
+  .resume-project-item,
+  .resume-project-toggle {
+    transition: none;
+  }
 }

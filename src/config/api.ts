@@ -69,6 +69,25 @@ export const apiRequest = async (endpoint: string, options: RequestInit = {}) =>
   }
 };
 
+// 博客图片上传方法（multipart/form-data，不复用 blogApiRequest）
+export async function uploadBlogImage(file: File): Promise<{ url: string }> {
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Only image files are allowed');
+  }
+  const url = `${API_CONFIG.BLOG_BASE_URL}/blogs/upload-image`;
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch(url, { method: 'POST', body: formData });
+  if (!res.ok) {
+    throw new Error(`Upload failed: ${res.status}`);
+  }
+  const json = await res.json();
+  if (!json?.success || !json?.data?.url) {
+    throw new Error('Upload failed: malformed response');
+  }
+  return { url: json.data.url };
+}
+
 // 博客API请求方法
 export const blogApiRequest = async (endpoint: string, options: RequestInit = {}) => {
   const url = endpoint.startsWith('http') ? endpoint : `${API_CONFIG.BLOG_BASE_URL}${endpoint}`;

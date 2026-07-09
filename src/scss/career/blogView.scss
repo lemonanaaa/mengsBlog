@@ -96,3 +96,170 @@
     text-align: center;
   }
 }
+
+// ==========================================
+// Reader Layout - 三栏布局
+// ==========================================
+
+.reader-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: calc(100vh - 60px);
+
+  // 两栏：左目录 + 右正文
+  &--left-center {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  // 两栏：正文 + 右目录
+  &--center-right {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+
+  // 三栏
+  &--three {
+    grid-template-columns: 240px minmax(0, 1fr) 260px;
+  }
+
+  &__left {
+    position: sticky;
+    top: 200px;
+    align-self: start;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+  }
+
+  &__center {
+    min-width: 0; // 防止内容撑破 grid
+  }
+
+  &__right {
+    position: sticky;
+    top: 60px;
+    align-self: start;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  @media (max-width: 1024px) {
+    display: block;
+    padding: 16px;
+
+    &__left,
+    &__right {
+      display: none;
+    }
+  }
+}
+
+// 移动端 drawer 触发按钮
+.reader-layout-mobile-triggers {
+  display: none;
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  gap: 8px;
+
+  @media (max-width: 1024px) {
+    display: flex;
+  }
+}
+
+// 博客文章内代码块防溢出
+.blog-article pre {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+// 博客文章图片自适应
+.blog-article img {
+  max-width: 100%;
+  height: auto;
+}
+
+// Reader 页面覆盖原有 blog-view-page 的宽度限制
+.reader-root .blog-view-page {
+  max-width: 100%;
+  padding: 0;
+}
+
+// Reader 头部信息区域（位于正文中栏顶部）
+.reader-root {
+  .blog-header-section {
+    max-width: 100%;
+    padding: 0 0 8px;
+  }
+}
+
+// ==========================================
+// 正文可折叠标题
+// ==========================================
+.blog-article {
+  .collapsible-heading {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+
+    // 折叠箭头指示（CSS 伪元素，不改变 heading innerHTML）
+    &::before {
+      content: '▾';
+      display: inline-block;
+      width: 0.9em;
+      margin-right: 6px;
+      font-size: 0.8em;
+      color: var(--muted, #999);
+      transition: transform 0.15s ease;
+      transform: translateY(-1px);
+    }
+
+    &[data-collapsed='true']::before {
+      content: '▸';
+    }
+
+    &:hover::before {
+      color: var(--accent, #1890ff);
+    }
+  }
+
+  // 被折叠隐藏的内容
+  .section-hidden {
+    display: none !important;
+  }
+
+  // 点击目录跳转时目标标题的高亮闪烁
+  .heading-flash {
+    animation: headingFlash 2s ease;
+    border-radius: 4px;
+  }
+}
+
+@keyframes headingFlash {
+  // 0 ~ 0.2s：亮
+  0%,
+  10% {
+    background-color: rgba(24, 144, 255, 0.28);
+    box-shadow: 0 0 0 6px rgba(24, 144, 255, 0.18);
+  }
+  // 0.2 ~ 0.4s：灭（约 0.2s）
+  11%,
+  20% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  // 0.4 ~ 1.0s：再次亮起并保持
+  21%,
+  50% {
+    background-color: rgba(24, 144, 255, 0.28);
+    box-shadow: 0 0 0 6px rgba(24, 144, 255, 0.18);
+  }
+  // 1.0 ~ 2.0s：平滑渐灭收尾（约 1.0s 缓慢淡出）
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
