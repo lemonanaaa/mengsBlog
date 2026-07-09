@@ -102,7 +102,9 @@
   top: 70px;
   align-self: start;
   max-height: calc(100vh - 130px);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .reader-layout__center {
   min-width: 0;
