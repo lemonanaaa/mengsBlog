@@ -4,6 +4,14 @@
   padding: 0 0 16px;
   font-size: 14px;
 
+  .toc-panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted, #666);
+    margin-bottom: 10px;
+    padding-left: 8px;
+  }
+
   .toc-root,
   .toc-children {
     list-style: none;

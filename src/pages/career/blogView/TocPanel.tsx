@@ -77,6 +77,7 @@ export function TocPanel({ entries, activeId }: TocPanelProps) {
 
   return (
     <nav className="toc-panel" aria-label="Table of contents">
+      <div className="toc-panel-title">目录</div>
       <ul className="toc-root">{tree.map(renderNode)}</ul>
     </nav>
   );

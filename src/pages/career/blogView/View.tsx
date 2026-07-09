@@ -252,7 +252,6 @@ const BlogView = () => {
   const hasLeft = hasToc || hasColors;
   const leftPanel = (
     <>
-      {hasToc && <TocPanel entries={entries} activeId={activeId} />}
       {hasColors && (
         <ColorIndexPanel
           colors={colorIndex.colors}
@@ -264,6 +263,7 @@ const BlogView = () => {
           prev={colorIndex.prev}
         />
       )}
+      {hasToc && <TocPanel entries={entries} activeId={activeId} />}
     </>
   );
 
