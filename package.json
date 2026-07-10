@@ -32,12 +32,6 @@
     "eject": "react-scripts eject",
     "dev": "npm start \"gulp watch\""
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

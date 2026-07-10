@@ -165,7 +165,6 @@ const EditBlogs = () => {
     }
     window.addEventListener('beforeunload', beforeUnloadHandler)
     return () => window.removeEventListener('beforeunload', beforeUnloadHandler)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, content, summary, status, isFeatured, tags, originalData, isNewBlog])
 
   // 及时销毁 editor

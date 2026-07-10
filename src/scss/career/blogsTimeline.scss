@@ -75,6 +75,60 @@
   color: #333;
 }
 
+// 展开后的摘要 / 目录预览区块
+.blog-card-preview-section {
+  margin-bottom: 16px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.blog-card-preview-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #8B5CF6;
+}
+
+// 目录列表
+.blog-card-toc {
+  margin: 0;
+  padding: 12px 16px;
+  list-style: none;
+  background: linear-gradient(135deg, rgba(251, 251, 255, 0.95) 0%, rgba(249, 249, 252, 0.9) 100%);
+  border-left: 3px solid #8B5CF6;
+  border-radius: 4px;
+}
+
+.blog-card-toc-item {
+  line-height: 1.9;
+  color: #555;
+  font-size: 14px;
+
+  &--h1 {
+    padding-left: 0;
+    font-weight: 600;
+    color: #333;
+  }
+
+  &--h2 {
+    padding-left: 16px;
+  }
+
+  &--h3 {
+    padding-left: 32px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  &--h4 {
+    padding-left: 48px;
+    font-size: 13px;
+    color: #888;
+  }
+}
+
 .blog-card-meta-text {
   font-size: 12px;
 }

@@ -25,18 +25,6 @@ export default function BatchView() {
     // 检查是否为 Meng 模式
     const isMeng = searchParams.get('meng') === 'true';
 
-    // 权限检查：如果不是meng模式，显示权限不足页面
-    if (!isMeng) {
-        return (
-            <Layout>
-                <div style={{ padding: '50px', textAlign: 'center' }}>
-                    <Title level={2}>权限不足</Title>
-                    <Text>您没有权限访问此页面</Text>
-                </div>
-            </Layout>
-        );
-    }
-
     // 状态管理
     const [batch, setBatch] = useState<PhotoSession | null>(null);
     const [loading, setLoading] = useState(false);
@@ -203,12 +191,12 @@ export default function BatchView() {
         }
     };
 
-    // 监听URL参数变化
+    // 监听URL参数变化（仅 meng 模式下才请求数据）
     useEffect(() => {
-        if (params.batchId) {
+        if (isMeng && params.batchId) {
             fetchBatchDetail(params.batchId);
         }
-    }, [params.batchId]);
+    }, [params.batchId, isMeng]);
 
     // 通用导航函数，自动保持meng参数
     const navigateWithMeng = createNavigateWithMeng(navigate, searchParams);
@@ -464,6 +452,18 @@ export default function BatchView() {
         }
     };
 
+
+    // 权限检查：如果不是meng模式，显示权限不足页面
+    if (!isMeng) {
+        return (
+            <Layout>
+                <div style={{ padding: '50px', textAlign: 'center' }}>
+                    <Title level={2}>权限不足</Title>
+                    <Text>您没有权限访问此页面</Text>
+                </div>
+            </Layout>
+        );
+    }
 
     // 如果正在加载，显示加载状态
     if (loading) {

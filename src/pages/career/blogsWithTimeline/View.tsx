@@ -31,6 +31,31 @@ interface Blog {
   publishedAt?: string;
 }
 
+interface TocItem {
+  id: string;
+  level: number;
+  text: string;
+}
+
+// 从博客正文 HTML 中提取标题，生成目录
+const extractToc = (html: string): TocItem[] => {
+  if (!html || typeof window === "undefined") return [];
+  try {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const headings = Array.from(doc.querySelectorAll("h1, h2, h3, h4"));
+    return headings
+      .map((el, index) => ({
+        id: `${index}`,
+        level: Number(el.tagName.substring(1)),
+        text: (el.textContent || "").trim(),
+      }))
+      .filter((item) => item.text);
+  } catch (error) {
+    console.error("目录解析失败:", error);
+    return [];
+  }
+};
+
 const BlogsWithTimeline = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(false);
@@ -294,13 +319,7 @@ const BlogsWithTimeline = () => {
                       {blog.title}
                     </Title>
 
-                    {blog.summary && (
-                      <Paragraph className="blog-card-summary">
-                        {blog.summary}
-                      </Paragraph>
-                    )}
-
-                    {/* 展开/收起按钮 - 固定在摘要下方，左对齐 */}
+                    {/* 展开/收起按钮 - 左对齐 */}
                     <div className="blog-card-expand-button">
                       <Button 
                         type="primary"
@@ -308,31 +327,60 @@ const BlogsWithTimeline = () => {
                         className="expand-button"
                         onClick={() => toggleBlogExpansion(blog._id)}
                       >
-                        {expandedBlogs.has(blog._id) ? '收起' : '在此页阅读全文'}
+                        {expandedBlogs.has(blog._id) ? '收起' : '在此页阅读摘要和目录'}
                       </Button>
                     </div>
 
-                    {/* 博客原文内容 */}
-                    {expandedBlogs.has(blog._id) && (
-                      <div className="blog-card-content">
-                        <div 
-                          className="blog-card-full-content"
-                          dangerouslySetInnerHTML={{ __html: blog.content }}
-                        />
-                        
-                        {/* 收起按钮 - 放在全文下方，使用鲜艳颜色 */}
-                        <div className="blog-card-collapse-button">
-                          <Button 
-                            type="primary"
-                            size="middle"
-                            className="collapse-button-primary"
-                            onClick={() => toggleBlogExpansion(blog._id)}
-                          >
-                            收起全文
-                          </Button>
+                    {/* 摘要和目录 - 仅在展开时显示 */}
+                    {expandedBlogs.has(blog._id) && (() => {
+                      const toc = extractToc(blog.content);
+                      return (
+                        <div className="blog-card-content">
+                          {/* 摘要 */}
+                          <div className="blog-card-preview-section">
+                            <Text strong className="blog-card-preview-label">摘要</Text>
+                            {blog.summary ? (
+                              <Paragraph className="blog-card-summary">
+                                {blog.summary}
+                              </Paragraph>
+                            ) : (
+                              <Text type="secondary">本文暂无摘要</Text>
+                            )}
+                          </div>
+
+                          {/* 目录 */}
+                          <div className="blog-card-preview-section">
+                            <Text strong className="blog-card-preview-label">目录</Text>
+                            {toc.length > 0 ? (
+                              <ul className="blog-card-toc">
+                                {toc.map((item) => (
+                                  <li
+                                    key={item.id}
+                                    className={`blog-card-toc-item blog-card-toc-item--h${item.level}`}
+                                  >
+                                    {item.text}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <Text type="secondary">本文暂无目录</Text>
+                            )}
+                          </div>
+
+                          {/* 收起按钮 */}
+                          <div className="blog-card-collapse-button">
+                            <Button 
+                              type="primary"
+                              size="middle"
+                              className="collapse-button-primary"
+                              onClick={() => toggleBlogExpansion(blog._id)}
+                            >
+                              收起
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      );
+                    })()}
 
                     <div className="blog-card-meta">
                       <Text type="secondary" className="blog-card-meta-text">
