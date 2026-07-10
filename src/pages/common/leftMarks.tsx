@@ -666,7 +666,7 @@ const LeftMarks = () => {
           strokeLinejoin="round"
         />
       </svg>
-      <span>收起</span>
+      <span>完全收起</span>
     </button>
   );
 

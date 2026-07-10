@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input, message, Select, Card, Space, Tag, Checkbox } from "antd";
+import { Button, Input, message, Select, Card, Space, Tag, Checkbox, Modal } from "antd";
 import { ArrowLeftOutlined, SaveOutlined, CrownOutlined } from "@ant-design/icons";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Layout from "../common/Layout";
@@ -108,7 +108,65 @@ const EditBlogs = () => {
     }
   }
 
+  // 默认的空内容占位符
+  const EMPTY_CONTENT = '<p>开始编写你的博客...</p>'
 
+  // 判断是否存在未保存的改动
+  const hasUnsavedChanges = () => {
+    if (isNewBlog) {
+      // 新建模式：只要填写了任意内容就视为有改动
+      return (
+        title.trim() !== '' ||
+        summary.trim() !== '' ||
+        tags.length > 0 ||
+        (content.trim() !== '' && content !== EMPTY_CONTENT)
+      )
+    }
+    // 编辑模式：与加载时的原始数据做比较
+    const currentData = {
+      title,
+      content,
+      summary,
+      status,
+      isFeatured,
+      tags
+    }
+    return JSON.stringify(currentData) !== JSON.stringify(originalData)
+  }
+
+  // 真正执行返回列表
+  const goToList = () => {
+    navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`)
+  }
+
+  // 返回/取消前的未保存确认
+  const handleLeave = () => {
+    if (hasUnsavedChanges()) {
+      Modal.confirm({
+        title: '还有未保存的修改',
+        content: '当前博客内容尚未保存，离开后这些修改将会丢失。确定要离开吗？',
+        okText: '离开',
+        okButtonProps: { danger: true },
+        cancelText: '继续编辑',
+        onOk: goToList
+      })
+    } else {
+      goToList()
+    }
+  }
+
+  // 浏览器刷新/关闭标签页时的未保存提示
+  useEffect(() => {
+    const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges()) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', beforeUnloadHandler)
+    return () => window.removeEventListener('beforeunload', beforeUnloadHandler)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, content, summary, status, isFeatured, tags, originalData, isNewBlog])
 
   // 及时销毁 editor
   useEffect(() => {
@@ -210,7 +268,7 @@ const EditBlogs = () => {
         <div className="back-button-container">
           <Button
             icon={<ArrowLeftOutlined />}
-            onClick={() => navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`)}
+            onClick={handleLeave}
           >
             返回列表
           </Button>
@@ -334,7 +392,7 @@ const EditBlogs = () => {
             </Button>
             <Button
               size="large"
-              onClick={() => navigate(`/career/blogsWithTimeline${isMeng ? '?meng=true' : ''}`)}
+              onClick={handleLeave}
             >
               取消
             </Button>
