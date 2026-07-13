@@ -569,47 +569,25 @@ const LeftMarks = () => {
   useEffect(() => {
     if (!flyoutPinned || flyoutSession.docked || isCoarsePointer) return;
 
-    const updatePointerInContent = (clientX: number, clientY: number) => {
-      const layoutRight = document.querySelector(".layout-right");
-      if (!layoutRight) {
-        pointerInContentRef.current = false;
-        return;
-      }
-
-      const rect = layoutRight.getBoundingClientRect();
-      pointerInContentRef.current =
-        clientX >= rect.left &&
-        clientX <= rect.right &&
-        clientY >= rect.top &&
-        clientY <= rect.bottom;
-    };
-
+    // 侧栏被 pin 住（打开但未固定）时，只要鼠标移出面板右边缘、进入右侧内容区，
+    // 就立即收起——不再需要额外的滚动/滚轮操作。
     const handleMouseMove = (event: MouseEvent) => {
-      updatePointerInContent(event.clientX, event.clientY);
-    };
+      if (!flyoutPinnedRef.current || flyoutSession.docked) return;
 
-    const dismissIfPointerInContent = () => {
-      if (!flyoutPinnedRef.current) return;
-      if (pointerInContentRef.current) {
+      const panel = leftMarksRef.current;
+      if (!panel) return;
+
+      const rect = panel.getBoundingClientRect();
+      if (event.clientX > rect.right) {
         dismissFlyout();
       }
     };
 
-    const handleWheel = (event: WheelEvent) => {
-      if (!flyoutPinnedRef.current || !pointerInContentRef.current) return;
-      if (event.deltaY === 0 && event.deltaX === 0) return;
-      dismissFlyout();
-    };
-
     document.addEventListener("mousemove", handleMouseMove, { passive: true });
-    document.addEventListener("scroll", dismissIfPointerInContent, { passive: true, capture: true });
-    document.addEventListener("wheel", handleWheel, { passive: true });
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("scroll", dismissIfPointerInContent, true);
-      document.removeEventListener("wheel", handleWheel);
     };
-  }, [flyoutPinned, dismissFlyout]);
+  }, [flyoutPinned, isCoarsePointer, dismissFlyout]);
 
   const renderPinButton = (mobileExpanded = false) => (
     <button

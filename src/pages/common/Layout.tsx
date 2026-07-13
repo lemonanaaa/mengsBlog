@@ -40,6 +40,7 @@ const Layout = (props) => {
   const isHome = location.pathname === "/";
   const [blogCommonStore, setBlogCommonStore] = useState({})
   const [leftWidth, setLeftWidth] = useState(getInitialLeftWidth);
+  const [isMobile, setIsMobile] = useState(isMobileLayout);
 
   useEffect(() => {
     const handleWidthChange = (e: CustomEvent<{ width?: number }>) => {
@@ -53,6 +54,21 @@ const Layout = (props) => {
       window.removeEventListener("leftMarksWidthChange", handleWidthChange as EventListener);
     };
   }, []);
+
+  useEffect(() => {
+    const syncPointerMode = () => setIsMobile(isMobileLayout());
+    const media = window.matchMedia("(pointer: coarse)");
+    media.addEventListener("change", syncPointerMode);
+    window.addEventListener("resize", syncPointerMode);
+    return () => {
+      media.removeEventListener("change", syncPointerMode);
+      window.removeEventListener("resize", syncPointerMode);
+    };
+  }, []);
+
+  // 桌面端把侧栏「固定」后 leftWidth 会大于折叠槽宽度，此时侧栏里已经有回首页入口，
+  // 浮动按钮就多余了，隐藏掉；移动端仍然一直展示。
+  const showHomeFab = !isHome && (isMobile || leftWidth <= LEFT_SLOT_WIDTH);
 
   const contextValue = {
     blogCommonStore,
@@ -76,7 +92,7 @@ const Layout = (props) => {
           {children}
         </div>
 
-        {!isHome && (
+        {showHomeFab && (
           <button
             type="button"
             className="home-fab"

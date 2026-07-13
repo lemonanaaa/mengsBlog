@@ -4,7 +4,7 @@ import "../../css/common/sidebarOnboarding.css";
 
 const STORAGE_KEY = "sidebarOnboardingV1";
 
-type OnboardingStep = "trigger" | "pin";
+type OnboardingStep = "trigger" | "pin" | "done";
 
 interface Rect {
   top: number;
@@ -69,21 +69,42 @@ const SidebarOnboarding = ({
   }, [step, onGuideActiveChange, onEnsureFlyoutOpen, onPinStepChange]);
 
   useEffect(() => {
-    if (!enabled || readCompleted() || docked) {
+    // 成功卡片会一直显示，直到用户点「知道了」，不受 docked / enabled 变化影响
+    if (step === "done") return;
+
+    if (docked) {
+      // 用户把侧栏固定了：如果是在第 2 步操作的，展示「已固定」的成功卡片；
+      // 否则（比如进页面时就已经是固定状态）直接结束指引。
+      if (step === "pin") {
+        // 固定这一步本身就算完成，先记录，避免用户没点「知道了」就切走导致下次重复弹出
+        markCompleted();
+        setStep("done");
+      } else {
+        if (step) markCompleted();
+        onGuideActiveChange(false);
+        onPinStepChange(false);
+        setStep(null);
+      }
+      return;
+    }
+
+    if (!enabled || readCompleted()) {
       onGuideActiveChange(false);
       onPinStepChange(false);
       setStep(null);
       return;
     }
 
-    const timer = window.setTimeout(() => {
-      if (!readCompleted()) {
-        setStep("trigger");
-      }
-    }, 1000);
+    if (step === null) {
+      const timer = window.setTimeout(() => {
+        if (!readCompleted()) {
+          setStep("trigger");
+        }
+      }, 1000);
 
-    return () => window.clearTimeout(timer);
-  }, [enabled, docked]);
+      return () => window.clearTimeout(timer);
+    }
+  }, [enabled, docked, step, onGuideActiveChange, onPinStepChange]);
 
   useEffect(() => {
     if (step !== "trigger" || !flyoutVisible) return;
@@ -91,12 +112,6 @@ const SidebarOnboarding = ({
     const timer = window.setTimeout(() => setStep("pin"), 400);
     return () => window.clearTimeout(timer);
   }, [step, flyoutVisible, onEnsureFlyoutOpen]);
-
-  useEffect(() => {
-    if (docked && step) {
-      complete();
-    }
-  }, [docked, step, complete]);
 
   useEffect(() => {
     if (!step) return;
@@ -186,9 +201,10 @@ const SidebarOnboarding = ({
 
   if (!step) return null;
   if (step === "trigger" && !spotlight) return null;
-  if (step === "pin" && !pinAnchor) return null;
+  if ((step === "pin" || step === "done") && !pinAnchor) return null;
 
   const isTriggerStep = step === "trigger";
+  const isDoneStep = step === "done";
   const anchor = isTriggerStep ? spotlight! : pinAnchor!;
 
   const pinPointerStyle = {
@@ -229,7 +245,8 @@ const SidebarOnboarding = ({
         } : pinSpotlightStyle}
       />
 
-      <div
+      {!isDoneStep && (
+        <div
           className={`sidebar-onboarding-pointer${isTriggerStep ? " is-trigger" : " is-pin"}`}
           style={
             isTriggerStep
@@ -243,6 +260,7 @@ const SidebarOnboarding = ({
         >
           {isTriggerStep ? "👈" : "👆"}
         </div>
+      )}
 
         <div
           className={`sidebar-onboarding-card${isTriggerStep ? " is-trigger" : " is-pin"}`}
@@ -257,17 +275,25 @@ const SidebarOnboarding = ({
         >
           <p className="sidebar-onboarding-kicker">新手指引 {isTriggerStep ? "1/2" : "2/2"}</p>
           <p className="sidebar-onboarding-title">
-            {isTriggerStep ? "从这里打开导航" : "固定侧栏更方便"}
+            {isTriggerStep
+              ? "从这里打开导航"
+              : isDoneStep
+                ? "搞定，侧栏已固定 👍"
+                : "固定侧栏更方便"}
           </p>
           <p className="sidebar-onboarding-desc">
             {isTriggerStep
               ? "把鼠标移到屏幕最左侧，导航菜单会滑出来。"
-              : "点击图钉可以把侧栏固定住，右侧内容会自动让出空间。"}
+              : isDoneStep
+                ? "右侧内容已经让出空间。想收起时，再次点击图钉即可。"
+                : "点击图钉可以把侧栏固定住，右侧内容会自动让出空间。"}
           </p>
           <div className="sidebar-onboarding-actions">
-            <button type="button" className="sidebar-onboarding-skip" onClick={complete}>
-              跳过
-            </button>
+            {!isDoneStep && (
+              <button type="button" className="sidebar-onboarding-skip" onClick={complete}>
+                跳过
+              </button>
+            )}
             {!isTriggerStep && (
               <button type="button" className="sidebar-onboarding-confirm" onClick={complete}>
                 知道了
