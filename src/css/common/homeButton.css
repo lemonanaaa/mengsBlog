@@ -1,0 +1,49 @@
+.home-fab {
+  position: fixed;
+  top: 14px;
+  right: 20px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(176, 154, 220, 0.42);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  color: #6b4fa0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(124, 92, 191, 0.14);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.home-fab:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 20px rgba(124, 92, 191, 0.22);
+}
+.home-fab:active {
+  transform: translateY(0);
+}
+.home-fab:focus-visible {
+  outline: 2px solid rgba(124, 92, 191, 0.55);
+  outline-offset: 2px;
+}
+.home-fab .home-fab-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+@media (max-width: 1024px) {
+  .home-fab {
+    top: 10px;
+    right: 12px;
+    height: 32px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+}

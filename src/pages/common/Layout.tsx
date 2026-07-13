@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "../../css/common/layout.css";
+import "../../css/common/homeButton.css";
+import { getUrlWithMeng } from "../../utils/navigation";
 
 import LeftMarks, { LeftMarksStorage } from "./leftMarks";
 import LeftMarksForGuest from "./LeftMarksForGuest"
@@ -33,6 +35,8 @@ const getInitialLeftWidth = () => {
 const Layout = (props) => {
   const { children, leftType = 'normal' } = props;
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const isHome = location.pathname === "/";
   const [blogCommonStore, setBlogCommonStore] = useState({})
   const [leftWidth, setLeftWidth] = useState(getInitialLeftWidth);
@@ -71,6 +75,19 @@ const Layout = (props) => {
         >
           {children}
         </div>
+
+        {!isHome && (
+          <button
+            type="button"
+            className="home-fab"
+            aria-label="回到首页"
+            title="回到首页"
+            onClick={() => navigate(getUrlWithMeng(searchParams, "/"))}
+          >
+            <span className="home-fab-icon" aria-hidden="true">🏠</span>
+            <span>回到首页</span>
+          </button>
+        )}
 
       </div>
     </mengsBlogContext.Provider>

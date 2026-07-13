@@ -1,6 +1,6 @@
 .reader-toolbar {
   position: fixed;
-  top: 12px;
+  top: 60px;
   right: 24px;
   z-index: 999;
   background-color: var(--bg, #fff);

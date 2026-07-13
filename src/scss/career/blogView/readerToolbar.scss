@@ -1,6 +1,7 @@
 .reader-toolbar {
   position: fixed;
-  top: 12px;
+  // 下移让位给全局「回到首页」浮动按钮，避免右上角重叠
+  top: 60px;
   right: 24px;
   z-index: 999;
   background-color: var(--bg, #fff);
