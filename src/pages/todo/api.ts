@@ -89,6 +89,9 @@ export function flattenTodoTree(
   });
 
   const displayIndexById = new Map<string, number>();
+  // 记录所有能从根节点经父子链到达的节点。被折叠隐藏的子节点仍属于此集合，
+  // 用于区分"折叠隐藏"与"真正的孤儿节点"。
+  const rootConnected = new Set<string>();
   let nextDisplayIndex = 0;
 
   const assignDisplayIndices = (parentId: string | null) => {
@@ -97,6 +100,7 @@ export function flattenTodoTree(
     children.forEach((node) => {
       nextDisplayIndex += 1;
       displayIndexById.set(node._id, nextDisplayIndex);
+      rootConnected.add(node._id);
       assignDisplayIndices(node._id);
     });
   };
@@ -135,9 +139,11 @@ export function flattenTodoTree(
 
   walkVisible(null, 0);
 
+  // 仅补充"真正的孤儿节点"（父链无法回到根）。被折叠隐藏的子节点属于 rootConnected，
+  // 不应在此被当作顶层项重新追加，否则收起父任务后其子任务会漏到列表外平铺显示。
   const included = new Set(result.map((item) => item._id));
   nodes
-    .filter((node) => !included.has(node._id))
+    .filter((node) => !included.has(node._id) && !rootConnected.has(node._id))
     .sort((a, b) => a.sortOrder - b.sortOrder || a.createdAt.localeCompare(b.createdAt))
     .forEach((node) => {
       result.push({
