@@ -1,0 +1,56 @@
+src/css/todo/todo.css
+  s_f7037dded843b2::t_76f63e2913567c 844,851-853,857,868,878-888,894-991
+  s_f7037dded843b2::t_ced5e8b33dfbb6 1097-1099,1102-1104,1106-1108,1110,1113-1169
+  s_f7037dded843b2::t_031e095b7af10f 1175-1189
+  s_f7037dded843b2::t_3ca1b4603b6df0 889-893
+  s_f7037dded843b2::t_4f19f3e26c48c3 1096,1100-1101,1105,1109,1111-1112
+src/pages/todo/api.ts
+  s_f7037dded843b2::t_8ff32624cdf44d 4-7,9-10
+  s_f7037dded843b2::t_720d0c0b9bf87c 3,8
+  s_f7037dded843b2::t_563a03fc1d2468 11
+  s_f7037dded843b2::t_77d32b745f2f9d 16
+  s_f7037dded843b2::t_1b0778cc846765 215
+  s_f7037dded843b2::t_678b84f4fa1628 238-242
+src/pages/todo/View.tsx
+  s_f7037dded843b2::t_66ddbbeb242f26 1053
+  s_f7037dded843b2::t_8b8d9d9f9c748c 42-44
+  s_f7037dded843b2::t_1ff16d9271d4d8 756,758-759,770,782-784,791,794-795,797,809,813-815,817-821,823-826,829-830
+  s_f7037dded843b2::t_a4896cfc86518c 785,790,831
+  s_f7037dded843b2::t_2d4779652fc577 501,507-508,512
+  s_f7037dded843b2::t_11b6b6ce68e3a9 789
+  s_f7037dded843b2::t_470b16c1dd5f8c 1079-1080,1082-1084,1086-1088,1090-1093
+  s_f7037dded843b2::t_890c2da4cb2989 1078,1081,1085,1089
+  s_f7037dded843b2::t_109c9b785fa18a 752-755,757,760-769,792-793,796,798-807,810-811,816,822,828,835-843,851,853-860
+  s_f7037dded843b2::t_65cc99d90db612 23
+  s_f7037dded843b2::t_4b6b86a8ddbfe7 780-781,786-788
+  s_f7037dded843b2::t_8b159152f00bb8 40-41,46-47
+  s_f7037dded843b2::t_9de8a80c9ac072 808,812,827
+  s_f7037dded843b2::t_c990a8e5280729 1077
+  s_f7037dded843b2::t_7626dfe25d1efd 45,48-50
+  s_f7037dded843b2::t_52788e4d0bcc95 24
+src/pages/todo/TodoSortableList.tsx
+  s_f7037dded843b2::t_ede9bb8ab82224 254,266-267,286-288,296-298
+  s_f7037dded843b2::t_5fe15663cfa614 459
+  s_f7037dded843b2::t_1c32c5925ad4a1 594,606-607
+  s_f7037dded843b2::t_5857ebf3e5bd48 393-401
+  s_f7037dded843b2::t_2ba496bc09a7b3 495,519,521-522
+  s_f7037dded843b2::t_268a0f5909696a 1,21,25-26
+  s_f7037dded843b2::t_5a81f0259aa064 68-154,164,176-177
+  s_f7037dded843b2::t_d2e0f82e927223 436
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.34-trip",
+  "base_commit_sha": "3fa8bc0f824b8b567d0d8d7ccad18b6b7f3293af",
+  "prompts": {},
+  "sessions": {
+    "s_f7037dded843b2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ee15450b-906c-4424-9ab8-b566eb6ebf12",
+        "model": "grok-4.5"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
