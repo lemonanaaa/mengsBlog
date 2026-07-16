@@ -841,17 +841,20 @@
 
 .todo-item-actions {
   display: flex;
+  align-items: center;
   gap: 2px;
   opacity: 0;
   flex-shrink: 0;
   transition: opacity 0.15s;
 }
 
-.todo-item:hover .todo-item-actions {
+.todo-item:hover .todo-item-actions,
+.todo-item.color-picker-open .todo-item-actions,
+.todo-item-actions.is-visible {
   opacity: 1;
 }
 
-.todo-item-actions button {
+.todo-item-actions > button {
   background: none;
   border: none;
   cursor: pointer;
@@ -862,7 +865,7 @@
   line-height: 1;
 }
 
-.todo-item-actions button:hover {
+.todo-item-actions > button:hover {
   color: #1890ff;
   background: #f0f7ff;
 }
@@ -870,6 +873,122 @@
 .todo-delete:hover {
   color: #e74c3c !important;
   background: #fef2f2 !important;
+}
+
+/* color mark */
+.todo-item--color-red {
+  box-shadow: inset 3px 0 0 #e74c3c;
+  background: rgba(231, 76, 60, 0.04);
+}
+
+.todo-item--color-yellow {
+  box-shadow: inset 3px 0 0 #f1c40f;
+  background: rgba(241, 196, 15, 0.08);
+}
+
+.todo-item--color-green {
+  box-shadow: inset 3px 0 0 #27ae60;
+  background: rgba(39, 174, 96, 0.05);
+}
+
+.todo-item--color-purple {
+  box-shadow: inset 3px 0 0 #9b59b6;
+  background: rgba(155, 89, 182, 0.05);
+}
+
+.todo-color-picker {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.todo-color-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.todo-color-btn-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid #c5d0dc;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.todo-color-btn.has-color .todo-color-btn-swatch {
+  border-color: transparent;
+  background: var(--todo-mark-color, #9aa8b8);
+}
+
+.todo-color-btn:hover,
+.todo-color-btn.is-open {
+  background: #f0f7ff;
+}
+
+.todo-color-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.todo-color-palette {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e8ecf4;
+  box-shadow: 0 8px 24px rgba(45, 38, 64, 0.12);
+}
+
+.todo-color-option {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.todo-color-option:hover {
+  transform: scale(1.12);
+}
+
+.todo-color-option.is-active {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(45, 38, 64, 0.25);
+}
+
+.todo-color-option--none {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+  border-color: #dde3ec;
+  color: #9aa8b8;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.todo-color-option--none:hover {
+  color: #e74c3c;
+  border-color: #f5c6c0;
+  background: #fef2f2;
 }
 
 /* input */
@@ -974,9 +1093,98 @@
   color: #1890ff;
 }
 
+/* color undo snackbar — portaled to body */
+.todo-undo-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 16px 14px 20px;
+  border-radius: 10px;
+  background: #2c3e50;
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(44, 62, 80, 0.32);
+  transform: translateX(-50%);
+  animation: todo-undo-in 0.22s ease both;
+  pointer-events: auto;
+}
+
+.todo-undo-message {
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.todo-undo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #91d5ff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.todo-undo-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #bae7ff;
+}
+
+.todo-undo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.todo-undo-kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+@keyframes todo-undo-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 @media (max-width: 640px) {
   .todo-header {
     flex-direction: column;
+  }
+
+  .todo-undo-bar {
+    bottom: 16px;
+    max-width: calc(100vw - 24px);
+    gap: 12px;
+    padding: 10px 12px 10px 14px;
+  }
+
+  .todo-undo-message {
+    white-space: normal;
+  }
+
+  .todo-undo-kbd {
+    display: none;
   }
 
   .todo-item-actions {

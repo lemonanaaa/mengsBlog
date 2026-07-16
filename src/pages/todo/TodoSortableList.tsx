@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -18,9 +18,12 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { FlatTodoItem } from "./api";
+import { FlatTodoItem, TodoColor, TODO_COLOR_OPTIONS } from "./api";
 
 const INDENT_WIDTH = 36;
+
+const itemColorClass = (color: TodoColor | null | undefined) =>
+  color ? ` todo-item--color-${color}` : "";
 
 const TodoExpandToggle = ({
   expanded,
@@ -62,6 +65,93 @@ const TodoExpandToggle = ({
   );
 };
 
+const ColorPicker = ({
+  itemId,
+  color,
+  isOpen,
+  isBusy,
+  onToggleOpen,
+  onSelect,
+}: {
+  itemId: string;
+  color: TodoColor | null;
+  isOpen: boolean;
+  isBusy: boolean;
+  onToggleOpen: (id: string | null) => void;
+  onSelect: (id: string, color: TodoColor | null) => void;
+}) => {
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handlePointerDown = (e: PointerEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) {
+        onToggleOpen(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isOpen, onToggleOpen]);
+
+  return (
+    <div className="todo-color-picker" ref={wrapRef}>
+      <button
+        type="button"
+        className={`todo-color-btn${color ? " has-color" : ""}${isOpen ? " is-open" : ""}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleOpen(isOpen ? null : itemId);
+        }}
+        disabled={isBusy}
+        aria-label={color ? "更改标记颜色" : "标记颜色"}
+        aria-expanded={isOpen}
+        title={color ? "更改标记颜色" : "标记颜色"}
+        style={color ? { "--todo-mark-color": TODO_COLOR_OPTIONS.find((c) => c.key === color)?.value } as React.CSSProperties : undefined}
+      >
+        <span className="todo-color-btn-swatch" aria-hidden="true" />
+      </button>
+      {isOpen && (
+        <div className="todo-color-palette" role="listbox" aria-label="选择标记颜色">
+          <button
+            type="button"
+            className={`todo-color-option todo-color-option--none${!color ? " is-active" : ""}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(itemId, null);
+              onToggleOpen(null);
+            }}
+            disabled={isBusy}
+            title="取消标记"
+            aria-label="取消标记"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          {TODO_COLOR_OPTIONS.map((option) => (
+            <button
+              key={option.key}
+              type="button"
+              className={`todo-color-option${color === option.key ? " is-active" : ""}`}
+              style={{ background: option.value }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect(itemId, color === option.key ? null : option.key);
+                onToggleOpen(null);
+              }}
+              disabled={isBusy}
+              title={option.label}
+              aria-label={`标记为${option.label}`}
+              aria-selected={color === option.key}
+              role="option"
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 interface SortableRowProps {
   item: FlatTodoItem;
   readonly: boolean;
@@ -71,6 +161,7 @@ interface SortableRowProps {
   addingChildOfId: string | null;
   childInput: string;
   collapsedIds: Set<string>;
+  colorPickerId: string | null;
   onToggle: (item: FlatTodoItem) => void;
   onDelete: (id: string) => void;
   onToggleExpand: (id: string) => void;
@@ -82,6 +173,8 @@ interface SortableRowProps {
   onChildInputChange: (text: string) => void;
   onSubmitChild: (parentId: string) => void;
   onCancelAddChild: () => void;
+  onColorPickerToggle: (id: string | null) => void;
+  onSetColor: (id: string, color: TodoColor | null) => void;
 }
 
 const SubtaskInput = ({
@@ -158,6 +251,7 @@ const SortableRow = ({
   addingChildOfId,
   childInput,
   collapsedIds,
+  colorPickerId,
   onToggle,
   onDelete,
   onToggleExpand,
@@ -169,6 +263,8 @@ const SortableRow = ({
   onChildInputChange,
   onSubmitChild,
   onCancelAddChild,
+  onColorPickerToggle,
+  onSetColor,
 }: SortableRowProps) => {
   const {
     attributes,
@@ -187,6 +283,9 @@ const SortableRow = ({
     opacity: isDragging ? 0.45 : 1,
   };
 
+  const hasColor = !!item.color;
+  const pickerOpen = colorPickerId === item._id;
+
   return (
     <>
       <li
@@ -194,7 +293,9 @@ const SortableRow = ({
         style={style}
         className={`todo-item${item.completed ? " completed" : ""}${
           addingChildOfId === item._id ? " adding-child-target" : ""
-        }${isDragging ? " dragging" : ""}`}
+        }${isDragging ? " dragging" : ""}${itemColorClass(item.color)}${
+          pickerOpen ? " color-picker-open" : ""
+        }`}
       >
         <div className="todo-item-leading">
           {!readonly && (
@@ -289,7 +390,15 @@ const SortableRow = ({
         )}
 
         {!readonly && (
-          <div className="todo-item-actions">
+          <div className={`todo-item-actions${hasColor || pickerOpen ? " is-visible" : ""}`}>
+            <ColorPicker
+              itemId={item._id}
+              color={item.color ?? null}
+              isOpen={pickerOpen}
+              isBusy={isBusy}
+              onToggleOpen={onColorPickerToggle}
+              onSelect={onSetColor}
+            />
             <button
               type="button"
               className="todo-delete"
@@ -324,7 +433,7 @@ const StaticRow = ({
   onToggleExpand,
 }: Pick<SortableRowProps, "item" | "collapsedIds" | "onToggleExpand">) => (
   <li
-    className={`todo-item todo-item--readonly${item.completed ? " completed" : ""}`}
+    className={`todo-item todo-item--readonly${item.completed ? " completed" : ""}${itemColorClass(item.color)}`}
     style={{ paddingLeft: `${12 + item.depth * INDENT_WIDTH}px` }}
   >
     <div className="todo-item-leading">
@@ -347,7 +456,7 @@ const StaticRow = ({
 
 const DragOverlayRow = ({ item }: { item: FlatTodoItem }) => (
   <li
-    className="todo-item todo-item-overlay"
+    className={`todo-item todo-item-overlay${itemColorClass(item.color)}`}
     style={{ paddingLeft: `${12 + item.depth * INDENT_WIDTH}px` }}
   >
     <div className="todo-item-leading">
@@ -383,6 +492,7 @@ interface TodoSortableListProps {
   onChildInputChange: (text: string) => void;
   onSubmitChild: (parentId: string) => void;
   onCancelAddChild: () => void;
+  onSetColor: (id: string, color: TodoColor | null) => void;
 }
 
 const TodoSortableList = ({
@@ -406,8 +516,10 @@ const TodoSortableList = ({
   onChildInputChange,
   onSubmitChild,
   onCancelAddChild,
+  onSetColor,
 }: TodoSortableListProps) => {
-  const [draggingItem, setDraggingItem] = React.useState<FlatTodoItem | null>(null);
+  const [draggingItem, setDraggingItem] = useState<FlatTodoItem | null>(null);
+  const [colorPickerId, setColorPickerId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -479,6 +591,7 @@ const TodoSortableList = ({
               addingChildOfId={addingChildOfId}
               childInput={childInput}
               collapsedIds={collapsedIds}
+              colorPickerId={colorPickerId}
               onToggle={onToggle}
               onDelete={onDelete}
               onToggleExpand={onToggleExpand}
@@ -490,6 +603,8 @@ const TodoSortableList = ({
               onChildInputChange={onChildInputChange}
               onSubmitChild={onSubmitChild}
               onCancelAddChild={onCancelAddChild}
+              onColorPickerToggle={setColorPickerId}
+              onSetColor={onSetColor}
             />
           ))}
         </ul>

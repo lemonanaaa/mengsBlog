@@ -1,0 +1,305 @@
+// 「工程实践」Tab：研发全流程点亮式全景图 + 点开就地阅读
+// 复用 .career-page--detail 上定义的主题变量（自动继承）
+
+.practices {
+  --p-accent: var(--detail-accent, #6366f1);
+  --p-accent-deep: var(--detail-accent-deep, #4f46e5);
+  --p-soft: var(--detail-accent-soft, #eef2ff);
+  --p-ink: var(--detail-ink, #1e293b);
+  --p-muted: var(--detail-muted, #64748b);
+  --p-line: var(--detail-line, #e2e8f0);
+  --p-surface: #ffffff;
+}
+
+.practices-head {
+  margin-bottom: 20px;
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--p-ink);
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--p-muted);
+  }
+}
+
+.practices-map {
+  margin-bottom: 24px;
+}
+
+// ── 全景图节点 ──
+.practice-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 14px 14px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--p-line);
+  background: var(--p-surface);
+  text-align: left;
+  font-family: inherit;
+  cursor: default;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.practice-node.is-lit {
+  cursor: pointer;
+}
+
+.practice-node.is-lit:hover {
+  border-color: #c7d2fe;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+.practice-node.is-active {
+  background: var(--p-soft);
+  border-color: var(--p-accent);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.12);
+}
+
+.practice-node.is-dim {
+  border-style: dashed;
+  background: transparent;
+  opacity: 0.75;
+}
+
+.practice-node-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.practice-node-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--p-ink);
+}
+
+.practice-node.is-dim .practice-node-label {
+  color: var(--p-muted);
+}
+
+.practice-node-hint {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--p-muted);
+}
+
+.practice-node-count {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--p-accent-deep);
+}
+
+.practice-node-soon {
+  margin-top: 2px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+// ── 底座：横向 banner，贯穿全程 ──
+.practice-node--foundation {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 16px;
+  border-style: solid;
+  border-color: #e0e7ff;
+  background: linear-gradient(120deg, #eef2ff 0%, #f5f3ff 100%);
+  opacity: 1;
+
+  .practice-node-icon {
+    font-size: 24px;
+  }
+
+  .practice-node-hint {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .practice-node-count,
+  .practice-node-soon {
+    margin-top: 0;
+  }
+}
+
+// ── 能力分类：网格排布（无先后顺序，故不用连线） ──
+.practices-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .practices-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .practices-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── 展开面板 ──
+.practices-panel {
+  margin-top: 4px;
+}
+
+.practices-empty {
+  padding: 28px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--p-muted);
+  border: 1px dashed var(--p-line);
+  border-radius: 10px;
+}
+
+.practice-item {
+  margin-bottom: 12px;
+  border: 1px solid var(--p-line);
+  border-radius: 10px;
+  background: var(--p-surface);
+  overflow: hidden;
+}
+
+.practice-item.is-open {
+  border-color: #c7d2fe;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.08);
+}
+
+.practice-item-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.practice-item-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.practice-item-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.practice-item-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--p-ink);
+}
+
+.practice-item-summary {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--p-muted);
+}
+
+.practice-item-chevron {
+  flex-shrink: 0;
+  color: var(--p-accent);
+  font-size: 12px;
+}
+
+.practice-item-body {
+  padding: 6px 20px 20px;
+  border-top: 1px solid var(--p-line);
+}
+
+// ── markdown 正文排版 ──
+.practice-item-body h2 {
+  margin: 20px 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--p-accent-deep);
+}
+
+.practice-item-body h3 {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--p-ink);
+}
+
+.practice-item-body p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.practice-item-body ul,
+.practice-item-body ol {
+  margin: 0 0 14px;
+  padding-left: 20px;
+}
+
+.practice-item-body li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.practice-item-body strong {
+  color: var(--p-ink);
+  font-weight: 600;
+}
+
+.practice-item-body blockquote {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--p-accent);
+  border-radius: 8px;
+  background: var(--p-soft);
+
+  p {
+    margin: 0;
+    color: var(--p-ink);
+  }
+}
+
+.practice-item-body code {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #f1f5f9;
+  font-size: 0.9em;
+  color: #4338ca;
+}
+
+@media (max-width: 768px) {
+  .practice-node--foundation {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .practice-node-hint {
+      margin-left: 0;
+      text-align: left;
+    }
+  }
+}

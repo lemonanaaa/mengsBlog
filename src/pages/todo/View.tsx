@@ -20,6 +20,8 @@ import {
   updateTodoNode,
   moveTodoNode,
   deleteTodoNode,
+  restoreTodoNode,
+  TodoColor,
 } from "./api";
 import { computeVerticalDragMove } from "./dndUtils";
 import { TodoSortableList } from "./TodoSortableList";
@@ -34,6 +36,17 @@ import {
   formatShanghaiWeekday,
 } from "./dateUtils";
 import "../../css/todo/todo.css";
+
+const DELETE_UNDO_MS = 8000;
+const DELETE_UNDO_SHORTCUT =
+  typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
+    ? "⌘Z"
+    : "Ctrl+Z";
+
+type DeleteUndoState = {
+  rootId: string;
+  message: string;
+};
 
 const formatWeekLabel = (week: TodoWeek) => {
   const start = week.weekStart.slice(5).replace("-", "/");
@@ -485,13 +498,18 @@ const TodoView = () => {
   const [heatmapOpen, setHeatmapOpen] = useState(false);
   const [statsYear, setStatsYear] = useState(() => getStatsYear());
   const [collapsedIds, setCollapsedIds] = useState<Set<string>>(() => new Set());
+  const [deleteUndo, setDeleteUndo] = useState<DeleteUndoState | null>(null);
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [pinnedDate, setPinnedDate] = useState<string | null>(null);
   const [dayActivity, setDayActivity] = useState<DayActivity>({ completed: [], created: [] });
   const [dayActivityLoading, setDayActivityLoading] = useState(false);
   const hoverHideTimer = useRef<number>();
+  const deleteUndoTimer = useRef<number>();
+  const deleteUndoRef = useRef<DeleteUndoState | null>(null);
   const dayActivityCache = useRef<Map<string, DayActivity>>(new Map());
   const displayDateRef = useRef<string | null>(null);
+
+  deleteUndoRef.current = deleteUndo;
 
   const displayDate = pinnedDate ?? hoveredDate;
   displayDateRef.current = displayDate;
@@ -731,6 +749,25 @@ const TodoView = () => {
     });
   };
 
+  const dismissDeleteUndo = useCallback(() => {
+    if (deleteUndoTimer.current) {
+      window.clearTimeout(deleteUndoTimer.current);
+      deleteUndoTimer.current = undefined;
+    }
+    setDeleteUndo(null);
+  }, []);
+
+  const offerDeleteUndo = useCallback((entry: DeleteUndoState) => {
+    if (deleteUndoTimer.current) {
+      window.clearTimeout(deleteUndoTimer.current);
+    }
+    setDeleteUndo(entry);
+    deleteUndoTimer.current = window.setTimeout(() => {
+      setDeleteUndo(null);
+      deleteUndoTimer.current = undefined;
+    }, DELETE_UNDO_MS);
+  }, []);
+
   const handleToggle = async (item: FlatTodoItem) => {
     if (actionLoading || readonly) return;
 
@@ -740,23 +777,87 @@ const TodoView = () => {
     }, { refreshStats: true });
   };
 
+  const handleSetColor = async (id: string, color: TodoColor | null) => {
+    if (actionLoading || readonly) return;
+
+    const previousColor = nodes.find((n) => n._id === id)?.color ?? null;
+    if (previousColor === color) return;
+
+    await runAction(async () => {
+      const updated = await updateTodoNode(id, { color });
+      setNodes((prev) => prev.map((n) => (n._id === id ? updated : n)));
+    });
+  };
+
+  const handleUndoDelete = async () => {
+    const pending = deleteUndoRef.current;
+    if (!pending || actionLoading || readonly) return;
+
+    dismissDeleteUndo();
+    await runAction(async () => {
+      const restored = await restoreTodoNode(pending.rootId);
+      setNodes((prev) => {
+        const existing = new Set(prev.map((n) => n._id));
+        const merged = [...prev];
+        restored.forEach((node) => {
+          if (!existing.has(node._id)) merged.push(node);
+        });
+        return merged;
+      });
+    }, { refreshStats: true });
+  };
+
+  const handleUndoDeleteRef = useRef(handleUndoDelete);
+  handleUndoDeleteRef.current = handleUndoDelete;
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "z" || e.shiftKey) return;
+      if (!deleteUndoRef.current) return;
+
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("input, textarea, [contenteditable='true']")) return;
+
+      e.preventDefault();
+      handleUndoDeleteRef.current();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      if (deleteUndoTimer.current) window.clearTimeout(deleteUndoTimer.current);
+    };
+  }, []);
+
   const handleDelete = async (id: string) => {
     if (actionLoading || readonly) return;
 
+    const target = nodes.find((n) => n._id === id);
+    const removeIds = new Set<string>();
+    const collect = (parentId: string) => {
+      removeIds.add(parentId);
+      nodes.filter((n) => n.parentId === parentId).forEach((c) => collect(c._id));
+    };
+    collect(id);
+
+    let deleted = false;
     await runAction(async () => {
       await deleteTodoNode(id);
-      const removeIds = new Set<string>();
-      const collect = (parentId: string) => {
-        removeIds.add(parentId);
-        nodes.filter((n) => n.parentId === parentId).forEach((c) => collect(c._id));
-      };
-      collect(id);
       setNodes((prev) => prev.filter((n) => !removeIds.has(n._id)));
       if (addingChildOfId && removeIds.has(addingChildOfId)) {
         setAddingChildOfId(null);
         setChildInput("");
       }
+      deleted = true;
     }, { refreshStats: true });
+
+    if (deleted) {
+      const label = target?.text?.trim();
+      offerDeleteUndo({
+        rootId: id,
+        message: label ? `已删除「${label.slice(0, 24)}${label.length > 24 ? "…" : ""}」` : "已删除任务",
+      });
+    }
   };
 
   const handleSaveEdit = async (id: string) => {
@@ -949,6 +1050,7 @@ const TodoView = () => {
                 onCancelAddChild={handleCancelAddChild}
                 collapsedIds={collapsedIds}
                 onToggleExpand={handleToggleExpand}
+                onSetColor={handleSetColor}
               />
             )}
 
@@ -972,6 +1074,23 @@ const TodoView = () => {
             )}
           </section>
         )}
+
+        {deleteUndo &&
+          createPortal(
+            <div className="todo-undo-bar" role="status">
+              <span className="todo-undo-message">{deleteUndo.message}</span>
+              <button
+                type="button"
+                className="todo-undo-btn"
+                onClick={handleUndoDelete}
+                disabled={isBusy}
+              >
+                撤销
+                <kbd className="todo-undo-kbd">{DELETE_UNDO_SHORTCUT}</kbd>
+              </button>
+            </div>,
+            document.body
+          )}
       </div>
     </Layout>
   );

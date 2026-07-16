@@ -12,11 +12,13 @@ import {
 } from "antd";
 import {
   ProjectOutlined,
-  TeamOutlined
+  TeamOutlined,
+  ExperimentOutlined
 } from "@ant-design/icons";
 import Layout from "../../common/Layout";
 import { CareerController } from "../Controller";
 import { CareerData } from "../Model";
+import PracticesView from "./practices/PracticesView";
 import "../../../css/career/career.css";
 
 const { Title, Text, Paragraph } = Typography;
@@ -200,6 +202,15 @@ const DetailView: React.FC = () => {
           </Row>
         </div>
       ),
+    },
+    {
+      key: "practices",
+      label: (
+        <span className="career-detail-tab-label">
+          <ExperimentOutlined /> 工程实践
+        </span>
+      ),
+      children: <PracticesView />,
     },
   ];
 

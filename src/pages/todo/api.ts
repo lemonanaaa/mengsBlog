@@ -1,9 +1,19 @@
 import { apiRequest } from '../../config/api';
 
+export type TodoColor = 'red' | 'yellow' | 'green' | 'purple';
+
+export const TODO_COLOR_OPTIONS: { key: TodoColor; label: string; value: string }[] = [
+  { key: 'red', label: '红', value: '#e74c3c' },
+  { key: 'yellow', label: '黄', value: '#f1c40f' },
+  { key: 'green', label: '绿', value: '#27ae60' },
+  { key: 'purple', label: '紫', value: '#9b59b6' },
+];
+
 export interface TodoNode {
   _id: string;
   text: string;
   completed: boolean;
+  color: TodoColor | null;
   parentId: string | null;
   sortOrder: number;
   weekKey: string;
@@ -202,7 +212,7 @@ export async function createTodoNode(text: string, parentId?: string | null): Pr
 
 export async function updateTodoNode(
   id: string,
-  payload: { text?: string; completed?: boolean }
+  payload: { text?: string; completed?: boolean; color?: TodoColor | null }
 ): Promise<TodoNode> {
   const result = await apiRequest(`/todo/nodes/${id}`, {
     method: 'PATCH',
@@ -224,4 +234,9 @@ export async function moveTodoNode(
 
 export async function deleteTodoNode(id: string): Promise<void> {
   await apiRequest(`/todo/nodes/${id}`, { method: 'DELETE' });
+}
+
+export async function restoreTodoNode(id: string): Promise<TodoNode[]> {
+  const result = await apiRequest(`/todo/nodes/${id}/restore`, { method: 'POST' });
+  return result.data || [];
 }
