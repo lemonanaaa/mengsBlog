@@ -38,6 +38,20 @@ const formatTimeOnly = (iso: string) => {
   });
 };
 
+/** 写入日与所属日记日不同 → 视为事后评论 */
+const isCommentEntry = (entry: { date: string; createdAt: string }) =>
+  toShanghaiDateKey(new Date(entry.createdAt)) !== entry.date;
+
+const formatWrittenAtLabel = (iso: string) => {
+  const date = new Date(iso);
+  const datePart = date.toLocaleDateString('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    month: 'numeric',
+    day: 'numeric',
+  });
+  return `${datePart} ${formatTimeOnly(iso)}`;
+};
+
 const highlightSnippet = (snippet: string, query: string) => {
   if (!query.trim()) return snippet;
   const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -87,6 +101,8 @@ const Writings = () => {
     [dailyStats]
   );
 
+  const isSelectedToday = selectedDate === toShanghaiDateKey();
+
   const toolbarConfig: Partial<IToolbarConfig> = {
     toolbarKeys: [
       'headerSelect',
@@ -109,7 +125,7 @@ const Writings = () => {
   };
 
   const editorConfig: Partial<IEditorConfig> = {
-    placeholder: '今天想记点什么…',
+    placeholder: isSelectedToday ? '今天想记点什么…' : '想对这一天补充点什么…',
   };
 
   useEffect(() => {
@@ -246,6 +262,8 @@ const Writings = () => {
       return;
     }
 
+    const writingComment = selectedDate !== toShanghaiDateKey();
+
     setSaving(true);
     try {
       await createJournalEntry(selectedDate, content);
@@ -253,7 +271,7 @@ const Writings = () => {
       editor?.setHtml('<p></p>');
       await loadDailyStats();
       await loadEntries(selectedDate);
-      message.success('日记已保存');
+      message.success(writingComment ? '评论已保存' : '日记已保存');
     } catch (error) {
       console.error('保存日记失败:', error);
       message.error('保存失败，请稍后重试');
@@ -361,8 +379,16 @@ const Writings = () => {
 
             <section className="journal-section journal-editor-section">
               <h2 className="journal-section-title">
-                写日记 · {formatDateLabel(selectedDate)}
+                {isSelectedToday
+                  ? `写日记 · ${formatDateLabel(selectedDate)}`
+                  : `写评论 · ${formatDateLabel(selectedDate)}`}
               </h2>
+              {!isSelectedToday && (
+                <p className="journal-comment-hint">
+                  这是对过往日子的补充，保存后会标记为「评论」
+                </p>
+              )}
+
               <div className="journal-editor-wrap">
                 <Toolbar
                   editor={editor}
@@ -386,14 +412,14 @@ const Writings = () => {
                   loading={saving}
                   onClick={handleSave}
                 >
-                  保存日记
+                  {isSelectedToday ? '保存日记' : '保存评论'}
                 </Button>
               </div>
 
               {(entriesLoading || entries.length > 0) && (
                 <div className="journal-today-stream">
                   <div className="journal-today-stream-head">
-                    <span>今日碎碎念</span>
+                    <span>{isSelectedToday ? '今日碎碎念' : '当日碎碎念'}</span>
                     {!entriesLoading && entries.length > 0 && (
                       <span className="journal-today-count">{entries.length}</span>
                     )}
@@ -405,36 +431,48 @@ const Writings = () => {
                     </div>
                   ) : (
                     <ol className="journal-stream">
-                      {entries.map((entry) => (
-                        <li
-                          key={entry._id}
-                          id={`journal-entry-${entry._id}`}
-                          className={`journal-stream-item${
-                            highlightedEntryId === entry._id ? ' is-highlighted' : ''
-                          }`}
-                        >
-                          <div className="journal-stream-rail" aria-hidden="true">
-                            <span className="journal-stream-dot" />
-                          </div>
-                          <article className="journal-stream-note">
-                            <header className="journal-stream-note-head">
-                              <time dateTime={entry.createdAt}>{formatTimeOnly(entry.createdAt)}</time>
-                              <button
-                                type="button"
-                                className="journal-stream-delete"
-                                onClick={() => handleDelete(entry._id)}
-                                aria-label="删除这条碎碎念"
-                              >
-                                <DeleteOutlined />
-                              </button>
-                            </header>
-                            <div
-                              className="journal-stream-content"
-                              dangerouslySetInnerHTML={{ __html: entry.content }}
-                            />
-                          </article>
-                        </li>
-                      ))}
+                      {entries.map((entry) => {
+                        const comment = isCommentEntry(entry);
+                        return (
+                          <li
+                            key={entry._id}
+                            id={`journal-entry-${entry._id}`}
+                            className={`journal-stream-item${
+                              highlightedEntryId === entry._id ? ' is-highlighted' : ''
+                            }${comment ? ' is-comment' : ''}`}
+                          >
+                            <div className="journal-stream-rail" aria-hidden="true">
+                              <span className="journal-stream-dot" />
+                            </div>
+                            <article className="journal-stream-note">
+                              <header className="journal-stream-note-head">
+                                <div className="journal-stream-meta">
+                                  {comment && (
+                                    <span className="journal-comment-badge">评论</span>
+                                  )}
+                                  <time dateTime={entry.createdAt}>
+                                    {comment
+                                      ? `写于 ${formatWrittenAtLabel(entry.createdAt)}`
+                                      : formatTimeOnly(entry.createdAt)}
+                                  </time>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="journal-stream-delete"
+                                  onClick={() => handleDelete(entry._id)}
+                                  aria-label={comment ? '删除这条评论' : '删除这条碎碎念'}
+                                >
+                                  <DeleteOutlined />
+                                </button>
+                              </header>
+                              <div
+                                className="journal-stream-content"
+                                dangerouslySetInnerHTML={{ __html: entry.content }}
+                              />
+                            </article>
+                          </li>
+                        );
+                      })}
                     </ol>
                   )}
                 </div>
@@ -477,9 +515,14 @@ const Writings = () => {
                             >
                               <span className="journal-search-result-date">
                                 {formatDateLabel(entry.date)}
+                                {isCommentEntry(entry) && (
+                                  <span className="journal-comment-badge">评论</span>
+                                )}
                               </span>
                               <span className="journal-search-result-time">
-                                {formatTimeOnly(entry.createdAt)}
+                                {isCommentEntry(entry)
+                                  ? `写于 ${formatWrittenAtLabel(entry.createdAt)}`
+                                  : formatTimeOnly(entry.createdAt)}
                               </span>
                               <span className="journal-search-result-snippet">
                                 {highlightSnippet(entry.snippet, searchQuery.trim())}
