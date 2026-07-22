@@ -1,0 +1,37 @@
+src/pages/photography/View.tsx
+  s_89066eb91e1652::t_68a206529abe29 1,4-9,13,23,28-30,33,36-38,41,44-46,49-50,55,57,60,71-75,85,91,93-94,99-100,102,105-111,115-118,121-124,136,138-140,146,148-152,154,158
+  s_89066eb91e1652::t_88e237abcc9a0a 80
+  s_89066eb91e1652::t_996638c6243c63 69
+  s_89066eb91e1652::t_24279bb9dc6df8 81
+src/pages/photography/component/Introduction.tsx
+  s_89066eb91e1652::t_b8c827e769c4d1 1,13,38
+  s_89066eb91e1652::t_4527891a946187 5,7,9,20,29-30
+  s_89066eb91e1652::t_aee903bee7ae8d 31
+src/pages/common/leftMarks.tsx
+  s_89066eb91e1652::t_f206f83254e802 435
+  s_89066eb91e1652::t_278b52943db4d0 757
+src/css/photography/photographyMain.css
+  s_89066eb91e1652::t_e7c4f2813ffb7e 7-40
+  s_89066eb91e1652::t_0e177f1654c7d8 179-188
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.35-trip",
+  "base_commit_sha": "cfcddb88e633e24250a69430925829f304383a8c",
+  "prompts": {},
+  "humans": {
+    "h_01caa7231c27fc": {
+      "author": "mli35 <mli35@trip.com>"
+    }
+  },
+  "sessions": {
+    "s_89066eb91e1652": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "779aa7e5-cf69-406f-809c-918a568966c9",
+        "model": "grok-4.5"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
