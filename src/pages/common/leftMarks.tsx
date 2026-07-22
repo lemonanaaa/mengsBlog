@@ -432,7 +432,7 @@ const LeftMarks = () => {
           className="left-marks-mobile-submenu"
           style={{ left: MOBILE_RAIL_WIDTH, top: mobileSubmenuTop }}
           role="menu"
-          aria-label={mobileSubmenu === "career" ? "前端 Meng" : "摄影师 Meng"}
+          aria-label={mobileSubmenu === "career" ? "前端 Meng" : "摄影 Meng"}
         >
           <div className="left-marks-mobile-submenu-list">
             {items.map((item) => (
@@ -754,7 +754,7 @@ const LeftMarks = () => {
           }`}
         >
           <span className="nav-icon">📸</span>
-          <span className="nav-text">摄影师 Meng</span>
+          <span className="nav-text">摄影 Meng</span>
         </a>
 
         {showInlineSubNav && location.pathname.startsWith('/photography') && (
