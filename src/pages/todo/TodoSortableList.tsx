@@ -332,12 +332,23 @@ const SortableRow = ({
 
         <button
           type="button"
-          className="todo-checkbox"
-          onClick={() => onToggle(item)}
-          disabled={isBusy || readonly}
-          aria-label={item.completed ? "标记未完成" : "标记完成"}
+          className={`todo-checkbox${item.completed ? " checked" : ""}${
+            item.abandoned ? " is-abandoned" : ""
+          }`}
+          onClick={() => {
+            if (item.abandoned) return;
+            onToggle(item);
+          }}
+          disabled={isBusy || readonly || !!item.abandoned}
+          aria-label={
+            item.abandoned
+              ? "已废弃，不可勾选完成"
+              : item.completed
+                ? "标记未完成"
+                : "标记完成"
+          }
         >
-          {item.completed ? "✓" : ""}
+          {item.abandoned ? "×" : item.completed ? "✓" : ""}
         </button>
 
         {editingId === item._id ? (
@@ -494,8 +505,12 @@ const DragOverlayRow = ({ item }: { item: FlatTodoItem }) => (
       <span className="todo-expand-placeholder" aria-hidden="true" />
       <span className="todo-index">{item.displayIndex}.</span>
     </div>
-    <span className={`todo-checkbox${item.completed ? " checked" : ""}`}>
-      {item.completed ? "✓" : ""}
+    <span
+      className={`todo-checkbox${item.completed ? " checked" : ""}${
+        item.abandoned ? " is-abandoned" : ""
+      }`}
+    >
+      {item.abandoned ? "×" : item.completed ? "✓" : ""}
     </span>
     <span className="todo-text-wrap">
       <span className="todo-text-line">

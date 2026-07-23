@@ -800,6 +800,25 @@
   color: #fff;
 }
 
+/* 废弃：与完成同款实心方框，浅灰底 + 柔和灰 × */
+.todo-checkbox.is-abandoned,
+.todo-item.abandoned .todo-checkbox {
+  background: #e8edf2;
+  border-color: #e8edf2;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.todo-checkbox.is-abandoned:hover,
+.todo-item.abandoned .todo-checkbox:hover {
+  border-color: #e8edf2;
+  background: #e8edf2;
+}
+
+.todo-checkbox:disabled {
+  opacity: 1;
+}
+
 .todo-text-wrap {
   flex: 1;
   min-width: 0;
