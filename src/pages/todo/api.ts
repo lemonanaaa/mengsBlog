@@ -13,6 +13,7 @@ export interface TodoNode {
   _id: string;
   text: string;
   completed: boolean;
+  abandoned: boolean;
   color: TodoColor | null;
   parentId: string | null;
   sortOrder: number;
@@ -20,8 +21,39 @@ export interface TodoNode {
   originWeekKey: string;
   completedAt: string | null;
   completedWeekKey: string | null;
+  abandonedAt: string | null;
+  abandonedWeekKey: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+/** 兼容旧接口/旧文档：补齐废弃相关字段 */
+export function normalizeTodoNode(node: Partial<TodoNode> & Pick<TodoNode, '_id' | 'text'>): TodoNode {
+  const abandonedByFlag = !!node.abandoned;
+  const abandonedByWeek = !!node.abandonedWeekKey;
+  const abandoned = abandonedByFlag || abandonedByWeek;
+
+  return {
+    _id: node._id,
+    text: node.text,
+    completed: !!node.completed,
+    abandoned,
+    color: abandoned || node.completed ? null : node.color ?? null,
+    parentId: node.parentId ?? null,
+    sortOrder: node.sortOrder ?? 0,
+    weekKey: node.weekKey ?? '',
+    originWeekKey: node.originWeekKey ?? node.weekKey ?? '',
+    completedAt: node.completedAt ?? null,
+    completedWeekKey: node.completedWeekKey ?? null,
+    abandonedAt: node.abandonedAt ?? null,
+    abandonedWeekKey: node.abandonedWeekKey ?? null,
+    createdAt: node.createdAt ?? '',
+    updatedAt: node.updatedAt ?? '',
+  };
+}
+
+function normalizeNodes(nodes: TodoNode[] | undefined | null): TodoNode[] {
+  return (nodes || []).map((node) => normalizeTodoNode(node));
 }
 
 export interface TodoWeek {
@@ -170,7 +202,11 @@ export function flattenTodoTree(
 
 export async function fetchActiveTodos(): Promise<ActiveTodoResponse> {
   const result = await apiRequest('/todo/active');
-  return result.data;
+  const data = result.data;
+  return {
+    ...data,
+    nodes: normalizeNodes(data?.nodes),
+  };
 }
 
 export async function fetchWeeks(): Promise<TodoWeek[]> {
@@ -180,7 +216,11 @@ export async function fetchWeeks(): Promise<TodoWeek[]> {
 
 export async function fetchWeekDetail(weekKey: string): Promise<WeekDetailResponse> {
   const result = await apiRequest(`/todo/weeks/${weekKey}`);
-  return result.data;
+  const data = result.data;
+  return {
+    ...data,
+    nodes: normalizeNodes(data?.nodes),
+  };
 }
 
 export async function fetchDailyStats(from?: string, to?: string): Promise<DailyStat[]> {
@@ -207,18 +247,23 @@ export async function createTodoNode(text: string, parentId?: string | null): Pr
     method: 'POST',
     body: JSON.stringify({ text: text.trim(), parentId: parentId || null }),
   });
-  return result.data;
+  return normalizeTodoNode(result.data);
 }
 
 export async function updateTodoNode(
   id: string,
-  payload: { text?: string; completed?: boolean; color?: TodoColor | null }
+  payload: {
+    text?: string;
+    completed?: boolean;
+    abandoned?: boolean;
+    color?: TodoColor | null;
+  }
 ): Promise<TodoNode> {
   const result = await apiRequest(`/todo/nodes/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
-  return result.data;
+  return normalizeTodoNode(result.data);
 }
 
 export async function moveTodoNode(
@@ -229,7 +274,7 @@ export async function moveTodoNode(
     method: 'PUT',
     body: JSON.stringify(payload),
   });
-  return result.data;
+  return normalizeTodoNode(result.data);
 }
 
 export async function deleteTodoNode(id: string): Promise<void> {
@@ -238,5 +283,5 @@ export async function deleteTodoNode(id: string): Promise<void> {
 
 export async function restoreTodoNode(id: string): Promise<TodoNode[]> {
   const result = await apiRequest(`/todo/nodes/${id}/restore`, { method: 'POST' });
-  return result.data || [];
+  return normalizeNodes(result.data);
 }

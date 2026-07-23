@@ -163,6 +163,7 @@ interface SortableRowProps {
   collapsedIds: Set<string>;
   colorPickerId: string | null;
   onToggle: (item: FlatTodoItem) => void;
+  onAbandon: (item: FlatTodoItem) => void;
   onDelete: (id: string) => void;
   onToggleExpand: (id: string) => void;
   onStartEdit: (item: FlatTodoItem) => void;
@@ -253,6 +254,7 @@ const SortableRow = ({
   collapsedIds,
   colorPickerId,
   onToggle,
+  onAbandon,
   onDelete,
   onToggleExpand,
   onStartEdit,
@@ -292,10 +294,10 @@ const SortableRow = ({
         ref={setNodeRef}
         style={style}
         className={`todo-item${item.completed ? " completed" : ""}${
-          addingChildOfId === item._id ? " adding-child-target" : ""
-        }${isDragging ? " dragging" : ""}${itemColorClass(item.color)}${
-          pickerOpen ? " color-picker-open" : ""
-        }`}
+          item.abandoned ? " abandoned" : ""
+        }${addingChildOfId === item._id ? " adding-child-target" : ""}${
+          isDragging ? " dragging" : ""
+        }${itemColorClass(item.color)}${pickerOpen ? " color-picker-open" : ""}`}
       >
         <div className="todo-item-leading">
           {!readonly && (
@@ -371,7 +373,8 @@ const SortableRow = ({
               >
                 {item.text}
               </span>
-              {!readonly && (
+              {item.abandoned && <span className="todo-abandoned-badge">已废弃</span>}
+              {!readonly && !item.abandoned && (
                 <button
                   type="button"
                   className="todo-add-child-btn"
@@ -390,15 +393,31 @@ const SortableRow = ({
         )}
 
         {!readonly && (
-          <div className={`todo-item-actions${hasColor || pickerOpen ? " is-visible" : ""}`}>
-            <ColorPicker
-              itemId={item._id}
-              color={item.color ?? null}
-              isOpen={pickerOpen}
-              isBusy={isBusy}
-              onToggleOpen={onColorPickerToggle}
-              onSelect={onSetColor}
-            />
+          <div
+            className={`todo-item-actions${
+              hasColor || pickerOpen || item.abandoned ? " is-visible" : ""
+            }`}
+          >
+            {!item.abandoned && (
+              <ColorPicker
+                itemId={item._id}
+                color={item.color ?? null}
+                isOpen={pickerOpen}
+                isBusy={isBusy}
+                onToggleOpen={onColorPickerToggle}
+                onSelect={onSetColor}
+              />
+            )}
+            <button
+              type="button"
+              className={`todo-abandon${item.abandoned ? " is-active" : ""}`}
+              onClick={() => onAbandon(item)}
+              disabled={isBusy}
+              aria-label={item.abandoned ? "取消废弃" : "标记为已废弃"}
+              title={item.abandoned ? "取消废弃" : "标记为已废弃"}
+            >
+              {item.abandoned ? "恢复" : "设为废弃"}
+            </button>
             <button
               type="button"
               className="todo-delete"
@@ -433,7 +452,9 @@ const StaticRow = ({
   onToggleExpand,
 }: Pick<SortableRowProps, "item" | "collapsedIds" | "onToggleExpand">) => (
   <li
-    className={`todo-item todo-item--readonly${item.completed ? " completed" : ""}${itemColorClass(item.color)}`}
+    className={`todo-item todo-item--readonly${item.completed ? " completed" : ""}${
+      item.abandoned ? " abandoned" : ""
+    }${itemColorClass(item.color)}`}
     style={{ paddingLeft: `${12 + item.depth * INDENT_WIDTH}px` }}
   >
     <div className="todo-item-leading">
@@ -450,13 +471,22 @@ const StaticRow = ({
       <span className="todo-index">{item.displayIndex}.</span>
     </div>
     <span className="todo-checkbox-placeholder" aria-hidden="true" />
-    <span className="todo-text" title={item.text}>{item.text}</span>
+    <span className="todo-text-wrap">
+      <span className="todo-text-line">
+        <span className="todo-text" title={item.text}>
+          {item.text}
+        </span>
+        {item.abandoned && <span className="todo-abandoned-badge">已废弃</span>}
+      </span>
+    </span>
   </li>
 );
 
 const DragOverlayRow = ({ item }: { item: FlatTodoItem }) => (
   <li
-    className={`todo-item todo-item-overlay${itemColorClass(item.color)}`}
+    className={`todo-item todo-item-overlay${item.completed ? " completed" : ""}${
+      item.abandoned ? " abandoned" : ""
+    }${itemColorClass(item.color)}`}
     style={{ paddingLeft: `${12 + item.depth * INDENT_WIDTH}px` }}
   >
     <div className="todo-item-leading">
@@ -467,7 +497,14 @@ const DragOverlayRow = ({ item }: { item: FlatTodoItem }) => (
     <span className={`todo-checkbox${item.completed ? " checked" : ""}`}>
       {item.completed ? "✓" : ""}
     </span>
-    <span className="todo-text" title={item.text}>{item.text}</span>
+    <span className="todo-text-wrap">
+      <span className="todo-text-line">
+        <span className="todo-text" title={item.text}>
+          {item.text}
+        </span>
+        {item.abandoned && <span className="todo-abandoned-badge">已废弃</span>}
+      </span>
+    </span>
   </li>
 );
 
@@ -482,6 +519,7 @@ interface TodoSortableListProps {
   collapsedIds: Set<string>;
   onDragMove: (activeId: string, overId: string) => void;
   onToggle: (item: FlatTodoItem) => void;
+  onAbandon: (item: FlatTodoItem) => void;
   onDelete: (id: string) => void;
   onToggleExpand: (id: string) => void;
   onStartEdit: (item: FlatTodoItem) => void;
@@ -506,6 +544,7 @@ const TodoSortableList = ({
   collapsedIds,
   onDragMove,
   onToggle,
+  onAbandon,
   onDelete,
   onToggleExpand,
   onStartEdit,
@@ -593,6 +632,7 @@ const TodoSortableList = ({
               collapsedIds={collapsedIds}
               colorPickerId={colorPickerId}
               onToggle={onToggle}
+              onAbandon={onAbandon}
               onDelete={onDelete}
               onToggleExpand={onToggleExpand}
               onStartEdit={onStartEdit}

@@ -777,6 +777,15 @@ const TodoView = () => {
     }, { refreshStats: true });
   };
 
+  const handleAbandon = async (item: FlatTodoItem) => {
+    if (actionLoading || readonly) return;
+
+    await runAction(async () => {
+      const updated = await updateTodoNode(item._id, { abandoned: !item.abandoned });
+      setNodes((prev) => prev.map((n) => (n._id === item._id ? updated : n)));
+    });
+  };
+
   const handleSetColor = async (id: string, color: TodoColor | null) => {
     if (actionLoading || readonly) return;
 
@@ -1023,6 +1032,7 @@ const TodoView = () => {
                 childInput={childInput}
                 onDragMove={handleDragMove}
                 onToggle={handleToggle}
+                onAbandon={handleAbandon}
                 onDelete={handleDelete}
                 onStartEdit={(item) => {
                   setEditingId(item._id);
