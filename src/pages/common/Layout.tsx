@@ -6,6 +6,7 @@ import { getUrlWithMeng } from "../../utils/navigation";
 
 import LeftMarks, { LeftMarksStorage } from "./leftMarks";
 import LeftMarksForGuest from "./LeftMarksForGuest"
+import VisitTracker from "./VisitTracker";
 
 export const mengsBlogContext = createContext({});
 
@@ -89,6 +90,7 @@ const Layout = (props) => {
           className="layout-right"
           style={{ width: `calc(100% - ${leftWidth}px)` }}
         >
+          <VisitTracker />
           {children}
         </div>
 

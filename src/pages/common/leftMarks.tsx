@@ -810,6 +810,20 @@ const LeftMarks = () => {
           </a>
         )}
 
+        {searchParams.get('meng') === 'true' && (
+          <a
+            href="/visits?meng=true"
+            className={`nav-link visits-link${location.pathname === '/visits' ? ' is-active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('/visits');
+            }}
+          >
+            <span className="nav-icon">👁️</span>
+            <span className="nav-text">访客记录</span>
+          </a>
+        )}
+
         <a
           href="#"
           onClick={(e) => {

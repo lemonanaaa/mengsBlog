@@ -27,6 +27,9 @@ const EditBlogsView = React.lazy(() => import("../pages/editBlogs/View"));
 // 待办模块
 const TodoView = React.lazy(() => import("../pages/todo/View"));
 
+// 访客记录（meng）
+const VisitsView = React.lazy(() => import("../pages/visits/View"));
+
 // 加载组件
 const LoadingComponent = () => (
   <div style={{ 
@@ -191,6 +194,14 @@ const routes = [
     Component: (
       <Suspense fallback={<LoadingComponent />}>
         <TodoView />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/visits",
+    Component: (
+      <Suspense fallback={<LoadingComponent />}>
+        <VisitsView />
       </Suspense>
     ),
   },
