@@ -1,0 +1,41 @@
+src/pages/todo/TodoSortableList.tsx
+  s_89066eb91e1652::t_8ae96914e88511 376-377,396-418,420
+  h_01caa7231c27fc 419
+  s_89066eb91e1652::t_85a724973ef974 455-457,474-481,487-489,500-506
+  s_89066eb91e1652::t_9d5c817b5a723e 297-300
+  s_89066eb91e1652::t_5039e85b5d55ff 635
+  s_89066eb91e1652::t_da13395cd25224 522,547
+  s_89066eb91e1652::t_66eec78bd43587 166
+  s_89066eb91e1652::t_e053e49c3d44d2 257
+src/pages/todo/api.ts
+  s_89066eb91e1652::t_4549638377a755 16,24-25,30-56
+  s_89066eb91e1652::t_fb7b2165dd066d 205-209,219-223
+  s_89066eb91e1652::t_2695fb05e0459b 255-260
+  s_89066eb91e1652::t_e26a47e137c48d 250,266,277,286
+src/pages/todo/View.tsx
+  s_89066eb91e1652::t_81c29cebeccab3 780-788
+  s_89066eb91e1652::t_5d40cc942f5104 1035
+src/css/todo/todo.css
+  s_89066eb91e1652::t_e62269ba3a085e 833-866
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.35-trip",
+  "base_commit_sha": "915b1a4d6967bb04ca165d6d46139e48b3db5dc2",
+  "prompts": {},
+  "humans": {
+    "h_01caa7231c27fc": {
+      "author": "mli35 <mli35@trip.com>"
+    }
+  },
+  "sessions": {
+    "s_89066eb91e1652": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "779aa7e5-cf69-406f-809c-918a568966c9",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
