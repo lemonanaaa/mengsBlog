@@ -1220,14 +1220,52 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .todo-page {
+    padding: 16px 10px 40px;
+  }
+
   .todo-header {
     flex-direction: column;
+    margin-bottom: 16px;
+    gap: 10px;
+  }
+
+  .todo-page h1 {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .todo-subtitle {
+    font-size: 13px;
+  }
+
+  .todo-heatmap-wrap {
+    margin-bottom: 14px;
+  }
+
+  .todo-heatmap-section,
+  .todo-heatmap-toggle {
+    padding: 12px;
+  }
+
+  .todo-workspace {
+    padding: 12px;
+  }
+
+  .todo-input-area {
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .todo-add-input {
+    padding: 9px 12px;
+    font-size: 14px;
   }
 
   .todo-undo-bar {
     bottom: 16px;
-    max-width: calc(100vw - 24px);
+    max-width: calc(100vw - 20px);
     gap: 12px;
     padding: 10px 12px 10px 14px;
   }
@@ -1242,11 +1280,6 @@
 
   .todo-item-actions {
     opacity: 1;
-  }
-
-  .todo-index {
-    min-width: 1.25em;
-    font-size: 12px;
   }
 
   .todo-heatmap-scroll {
@@ -1268,4 +1301,77 @@
   .todo-heatmap-column {
     gap: 3px;
   }
+}
+
+/* H5 紧凑列表：尽量把宽度留给正文 */
+.todo-list--compact .todo-item {
+  gap: 4px;
+  padding: 6px 2px 6px 0;
+  align-items: flex-start;
+}
+
+.todo-list--compact .todo-item-leading {
+  gap: 4px;
+  min-width: 0;
+}
+
+.todo-list--compact .todo-item-leading .todo-checkbox {
+  margin-left: 0;
+}
+
+.todo-list--compact .todo-expand-placeholder,
+.todo-list--compact .todo-drag-handle {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.todo-list--compact .todo-expand-btn {
+  width: 18px;
+  height: 18px;
+}
+
+.todo-list--compact .todo-index {
+  min-width: 1em;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.todo-list--compact .todo-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.todo-list--compact .todo-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.todo-list--compact .todo-item-actions {
+  gap: 0;
+  margin-left: 2px;
+}
+
+.todo-list--compact .todo-item-actions > button {
+  padding: 2px 4px;
+}
+
+.todo-list--compact .todo-add-child-btn {
+  margin-left: 2px;
+  padding: 0 3px;
+  font-size: 11px;
+}
+
+.todo-list--compact .todo-abandoned-badge {
+  padding: 0 4px;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.todo-list--compact .todo-inline-add-row {
+  padding-left: 0 !important;
 }

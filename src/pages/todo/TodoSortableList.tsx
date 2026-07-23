@@ -21,9 +21,37 @@ import { CSS } from "@dnd-kit/utilities";
 import { FlatTodoItem, TodoColor, TODO_COLOR_OPTIONS } from "./api";
 
 const INDENT_WIDTH = 36;
+const MOBILE_INDENT_WIDTH = 20;
 
 const itemColorClass = (color: TodoColor | null | undefined) =>
   color ? ` todo-item--color-${color}` : "";
+
+/** H5 / 窄屏：关闭拖动与废弃，给正文更多空间 */
+const useIsCompactTodo = () => {
+  const [compact, setCompact] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return (
+      window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 768
+    );
+  });
+
+  useEffect(() => {
+    const sync = () => {
+      setCompact(
+        window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 768
+      );
+    };
+    const media = window.matchMedia("(pointer: coarse)");
+    media.addEventListener("change", sync);
+    window.addEventListener("resize", sync);
+    return () => {
+      media.removeEventListener("change", sync);
+      window.removeEventListener("resize", sync);
+    };
+  }, []);
+
+  return compact;
+};
 
 const TodoExpandToggle = ({
   expanded,
@@ -156,6 +184,7 @@ interface SortableRowProps {
   item: FlatTodoItem;
   readonly: boolean;
   isBusy: boolean;
+  isCompact: boolean;
   editingId: string | null;
   editingText: string;
   addingChildOfId: string | null;
@@ -247,6 +276,7 @@ const SortableRow = ({
   item,
   readonly,
   isBusy,
+  isCompact,
   editingId,
   editingText,
   addingChildOfId,
@@ -276,12 +306,19 @@ const SortableRow = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: item._id, disabled: readonly || isBusy });
+  } = useSortable({
+    id: item._id,
+    disabled: readonly || isBusy || isCompact,
+  });
+
+  const indent = isCompact ? MOBILE_INDENT_WIDTH : INDENT_WIDTH;
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
-    paddingLeft: `${12 + item.depth * INDENT_WIDTH}px`,
+    paddingLeft: isCompact
+      ? `${item.depth * indent}px`
+      : `${12 + item.depth * indent}px`,
     opacity: isDragging ? 0.45 : 1,
   };
 
@@ -293,14 +330,16 @@ const SortableRow = ({
       <li
         ref={setNodeRef}
         style={style}
-        className={`todo-item${item.completed ? " completed" : ""}${
-          item.abandoned ? " abandoned" : ""
-        }${addingChildOfId === item._id ? " adding-child-target" : ""}${
-          isDragging ? " dragging" : ""
-        }${itemColorClass(item.color)}${pickerOpen ? " color-picker-open" : ""}`}
+        className={`todo-item${isCompact ? " todo-item--compact" : ""}${
+          item.completed ? " completed" : ""
+        }${item.abandoned ? " abandoned" : ""}${
+          addingChildOfId === item._id ? " adding-child-target" : ""
+        }${isDragging ? " dragging" : ""}${itemColorClass(item.color)}${
+          pickerOpen ? " color-picker-open" : ""
+        }`}
       >
         <div className="todo-item-leading">
-          {!readonly && (
+          {!readonly && !isCompact && (
             <button
               type="button"
               className="todo-drag-handle"
@@ -324,32 +363,59 @@ const SortableRow = ({
               }}
             />
           ) : (
-            <span className="todo-expand-placeholder" aria-hidden="true" />
+            !isCompact && (
+              <span className="todo-expand-placeholder" aria-hidden="true" />
+            )
           )}
 
           <span className="todo-index">{item.displayIndex}.</span>
+
+          {isCompact && (
+            <button
+              type="button"
+              className={`todo-checkbox${item.completed ? " checked" : ""}${
+                item.abandoned ? " is-abandoned" : ""
+              }`}
+              onClick={() => {
+                if (item.abandoned) return;
+                onToggle(item);
+              }}
+              disabled={isBusy || readonly || !!item.abandoned}
+              aria-label={
+                item.abandoned
+                  ? "已废弃，不可勾选完成"
+                  : item.completed
+                    ? "标记未完成"
+                    : "标记完成"
+              }
+            >
+              {item.abandoned ? "×" : item.completed ? "✓" : ""}
+            </button>
+          )}
         </div>
 
-        <button
-          type="button"
-          className={`todo-checkbox${item.completed ? " checked" : ""}${
-            item.abandoned ? " is-abandoned" : ""
-          }`}
-          onClick={() => {
-            if (item.abandoned) return;
-            onToggle(item);
-          }}
-          disabled={isBusy || readonly || !!item.abandoned}
-          aria-label={
-            item.abandoned
-              ? "已废弃，不可勾选完成"
-              : item.completed
-                ? "标记未完成"
-                : "标记完成"
-          }
-        >
-          {item.abandoned ? "×" : item.completed ? "✓" : ""}
-        </button>
+        {!isCompact && (
+          <button
+            type="button"
+            className={`todo-checkbox${item.completed ? " checked" : ""}${
+              item.abandoned ? " is-abandoned" : ""
+            }`}
+            onClick={() => {
+              if (item.abandoned) return;
+              onToggle(item);
+            }}
+            disabled={isBusy || readonly || !!item.abandoned}
+            aria-label={
+              item.abandoned
+                ? "已废弃，不可勾选完成"
+                : item.completed
+                  ? "标记未完成"
+                  : "标记完成"
+            }
+          >
+            {item.abandoned ? "×" : item.completed ? "✓" : ""}
+          </button>
+        )}
 
         {editingId === item._id ? (
           <input
@@ -406,7 +472,7 @@ const SortableRow = ({
         {!readonly && (
           <div
             className={`todo-item-actions${
-              hasColor || pickerOpen || item.abandoned ? " is-visible" : ""
+              hasColor || pickerOpen || (!isCompact && item.abandoned) ? " is-visible" : ""
             }`}
           >
             {!item.abandoned && (
@@ -419,16 +485,18 @@ const SortableRow = ({
                 onSelect={onSetColor}
               />
             )}
-            <button
-              type="button"
-              className={`todo-abandon${item.abandoned ? " is-active" : ""}`}
-              onClick={() => onAbandon(item)}
-              disabled={isBusy}
-              aria-label={item.abandoned ? "取消废弃" : "标记为已废弃"}
-              title={item.abandoned ? "取消废弃" : "标记为已废弃"}
-            >
-              {item.abandoned ? "恢复" : "设为废弃"}
-            </button>
+            {!isCompact && (
+              <button
+                type="button"
+                className={`todo-abandon${item.abandoned ? " is-active" : ""}`}
+                onClick={() => onAbandon(item)}
+                disabled={isBusy}
+                aria-label={item.abandoned ? "取消废弃" : "标记为已废弃"}
+                title={item.abandoned ? "取消废弃" : "标记为已废弃"}
+              >
+                {item.abandoned ? "恢复" : "设为废弃"}
+              </button>
+            )}
             <button
               type="button"
               className="todo-delete"
@@ -459,17 +527,26 @@ const SortableRow = ({
 
 const StaticRow = ({
   item,
+  isCompact = false,
   collapsedIds,
   onToggleExpand,
-}: Pick<SortableRowProps, "item" | "collapsedIds" | "onToggleExpand">) => (
+}: Pick<SortableRowProps, "item" | "collapsedIds" | "onToggleExpand"> & {
+  isCompact?: boolean;
+}) => (
   <li
-    className={`todo-item todo-item--readonly${item.completed ? " completed" : ""}${
-      item.abandoned ? " abandoned" : ""
-    }${itemColorClass(item.color)}`}
-    style={{ paddingLeft: `${12 + item.depth * INDENT_WIDTH}px` }}
+    className={`todo-item todo-item--readonly${isCompact ? " todo-item--compact" : ""}${
+      item.completed ? " completed" : ""
+    }${item.abandoned ? " abandoned" : ""}${itemColorClass(item.color)}`}
+    style={{
+      paddingLeft: isCompact
+        ? `${item.depth * MOBILE_INDENT_WIDTH}px`
+        : `${12 + item.depth * INDENT_WIDTH}px`,
+    }}
   >
     <div className="todo-item-leading">
-      <span className="todo-drag-handle placeholder" aria-hidden="true" />
+      {!isCompact && (
+        <span className="todo-drag-handle placeholder" aria-hidden="true" />
+      )}
       {item.hasChildren ? (
         <TodoExpandToggle
           expanded={!collapsedIds.has(item._id)}
@@ -477,7 +554,9 @@ const StaticRow = ({
           onClick={() => onToggleExpand(item._id)}
         />
       ) : (
-        <span className="todo-expand-placeholder" aria-hidden="true" />
+        !isCompact && (
+          <span className="todo-expand-placeholder" aria-hidden="true" />
+        )
       )}
       <span className="todo-index">{item.displayIndex}.</span>
     </div>
@@ -572,6 +651,7 @@ const TodoSortableList = ({
   onCancelAddChild,
   onSetColor,
 }: TodoSortableListProps) => {
+  const isCompact = useIsCompactTodo();
   const [draggingItem, setDraggingItem] = useState<FlatTodoItem | null>(null);
   const [colorPickerId, setColorPickerId] = useState<string | null>(null);
 
@@ -594,6 +674,7 @@ const TodoSortableList = ({
   };
 
   const handleDragStart = (event: DragStartEvent) => {
+    if (isCompact) return;
     const item = items.find((i) => i._id === event.active.id);
     if (!item) return;
     setDraggingItem(item);
@@ -601,6 +682,7 @@ const TodoSortableList = ({
 
   const handleDragEnd = (event: DragEndEvent) => {
     setDraggingItem(null);
+    if (isCompact) return;
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     const activeItem = items.find((i) => i._id === active.id);
@@ -612,11 +694,12 @@ const TodoSortableList = ({
 
   if (readonly) {
     return (
-      <ul className="todo-list">
+      <ul className={`todo-list${isCompact ? " todo-list--compact" : ""}`}>
         {items.map((item) => (
           <StaticRow
             key={item._id}
             item={item}
+            isCompact={isCompact}
             collapsedIds={collapsedIds}
             onToggleExpand={onToggleExpand}
           />
@@ -633,13 +716,14 @@ const TodoSortableList = ({
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={items.map((i) => i._id)} strategy={verticalListSortingStrategy}>
-        <ul className="todo-list">
+        <ul className={`todo-list${isCompact ? " todo-list--compact" : ""}`}>
           {items.map((item) => (
             <SortableRow
               key={item._id}
               item={item}
               readonly={false}
               isBusy={isBusy}
+              isCompact={isCompact}
               editingId={editingId}
               editingText={editingText}
               addingChildOfId={addingChildOfId}
@@ -665,9 +749,11 @@ const TodoSortableList = ({
         </ul>
       </SortableContext>
 
-      <DragOverlay dropAnimation={null}>
-        {draggingItem ? <DragOverlayRow item={draggingItem} /> : null}
-      </DragOverlay>
+      {!isCompact && (
+        <DragOverlay dropAnimation={null}>
+          {draggingItem ? <DragOverlayRow item={draggingItem} /> : null}
+        </DragOverlay>
+      )}
     </DndContext>
   );
 };
