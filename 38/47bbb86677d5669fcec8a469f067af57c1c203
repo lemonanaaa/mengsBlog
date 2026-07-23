@@ -1,0 +1,48 @@
+src/routes/router.tsx
+  s_89066eb91e1652::t_2e0778881b9d31 30-32
+  s_89066eb91e1652::t_8d785942e0e8b4 200-207
+src/pages/common/Layout.tsx
+  s_89066eb91e1652::t_6a8461380812a1 93
+src/pages/common/leftMarks.tsx
+  s_89066eb91e1652::t_34ecea33e8bbeb 813-826
+src/css/visits/visits.css
+  s_89066eb91e1652::t_396e290935ba5e 40-66
+  s_89066eb91e1652::t_9bdab9c9c5271b 35-36,67-69,89-95,98,102-104
+  s_89066eb91e1652::t_57796e5cdc2310 72-88
+  s_89066eb91e1652::t_db9f129cb62a14 99
+  s_89066eb91e1652::t_c1ef421ef20911 105-111
+  s_89066eb91e1652::t_20f4de97170774 187-190
+  s_89066eb91e1652::t_e05feeb6a91962 1-34,37-39,70-71,96-97,100-101,112-186,191-194
+src/pages/visits/View.tsx
+  s_89066eb91e1652::t_dc841c0ae7ab1a 1-2,4-5,7-9,12-38,41-42,46-56,70,74-79,81-87,131-147,163,186-191
+  s_89066eb91e1652::t_c1feed4e12cb0b 59,88,95-130,164-165,181-185
+  s_89066eb91e1652::t_dd9cff6b3bea6c 6,43-45,57,60-63,65-69,71-73,89-94,148-162
+  s_89066eb91e1652::t_7b0b5b36461a0c 3,10,39-40,58,64,80,166-180
+  s_89066eb91e1652::t_dcfa335fc7fddf 11
+src/pages/visits/api.ts
+  s_89066eb91e1652::t_ab0476ffba203e 1,34-41,43,45,47-48
+  s_89066eb91e1652::t_e14b9ca970aa9d 2-33,42,44,46,49-80
+src/pages/common/VisitTracker.tsx
+  s_89066eb91e1652::t_8c83dcfd46f44c 1-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.35-trip",
+  "base_commit_sha": "3847bbb86677d5669fcec8a469f067af57c1c203",
+  "prompts": {},
+  "humans": {
+    "h_01caa7231c27fc": {
+      "author": "mli35 <mli35@trip.com>"
+    }
+  },
+  "sessions": {
+    "s_89066eb91e1652": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "779aa7e5-cf69-406f-809c-918a568966c9",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
