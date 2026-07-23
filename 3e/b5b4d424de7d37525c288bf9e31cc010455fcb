@@ -1,0 +1,28 @@
+src/pages/todo/TodoSortableList.tsx
+  s_89066eb91e1652::t_381d35d48337fe 508-513
+  s_89066eb91e1652::t_b96c16d4f8374d 335-349,351
+src/css/todo/todo.css
+  s_89066eb91e1652::t_53b7107d4c61d2 804-805,809-813,816-821
+  s_89066eb91e1652::t_7398145df37d33 803,806-808,814-815
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.35-trip",
+  "base_commit_sha": "3eb5b4d424de7d37525c288bf9e31cc010455fcb",
+  "prompts": {},
+  "humans": {
+    "h_01caa7231c27fc": {
+      "author": "mli35 <mli35@trip.com>"
+    }
+  },
+  "sessions": {
+    "s_89066eb91e1652": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "779aa7e5-cf69-406f-809c-918a568966c9",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
