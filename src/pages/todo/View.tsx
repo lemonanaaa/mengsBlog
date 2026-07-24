@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
+import { useSearchParams } from "react-router-dom";
 import { Spin, message } from "antd";
 import Layout from "../common/Layout";
 import {
@@ -482,6 +483,9 @@ const Heatmap = ({
 };
 
 const TodoView = () => {
+  const [searchParams] = useSearchParams();
+  const isMeng = searchParams.get("meng") === "true";
+
   const [week, setWeek] = useState<TodoWeek | null>(null);
   const [nodes, setNodes] = useState<TodoNode[]>([]);
   const [weeks, setWeeks] = useState<TodoWeek[]>([]);
@@ -711,7 +715,7 @@ const TodoView = () => {
 
   const handleAdd = async () => {
     const text = input.trim();
-    if (!text || actionLoading || readonly) return;
+    if (!text || actionLoading || readonly || !isMeng) return;
 
     await runAction(async () => {
       const created = await createTodoNode(text, null);
@@ -722,7 +726,7 @@ const TodoView = () => {
 
   const handleAddChild = async (parentId: string) => {
     const text = childInput.trim();
-    if (!text || actionLoading || readonly) return;
+    if (!text || actionLoading || readonly || !isMeng) return;
 
     await runAction(async () => {
       const created = await createTodoNode(text, parentId);
@@ -769,7 +773,7 @@ const TodoView = () => {
   }, []);
 
   const handleToggle = async (item: FlatTodoItem) => {
-    if (actionLoading || readonly) return;
+    if (actionLoading || readonly || !isMeng) return;
 
     await runAction(async () => {
       const updated = await updateTodoNode(item._id, { completed: !item.completed });
@@ -778,7 +782,7 @@ const TodoView = () => {
   };
 
   const handleAbandon = async (item: FlatTodoItem) => {
-    if (actionLoading || readonly) return;
+    if (actionLoading || readonly || !isMeng) return;
 
     await runAction(async () => {
       const updated = await updateTodoNode(item._id, { abandoned: !item.abandoned });
@@ -787,7 +791,7 @@ const TodoView = () => {
   };
 
   const handleSetColor = async (id: string, color: TodoColor | null) => {
-    if (actionLoading || readonly) return;
+    if (actionLoading || readonly || !isMeng) return;
 
     const previousColor = nodes.find((n) => n._id === id)?.color ?? null;
     if (previousColor === color) return;
@@ -800,7 +804,7 @@ const TodoView = () => {
 
   const handleUndoDelete = async () => {
     const pending = deleteUndoRef.current;
-    if (!pending || actionLoading || readonly) return;
+    if (!pending || actionLoading || readonly || !isMeng) return;
 
     dismissDeleteUndo();
     await runAction(async () => {
@@ -839,7 +843,7 @@ const TodoView = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (actionLoading || readonly) return;
+    if (actionLoading || readonly || !isMeng) return;
 
     const target = nodes.find((n) => n._id === id);
     const removeIds = new Set<string>();
@@ -876,7 +880,7 @@ const TodoView = () => {
       setEditingText("");
       return;
     }
-    if (actionLoading || readonly) return;
+    if (actionLoading || readonly || !isMeng) return;
 
     await runAction(async () => {
       const updated = await updateTodoNode(id, { text });
@@ -887,7 +891,7 @@ const TodoView = () => {
   };
 
   const handleDragMove = async (activeId: string, overId: string) => {
-    if (actionLoading || readonly) return;
+    if (actionLoading || readonly || !isMeng) return;
 
     const payload = computeVerticalDragMove(flatItems, activeId, overId);
     if (!payload) return;
@@ -905,7 +909,7 @@ const TodoView = () => {
   };
 
   const handleToggleFromPanel = async (taskId: string) => {
-    if (actionLoading || readonly) return;
+    if (actionLoading || readonly || !isMeng) return;
 
     const node = nodes.find((n) => n._id === taskId);
     if (!node) return;
@@ -941,6 +945,7 @@ const TodoView = () => {
   };
 
   const isBusy = loading || actionLoading;
+  const viewOnly = !isMeng || readonly;
 
   return (
     <Layout>
@@ -995,7 +1000,7 @@ const TodoView = () => {
                 pinnedDate={pinnedDate}
                 activity={dayActivity}
                 activityLoading={dayActivityLoading}
-                readonly={readonly}
+                readonly={viewOnly}
                 isBusy={isBusy}
                 activeNodes={activeNodeMap}
                 onHoverDate={handleHoverDate}
@@ -1015,16 +1020,23 @@ const TodoView = () => {
           </div>
         ) : (
           <section className="todo-workspace">
-            {readonly && (
+            {!isMeng && (
+              <p className="todo-readonly-hint">当前为访客浏览，仅可查看，不可编辑</p>
+            )}
+            {isMeng && readonly && (
               <p className="todo-readonly-hint">正在查看历史周快照（只读）</p>
             )}
 
             {flatItems.length === 0 ? (
-              <p className="todo-empty">还没有任务，在下方输入后按回车添加</p>
+              <p className="todo-empty">
+                {isMeng
+                  ? "还没有任务，在下方输入后按回车添加"
+                  : "这一周还没有任务"}
+              </p>
             ) : (
               <TodoSortableList
                 items={flatItems}
-                readonly={readonly}
+                readonly={viewOnly}
                 isBusy={isBusy}
                 editingId={editingId}
                 editingText={editingText}
@@ -1064,7 +1076,7 @@ const TodoView = () => {
               />
             )}
 
-            {!readonly && (
+            {!viewOnly && (
               <div className="todo-input-area">
                 <input
                   className="todo-add-input"
