@@ -90,6 +90,8 @@ const Writings = () => {
   const [initialLoading, setInitialLoading] = useState(true);
   const [entriesLoading, setEntriesLoading] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  /** 今日日记默认展开；过往日期的评论编辑默认收起 */
+  const [editorOpen, setEditorOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<JournalSearchResult[]>([]);
   const [searchTotal, setSearchTotal] = useState(0);
@@ -198,6 +200,20 @@ const Writings = () => {
       cancelled = true;
     };
   }, [isMeng, unlocked, initialLoading, selectedDate, loadEntries]);
+
+  useEffect(() => {
+    setEditorOpen(selectedDate === toShanghaiDateKey());
+    setContent('<p></p>');
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (editorOpen) return;
+    if (editorRef.current) {
+      editorRef.current.destroy();
+      editorRef.current = null;
+      setEditor(null);
+    }
+  }, [editorOpen]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -377,44 +393,62 @@ const Writings = () => {
               )}
             </section>
 
-            <section className="journal-section journal-editor-section">
-              <h2 className="journal-section-title">
-                {isSelectedToday
-                  ? `写日记 · ${formatDateLabel(selectedDate)}`
-                  : `写评论 · ${formatDateLabel(selectedDate)}`}
-              </h2>
-              {!isSelectedToday && (
-                <p className="journal-comment-hint">
-                  这是对过往日子的补充，保存后会标记为「评论」
-                </p>
-              )}
+            <section
+              className={`journal-section journal-editor-section${editorOpen ? ' is-open' : ''}`}
+            >
+              <button
+                type="button"
+                className="journal-editor-toggle"
+                onClick={() => setEditorOpen((open) => !open)}
+                aria-expanded={editorOpen}
+              >
+                <span className="journal-editor-toggle-title">
+                  {isSelectedToday
+                    ? `写日记 · ${formatDateLabel(selectedDate)}`
+                    : `写评论 · ${formatDateLabel(selectedDate)}`}
+                </span>
+                <span className="journal-editor-toggle-meta">
+                  {editorOpen ? '收起' : '展开'}
+                  <span className="journal-editor-toggle-icon">{editorOpen ? '▾' : '▸'}</span>
+                </span>
+              </button>
 
-              <div className="journal-editor-wrap">
-                <Toolbar
-                  editor={editor}
-                  defaultConfig={toolbarConfig}
-                  mode="default"
-                  className="journal-editor-toolbar"
-                />
-                <Editor
-                  defaultConfig={editorConfig}
-                  value={content}
-                  onCreated={handleEditorCreated}
-                  onChange={(ed) => setContent(ed.getHtml())}
-                  mode="default"
-                  className="journal-editor-content"
-                />
-              </div>
-              <div className="journal-editor-actions">
-                <Button
-                  type="primary"
-                  icon={<SaveOutlined />}
-                  loading={saving}
-                  onClick={handleSave}
-                >
-                  {isSelectedToday ? '保存日记' : '保存评论'}
-                </Button>
-              </div>
+              {editorOpen && (
+                <>
+                  {!isSelectedToday && (
+                    <p className="journal-comment-hint">
+                      这是对过往日子的补充，保存后会标记为「评论」
+                    </p>
+                  )}
+
+                  <div className="journal-editor-wrap">
+                    <Toolbar
+                      editor={editor}
+                      defaultConfig={toolbarConfig}
+                      mode="default"
+                      className="journal-editor-toolbar"
+                    />
+                    <Editor
+                      defaultConfig={editorConfig}
+                      value={content}
+                      onCreated={handleEditorCreated}
+                      onChange={(ed) => setContent(ed.getHtml())}
+                      mode="default"
+                      className="journal-editor-content"
+                    />
+                  </div>
+                  <div className="journal-editor-actions">
+                    <Button
+                      type="primary"
+                      icon={<SaveOutlined />}
+                      loading={saving}
+                      onClick={handleSave}
+                    >
+                      {isSelectedToday ? '保存日记' : '保存评论'}
+                    </Button>
+                  </div>
+                </>
+              )}
 
               {(entriesLoading || entries.length > 0) && (
                 <div className="journal-today-stream">

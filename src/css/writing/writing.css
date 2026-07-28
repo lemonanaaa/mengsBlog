@@ -247,6 +247,51 @@
   gap: 8px;
 }
 
+.journal-editor-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+
+.journal-editor-section.is-open .journal-editor-toggle {
+  margin-bottom: 16px;
+}
+
+.journal-editor-toggle-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.journal-editor-toggle:hover .journal-editor-toggle-title {
+  color: #7c3aed;
+}
+
+.journal-editor-toggle-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #9aa8b8;
+  flex-shrink: 0;
+}
+
+.journal-editor-toggle-icon {
+  color: #b0bac5;
+  font-size: 11px;
+}
+
 /* heatmap — purple tone */
 .journal-heatmap-summary {
   margin-bottom: 14px;
