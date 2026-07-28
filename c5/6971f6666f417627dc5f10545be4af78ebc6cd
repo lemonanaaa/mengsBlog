@@ -1,0 +1,29 @@
+src/pages/writing/View.tsx
+  s_89066eb91e1652::t_3daa337242f2fa 396-410,412-414,416-451
+  s_89066eb91e1652::t_acc33407706a93 205-217
+  s_89066eb91e1652::t_35d8270d7e3e4f 93-94
+  h_01caa7231c27fc 411
+src/css/writing/writing.css
+  s_89066eb91e1652::t_20152fcd5ff4fd 250-294
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.38-trip",
+  "base_commit_sha": "c56971f6666f417627dc5f10545be4af78ebc6cd",
+  "prompts": {},
+  "humans": {
+    "h_01caa7231c27fc": {
+      "author": "mli35 <mli35@trip.com>"
+    }
+  },
+  "sessions": {
+    "s_89066eb91e1652": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "779aa7e5-cf69-406f-809c-918a568966c9",
+        "model": "default"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
