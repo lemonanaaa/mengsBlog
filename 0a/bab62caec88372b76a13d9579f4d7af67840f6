@@ -1,0 +1,33 @@
+public/code-change-workflow-presentation.html
+  s_75058b99046e6a::t_b7b5bb1d2b84b6 365
+  s_75058b99046e6a::t_3eb91cf092e9e4 43-44,46,53-79
+  s_75058b99046e6a::t_fa587259cc79aa 377-380
+  s_75058b99046e6a::t_6fa1d0aee0583f 347
+  s_75058b99046e6a::t_4be0d22aa25ab9 42,45,47-52
+src/css/career/match.css
+  s_75058b99046e6a::t_eb82c0c34751bf 1-313
+src/css/frontPage/frontPage.css
+  s_75058b99046e6a::t_c763a58cd346cd 362-376,380-481
+  s_75058b99046e6a::t_2ebac6729f3dc9 377-379
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "0abab62caec88372b76a13d9579f4d7af67840f6",
+  "prompts": {},
+  "humans": {
+    "h_01caa7231c27fc": {
+      "author": "mli35 <mli35@trip.com>"
+    }
+  },
+  "sessions": {
+    "s_75058b99046e6a": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "94099a2b-a2a3-4d3c-b4e4-ccd80a4ba20e",
+        "model": "composer-2.5"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
