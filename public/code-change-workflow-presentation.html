@@ -39,6 +39,44 @@
       margin: 0 auto;
       padding: 36px 0 70px;
     }
+    .top-bar {
+      position: fixed;
+      top: 14px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .home-fab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 14px;
+      border: 1px solid rgba(232, 93, 63, 0.35);
+      border-radius: 999px;
+      background: rgba(255, 250, 242, 0.88);
+      backdrop-filter: blur(12px);
+      color: #c2410c;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(72, 43, 21, 0.12);
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .home-fab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(72, 43, 21, 0.18);
+    }
+    .home-fab:focus-visible {
+      outline: 2px solid rgba(232, 93, 63, 0.55);
+      outline-offset: 2px;
+    }
     .hero {
       position: relative;
       overflow: hidden;
@@ -306,7 +344,7 @@
     }
     .print-note {
       width: fit-content;
-      margin: 0 0 18px auto;
+      margin: 0;
       background: #111827;
       color: #fff;
       padding: 12px 14px;
@@ -324,6 +362,7 @@
       .section-head p { margin-top: 10px; }
       .checklist { columns: 1; }
       .print-note { display: none; }
+      .top-bar { top: 10px; right: 12px; }
     }
     @media print {
       body { background: white; }
@@ -335,7 +374,10 @@
   </style>
 </head>
 <body>
-  <div class="print-note">⌘P / Ctrl+P → present or export PDF｜演示或导出 PDF</div>
+  <div class="top-bar">
+    <div class="print-note">⌘P / Ctrl+P → present or export PDF｜演示或导出 PDF</div>
+    <a class="home-fab" href="/" title="回到首页">🏠 回到首页</a>
+  </div>
   <main class="page">
     <header class="hero">
       <div class="eyebrow">Hermes Skill Summary｜Hermes 技能总结</div>

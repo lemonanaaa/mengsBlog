@@ -359,6 +359,126 @@
   box-shadow: 0 6px 20px rgba(120, 90, 180, 0.12);
 }
 
+/* AI matcher preview card */
+.front-ai-matcher {
+  margin-bottom: 28px;
+  padding: 18px 18px 16px;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(210, 195, 255, 0.42) 0%,
+    rgba(255, 210, 225, 0.35) 100%
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
+  max-width: 380px;
+}
+
+.front-ai-matcher:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(124, 92, 191, 0.22);
+}
+
+.front-ai-matcher-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.front-ai-matcher-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #5a3d8a;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.front-ai-matcher-overall {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  color: #7c5cbf;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.front-ai-matcher-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #2d2640;
+}
+
+.front-ai-matcher-desc {
+  margin: 0 0 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6b6080;
+}
+
+.front-ai-matcher-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.front-ai-matcher-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 28px;
+  align-items: center;
+  gap: 8px;
+}
+
+.front-ai-matcher-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #5a5070;
+}
+
+.front-ai-matcher-track {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(124, 92, 191, 0.15);
+  overflow: hidden;
+}
+
+.front-ai-matcher-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #b89ef0, #7c5cbf);
+}
+
+.front-ai-matcher-score {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c5cbf;
+  text-align: right;
+}
+
+.front-ai-matcher-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5a3d8a;
+}
+
+.front-ai-matcher:hover .front-ai-matcher-cta span {
+  transform: translateX(3px);
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
 /* right grid */
 .front-right {
   padding-top: 8px;
