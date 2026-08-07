@@ -35,12 +35,12 @@ const guideCards: GuideCard[] = [
     tint: "tint-pink",
   },
   {
-    key: "tree",
-    icon: "🌳",
-    title: "知识树",
-    pillLabel: "知识树",
-    desc: "按主题整理的能力地图，展示业务、工程化与稳定性方向的结构",
-    path: "/career/blogsTree",
+    key: "blog",
+    icon: "📚",
+    title: "博客",
+    pillLabel: "博客",
+    desc: "按时间查看技术输出与实践记录，持续更新中",
+    path: "/career/blogsWithTimeline",
     tint: "tint-mint",
   },
   {
@@ -73,6 +73,12 @@ const profileSnapshot = {
   tags: ["复杂业务", "性能 & 稳定性", "AI 应用探索"],
 };
 
+const matchCard = {
+  pillLabel: "AI简历匹配器",
+  path: "/career/match",
+  tint: "tint-lavender",
+};
+
 const FrontPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -84,10 +90,6 @@ const FrontPage = () => {
     const frame = requestAnimationFrame(() => setReady(true));
     return () => cancelAnimationFrame(frame);
   }, []);
-
-  const scrollToGrid = () => {
-    document.getElementById("front-grid")?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const openGuideCard = (card: GuideCard) => {
     if (card.staticPage) {
@@ -142,14 +144,16 @@ const FrontPage = () => {
               </button>
               <button
                 type="button"
-                className="front-btn front-btn-secondary"
-                onClick={scrollToGrid}
+                className="front-btn front-btn-primary"
+                onClick={() => navigateWithMeng(matchCard.path)}
               >
-                作品集入口
+                <span aria-hidden="true">✨</span>
+                <span>AI简历匹配器</span>
+                <span className="front-btn-arrow" aria-hidden="true">↗</span>
               </button>
             </div>
 
-            <div className="front-profile-strip front-animate" style={{ "--delay": "0.52s" } as React.CSSProperties}>
+            <div className="front-profile-strip front-animate" style={{ "--delay": "0.54s" } as React.CSSProperties}>
               <div className="front-profile-strip-title">{profileSnapshot.title}</div>
               <p className="front-profile-summary">{profileSnapshot.summary}</p>
               <div className="front-profile-tags">
@@ -169,7 +173,7 @@ const FrontPage = () => {
           <section className="front-right">
             <div className="front-grid-header front-animate" style={{ "--delay": "0.3s" } as React.CSSProperties}>
               <div className="front-grid-header-text">
-                <span className="front-grid-header-label">作品集入口</span>
+                <span className="front-grid-header-label">快速导航</span>
                 <span className="front-grid-header-hint">{visibleCards.length} 个模块 · 点击进入</span>
               </div>
               <div className="front-grid-header-legend" aria-hidden="true">
@@ -217,6 +221,13 @@ const FrontPage = () => {
               {card.pillLabel}
             </button>
           ))}
+          <button
+            type="button"
+            className={`front-pill front-pill-match ${matchCard.tint}`}
+            onClick={() => navigateWithMeng(matchCard.path)}
+          >
+            ✨ {matchCard.pillLabel}
+          </button>
         </nav>
       </div>
     </Layout>

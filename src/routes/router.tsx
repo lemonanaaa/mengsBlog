@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 const FrontPage = React.lazy(() => import("../pages/frontPage/View"));
 const CareerView = React.lazy(() => import("../pages/career/View"));
 const ResumeView = React.lazy(() => import("../pages/career/resume/View"));
+const CareerMatchView = React.lazy(() => import("../pages/career/match/View"));
 const CareerDetailView = React.lazy(() => import("../pages/career/detail/View"));
 const BlogsTreeView = React.lazy(() => import("../pages/career/blogsTree/View"));
 const BlogsWithTimeline = React.lazy(() => import("../pages/career/blogsWithTimeline/View"));
@@ -66,6 +67,14 @@ const routes = [
     Component: (
       <Suspense fallback={<LoadingComponent />}>
         <ResumeView />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/career/match",
+    Component: (
+      <Suspense fallback={<LoadingComponent />}>
+        <CareerMatchView />
       </Suspense>
     ),
   },

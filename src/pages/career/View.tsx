@@ -39,15 +39,6 @@ const CareerView: React.FC = () => {
       color: "purple",
     },
     {
-      key: "tree",
-      icon: <ApartmentOutlined style={{ fontSize: 28 }} />,
-      title: "知识树",
-      desc: "按主题整理能力地图，快速了解我在业务、工程化和稳定性方向的知识结构。",
-      path: "/career/blogsTree",
-      badge: "结构化",
-      color: "cyan",
-    },
-    {
       key: "timeline",
       icon: <BookOutlined style={{ fontSize: 28 }} />,
       title: "博客",
@@ -55,6 +46,15 @@ const CareerView: React.FC = () => {
       path: "/career/blogsWithTimeline",
       badge: "持续更新",
       color: "green",
+    },
+    {
+      key: "tree",
+      icon: <ApartmentOutlined style={{ fontSize: 28 }} />,
+      title: "知识树",
+      desc: "按主题整理能力地图，快速了解我在业务、工程化和稳定性方向的知识结构。",
+      path: "/career/blogsTree",
+      badge: "建设中",
+      color: "cyan",
     },
   ];
 

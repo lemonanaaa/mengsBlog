@@ -405,8 +405,8 @@ const LeftMarks = () => {
     const careerItems = [
       { path: "/career/resume", icon: "📄", label: "简历" },
       { path: "/career/detail", icon: "🧭", label: "工作介绍" },
-      { path: "/career/blogsTree", icon: "🌳", label: "知识树" },
       { path: "/career/blogsWithTimeline", icon: "📅", label: "博客" },
+      { path: "/career/blogsTree", icon: "🌳", label: "知识树" },
     ];
 
     const photographyItems = [
@@ -729,18 +729,18 @@ const LeftMarks = () => {
               <span className="sub-nav-text">工作介绍</span>
             </div>
             <div
-              onClick={() => handleNavClick('/career/blogsTree')}
-              className={`sub-nav-item${location.pathname === '/career/blogsTree' ? ' active' : ''}`}
-            >
-              <span className="sub-nav-icon">🌳</span>
-              <span className="sub-nav-text">知识树</span>
-            </div>
-            <div
               onClick={() => handleNavClick('/career/blogsWithTimeline')}
               className={`sub-nav-item${location.pathname === '/career/blogsWithTimeline' ? ' active' : ''}`}
             >
               <span className="sub-nav-icon">📅</span>
               <span className="sub-nav-text">博客</span>
+            </div>
+            <div
+              onClick={() => handleNavClick('/career/blogsTree')}
+              className={`sub-nav-item${location.pathname === '/career/blogsTree' ? ' active' : ''}`}
+            >
+              <span className="sub-nav-icon">🌳</span>
+              <span className="sub-nav-text">知识树</span>
             </div>
           </div>
         )}
