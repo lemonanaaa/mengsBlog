@@ -27,7 +27,7 @@ export interface Practice {
 export const CATEGORIES: CategoryMeta[] = [
   {
     key: "foundation",
-    label: "Agent 相关背景知识基础",
+    label: "Agent 相关基础知识",
     icon: "🧠",
     hint: "Claude Code 能力分层与 MCP / Skill 分工",
   },
