@@ -1,0 +1,37 @@
+src/pages/career/Controller.ts
+  s_75058b99046e6a::t_4f31176cc1662d 86-87,91-97,99-109
+  s_75058b99046e6a::t_2a4fb645a0facb 134
+  s_75058b99046e6a::t_7407aa8aa38f7b 183
+  s_75058b99046e6a::t_f2a61e83c5149a 90
+  s_75058b99046e6a::t_3b4b0b3018ff96 158
+  s_75058b99046e6a::t_f4d3b0bca7621f 89
+  s_75058b99046e6a::t_fd6b51c0adcb94 88
+src/pages/career/resume/View.tsx
+  s_75058b99046e6a::t_d1b65cda442851 22-23,25,29-32
+  s_75058b99046e6a::t_deb1a274423c66 28
+  s_75058b99046e6a::t_77563360bbbd00 26
+  s_75058b99046e6a::t_bf5e00ce250f49 27
+public/resume.md
+  s_75058b99046e6a::t_670ec68825de1a 52
+  s_75058b99046e6a::t_50412c475d50aa 45-46,48-49,53-61
+  s_75058b99046e6a::t_cf6aa0009bcffb 51
+  s_75058b99046e6a::t_d3c9d079140915 50
+  s_75058b99046e6a::t_2bb9a5abb297eb 106
+  s_75058b99046e6a::t_2305b95a6b58c5 91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "3c16dd9afd8003f9cde4045cc3ba82f15b2d35cc",
+  "prompts": {},
+  "sessions": {
+    "s_75058b99046e6a": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "94099a2b-a2a3-4d3c-b4e4-ccd80a4ba20e",
+        "model": "composer-2.5"
+      },
+      "human_author": "mli35 <mli35@trip.com>"
+    }
+  }
+}
