@@ -64,8 +64,8 @@ export class CareerController {
         endDate: '至今',
         isCurrent: true,
         responsibilities: [
-          '目前负责 VBK 线路订单模块，服务于业务与商家，提供跟团、邮轮、签证等业务线的相关操作功能。',
-          '曾负责 VBK 点评、9072 系统、购物车部分模块。',
+          '目前主要负责 VBK 线路订单模块和商品信息标注模块，服务于业务与商家，提供跟团、邮轮、签证等业务线的相关操作功能。',
+          '曾负责VBK 点评、9072 系统、购物车部分模块。',
         ],
         achievements: [
           '性能提升、架构优化、监控体系配置、单端多端同构，配置监控报表、仓库流水线日常维护，探索 D2C 路径。',
@@ -81,9 +81,35 @@ export class CareerController {
     return [
       {
         id: '1',
+        name: '旅游产品人审标注系统',
+        description: '针对人工审核标注数据管理分散、审核效率偏低等问题，建设线上人审标注系统，打通审核标注—惩罚—数据监控全流程',
+        role: '前端 Owner & 核心开发',
+        responsibilities: [
+          '负责人审标注列表页四 Tab 单页架构（人工标注 / 申诉审核 / 任务抽检 / 标注明细），支持 Tab 懒加载、URL 同步与角标统计',
+          '任务详情与标注详情组件化拆分，公共层抽取供列表 / 详情复用',
+          '配置化级联表单与违规原因模板，支撑多维度审核策略'
+        ],
+        achievements: [
+          '一期完成 520 项审核任务线上化，任务线上化率约 82%',
+          '自动生成 364 个惩罚单据，节省人工创建约 700+ 分钟',
+          '剔除首日后平均审核时长 23.67 min，较线下 Excel 标注（30 min）提升约 20%',
+          '审核人员满意度 8.3 / 10（6 人评分）'
+        ],
+        techStack: ['React-imvc', 'TypeScript', 'React-imvc', 'Ant Design'],
+        startDate: '2026-04',
+        endDate: '2026-06',
+        companyId: '1',
+        highlights: [
+          '审核标注线上化闭环',
+          '四 Tab 单页架构治理',
+          '审核人效可量化'
+        ]
+      },
+      {
+        id: '2',
         name: '新版供应商退款 / 退优惠',
         description: '针对供应商退款/退优惠高频依赖人工的问题，建设供应商在 VBK 的自助处理能力，减少 OP 介入并提升处理效率',
-        role: '核心开发',
+        role: '前端Owner & 核心开发',
         responsibilities: [
           '改造 VBK 退款/退优惠链路，统一前端操作入口与弹窗交互',
           '抽象金额计算与校验逻辑到 Pure-Model，实现 PC/H5 资源层与订单层复用',
@@ -94,7 +120,7 @@ export class CareerController {
           '预计年减少事件量约 48,289 单',
           '预计节省服务成本约 96.6 万元/年，ROI 约 5.89'
         ],
-        techStack: ['React', 'TypeScript', 'Pure-Model', 'Ant Design', '灰度发布'],
+        techStack: ['React-imvc', 'TypeScript', 'Pure-Model', 'Ant Design', '灰度发布'],
         startDate: '2023-08',
         endDate: '2024-03',
         companyId: '1',
@@ -105,10 +131,10 @@ export class CareerController {
         ]
       },
       {
-        id: '2',
+        id: '3',
         name: '邮轮接入 VBK 系统',
         description: '在邮轮业务恢复后，将原独立系统数据接入 VBK，并完成订单相关能力适配',
-        role: '核心开发',
+        role: '前端Owner & 核心开发',
         responsibilities: [
           '对现有跟团业务线进行适应性改造，通过开关配置准入供应商并展示对应订单数据',
           '重构原列表页和详情页，抽象公共业务逻辑至 Pure-Model，减少 PC/H5 重复代码',
@@ -129,7 +155,7 @@ export class CareerController {
         ]
       },
       {
-        id: '3',
+        id: '4',
         name: '9072 新版工作台',
         description: '基于埋点与热力图数据，升级客服系统旧版 UI，提升操作效率与性能体验',
         role: '核心开发',
@@ -154,7 +180,7 @@ export class CareerController {
         ]
       },
       {
-        id: '4',
+        id: '5',
         name: '精准测试小工具',
         description: '针对传统覆盖率口径不聚焦改动代码的问题，建设以 diff 为分母的精准覆盖率能力',
         role: '方案设计与核心开发',

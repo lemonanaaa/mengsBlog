@@ -74,7 +74,7 @@ export const SKILL_CATEGORIES = {
 
 // 预设技术栈标签
 export const PRESET_TECH_TAGS = [
-  'React', 'TypeScript', 'JavaScript', 'Vue', 'Angular',
+  'React-Imvc', 'TypeScript', 'JavaScript', 'Vue', 'Angular',
   'HTML5', 'CSS3', 'SCSS', 'Tailwind CSS', 'Ant Design',
   'Node.js', 'Express', 'Koa', 'MongoDB', 'MySQL',
   'Webpack', 'Vite', 'Git', 'Docker', 'CI/CD',

@@ -103,7 +103,6 @@ const MCP_TOOLBOX = `> MCP 是在运行时把外部工具的"说明书"注入给
 - **feishu2md** — 飞书文档读写。读文档喂给 Agent 当上下文非常好用；写入建议用 always-user，以个人身份写，避免租户级的权限管控问题。
 - **gitlab-mcp** — 提 MR。搭配一个"提 MR"的 Skill，把分支命名、MR 模板、idev 号这套流程固化下来。
 - **figma / pencil** — figma 做设计稿转结构、样式对齐（需要 dev mode 权限）；pencil 做原型 / 交互稿生成。
-- **DOT** — 关系型数据库 / MongoDB 查询，排查数据问题时直接让 Agent 去查。
 - **chrome-devtools** — 浏览器自动化 & 深度调试（见"CDP 性能优化与排障"那篇）。
 
 ## 用的时候注意
