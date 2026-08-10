@@ -13,7 +13,9 @@ import {
 import {
   ProjectOutlined,
   TeamOutlined,
-  ExperimentOutlined
+  ExperimentOutlined,
+  UpOutlined,
+  DownOutlined
 } from "@ant-design/icons";
 import Layout from "../../common/Layout";
 import { CareerController } from "../Controller";
@@ -27,6 +29,19 @@ const DetailView: React.FC = () => {
   const [careerData, setCareerData] = useState<CareerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("experience");
+  const [collapsedProjectIds, setCollapsedProjectIds] = useState<Set<string>>(new Set());
+
+  const toggleProject = (projectId: string) => {
+    setCollapsedProjectIds((current) => {
+      const next = new Set(current);
+      if (next.has(projectId)) {
+        next.delete(projectId);
+      } else {
+        next.add(projectId);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     loadCareerData();
@@ -138,67 +153,84 @@ const DetailView: React.FC = () => {
       children: (
         <div className="projects-section">
           <Row gutter={[16, 16]}>
-            {careerData.projects.map((project) => (
+            {careerData.projects.map((project) => {
+              const collapsed = collapsedProjectIds.has(project.id);
+              return (
                 <Col xs={24} key={project.id}>
-                  <Card className="project-card" bordered={false}>
+                  <Card className={`project-card${collapsed ? " is-collapsed" : ""}`} bordered={false}>
                     <div className="project-header">
                       <div>
                         <Title level={4}>{project.name}</Title>
                         <Text type="secondary">{project.role}</Text>
                       </div>
+                      <button
+                        type="button"
+                        className="project-collapse-button"
+                        onClick={() => toggleProject(project.id)}
+                        aria-expanded={!collapsed}
+                        aria-label={collapsed ? `展开${project.name}` : `收起${project.name}`}
+                        title={collapsed ? "展开" : "收起"}
+                      >
+                        {collapsed ? <DownOutlined /> : <UpOutlined />}
+                      </button>
                     </div>
 
-                    <Paragraph className="project-description">
-                      {project.description}
-                    </Paragraph>
+                    {!collapsed && (
+                      <div className="project-content">
+                        <Paragraph className="project-description">
+                          {project.description}
+                        </Paragraph>
 
-                    <Row gutter={16}>
-                      <Col xs={24} md={12}>
-                        <div className="project-section">
-                          <Title level={5}>负责内容</Title>
-                          <ul>
-                            {project.responsibilities.map((item, index) => (
-                              <li key={index}>{item}</li>
+                        <Row gutter={16}>
+                          <Col xs={24} md={12}>
+                            <div className="project-section">
+                              <Title level={5}>负责内容</Title>
+                              <ul>
+                                {project.responsibilities.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </Col>
+
+                          <Col xs={24} md={12}>
+                            <div className="project-section">
+                              <Title level={5}>项目成果</Title>
+                              <ul className="project-achievements">
+                                {project.achievements.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </Col>
+                        </Row>
+
+                        {project.highlights && project.highlights.length > 0 && (
+                          <div className="project-highlights">
+                            <Space wrap>
+                              {project.highlights.map((highlight, index) => (
+                                <Tag className="career-tag-neutral" key={index}>
+                                  {highlight}
+                                </Tag>
+                              ))}
+                            </Space>
+                          </div>
+                        )}
+
+                        <div className="project-tech-stack">
+                          <Text strong>技术栈 </Text>
+                          <Space wrap>
+                            {project.techStack.map((tech) => (
+                              <Tag className="career-tag-soft" key={tech}>{tech}</Tag>
                             ))}
-                          </ul>
+                          </Space>
                         </div>
-                      </Col>
-
-                      <Col xs={24} md={12}>
-                        <div className="project-section">
-                          <Title level={5}>项目成果</Title>
-                          <ul className="project-achievements">
-                            {project.achievements.map((item, index) => (
-                              <li key={index}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </Col>
-                    </Row>
-
-                    {project.highlights && project.highlights.length > 0 && (
-                      <div className="project-highlights">
-                        <Space wrap>
-                          {project.highlights.map((highlight, index) => (
-                            <Tag className="career-tag-neutral" key={index}>
-                              {highlight}
-                            </Tag>
-                          ))}
-                        </Space>
                       </div>
                     )}
-
-                    <div className="project-tech-stack">
-                      <Text strong>技术栈 </Text>
-                      <Space wrap>
-                        {project.techStack.map((tech) => (
-                          <Tag className="career-tag-soft" key={tech}>{tech}</Tag>
-                        ))}
-                      </Space>
-                    </div>
                   </Card>
                 </Col>
-              ))}
+              );
+            })}
           </Row>
         </div>
       ),

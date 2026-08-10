@@ -155,7 +155,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 auto 48px;
+  margin: 0 auto 72px;
   flex-shrink: 0;
   width: 100%;
   max-width: 1100px;
@@ -636,87 +636,6 @@
   color: #4a3568;
 }
 
-/* bottom pills */
-.front-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  padding: 10px 16px;
-  margin: 40px auto 0;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 24px rgba(120, 90, 180, 0.1);
-  max-width: fit-content;
-  flex-shrink: 0;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.front-pills:hover {
-  box-shadow: 0 8px 32px rgba(120, 90, 180, 0.16);
-}
-
-.front-pill {
-  padding: 8px 18px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  font-size: 13px;
-  font-weight: 500;
-  color: #4a4060;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  white-space: nowrap;
-  font-family: inherit;
-  background: transparent;
-}
-
-.front-pill:hover {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 6px 16px rgba(120, 90, 180, 0.18);
-}
-
-.front-pill:active {
-  transform: translateY(-1px) scale(1.02);
-  transition-duration: 0.1s;
-}
-
-.front-pill.tint-purple {
-  background: rgba(210, 195, 255, 0.6);
-}
-
-.front-pill.tint-pink {
-  background: rgba(255, 210, 225, 0.6);
-}
-
-.front-pill.tint-mint {
-  background: rgba(195, 235, 215, 0.6);
-}
-
-.front-pill.tint-peach {
-  background: rgba(255, 230, 190, 0.6);
-}
-
-.front-pill.tint-blue {
-  background: rgba(195, 220, 255, 0.6);
-}
-
-.front-pill.tint-lavender {
-  background: rgba(221, 214, 254, 0.6);
-}
-
-.front-pill-match {
-  font-weight: 600;
-  color: #4a3568;
-  border-color: rgba(180, 160, 220, 0.65);
-  box-shadow: 0 2px 12px rgba(124, 92, 191, 0.15);
-}
-
-.front-pill-match:hover {
-  box-shadow: 0 6px 20px rgba(124, 92, 191, 0.28);
-}
-
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .front-animate,
@@ -731,8 +650,7 @@
   }
 
   .front-glass-card,
-  .front-btn,
-  .front-pill {
+  .front-btn {
     transition-duration: 0.01ms !important;
   }
 }
@@ -740,6 +658,10 @@
 @media (max-width: 900px) {
   .front-page {
     padding: 24px 20px 32px;
+  }
+
+  .front-topbar {
+    margin-bottom: 40px;
   }
 
   .front-main {
@@ -751,11 +673,6 @@
   .front-profile-strip,
   .front-actions-hint {
     max-width: none;
-  }
-
-  .front-pills {
-    margin-top: 32px;
-    max-width: 100%;
   }
 }
 

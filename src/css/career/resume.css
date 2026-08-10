@@ -387,7 +387,7 @@
   }
   .resume-project-summary {
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr) 20px;
+    grid-template-columns: 24px minmax(0, 1fr) 14px;
     grid-template-areas: "index name toggle" "index highlight highlight";
     align-items: start;
     gap: 6px 8px;
@@ -413,12 +413,15 @@
   .resume-project-toggle {
     grid-area: toggle;
     justify-self: end;
-    align-self: start;
-    width: 10px;
-    height: 10px;
-    margin-top: 2px;
-    padding: 12px;
-    box-sizing: content-box;
+    align-self: center;
+    width: 7px;
+    height: 7px;
+    margin-top: 0;
+    border-width: 1.5px;
+    flex-shrink: 0;
+  }
+  .resume-project-item[open] .resume-project-toggle {
+    margin-top: 0;
   }
   .resume-project-body {
     padding: 0 12px 12px;

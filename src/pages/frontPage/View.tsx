@@ -8,7 +8,6 @@ type GuideCard = {
   key: string;
   icon: string;
   title: string;
-  pillLabel: string;
   desc: string;
   path: string;
   tint: string;
@@ -20,7 +19,6 @@ const guideCards: GuideCard[] = [
     key: "resume",
     icon: "📄",
     title: "简历",
-    pillLabel: "简历",
     desc: "完整工作经历、项目背景与成果指标，适合投递或面试前快速了解",
     path: "/career/resume",
     tint: "tint-purple",
@@ -29,7 +27,6 @@ const guideCards: GuideCard[] = [
     key: "detail",
     icon: "🧭",
     title: "工作介绍",
-    pillLabel: "工作介绍",
     desc: "工作与项目经历的完整展示，支持 Tab 导航与滚动浏览",
     path: "/career/detail",
     tint: "tint-pink",
@@ -38,7 +35,6 @@ const guideCards: GuideCard[] = [
     key: "blog",
     icon: "📚",
     title: "博客",
-    pillLabel: "博客",
     desc: "按时间查看技术输出与实践记录，持续更新中",
     path: "/career/blogsWithTimeline",
     tint: "tint-mint",
@@ -47,7 +43,6 @@ const guideCards: GuideCard[] = [
     key: "workflow",
     icon: "🔄",
     title: "代码修改工作流",
-    pillLabel: "工作流",
     desc: "清晰、安全、测试优先的代码修改流程，适合演示或导出 PDF",
     path: "/code-change-workflow-presentation.html",
     tint: "tint-blue",
@@ -60,7 +55,6 @@ const mengGuideCards: GuideCard[] = [
     key: "journal",
     icon: "✍️",
     title: "Meng's 碎碎念",
-    pillLabel: "碎碎念",
     desc: "私人日记，记录一些不想对外公开的小想法",
     path: "/writing",
     tint: "tint-lavender",
@@ -74,9 +68,7 @@ const profileSnapshot = {
 };
 
 const matchCard = {
-  pillLabel: "AI简历匹配器",
   path: "/career/match",
-  tint: "tint-lavender",
 };
 
 const FrontPage = () => {
@@ -210,25 +202,6 @@ const FrontPage = () => {
           </section>
         </div>
 
-        <nav className="front-pills front-animate" aria-label="快捷导航" style={{ "--delay": "0.72s" } as React.CSSProperties}>
-          {visibleCards.map((card) => (
-            <button
-              key={card.key}
-              type="button"
-              className={`front-pill ${card.tint}`}
-              onClick={() => openGuideCard(card)}
-            >
-              {card.pillLabel}
-            </button>
-          ))}
-          <button
-            type="button"
-            className={`front-pill front-pill-match ${matchCard.tint}`}
-            onClick={() => navigateWithMeng(matchCard.path)}
-          >
-            ✨ {matchCard.pillLabel}
-          </button>
-        </nav>
       </div>
     </Layout>
   );
